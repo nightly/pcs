@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <ostream>
 #include <utility>
 
 namespace pcs::lts {
@@ -13,12 +14,13 @@ namespace pcs::lts {
 		std::string name_;
 	public:
 		State(const std::string& name);
-		~State() = default;
+		~State();
 
 		std::string GetName() const;
 		void AddTransistion(std::string label, std::string end_state);
 
 		bool operator==(const State& other) const;
+		friend std::ostream& operator<<(std::ostream& os, const State& state);
 
 	};
 

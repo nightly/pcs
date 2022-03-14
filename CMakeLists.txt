@@ -5,7 +5,7 @@ project ("pcs" VERSION 0 LANGUAGES CXX)
 option(PCS_RUN_TESTS "Run tests" ON)
 
 # Library
-add_subdirectory(src)
+add_subdirectory(src/pcs)
 
 # Tests
 if ((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME) AND PCS_RUN_TESTS)

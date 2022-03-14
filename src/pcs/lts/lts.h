@@ -2,6 +2,7 @@
 
 #include <unordered_map>
 #include <string>
+#include <ostream>
 
 #include "state.h"
 
@@ -25,5 +26,6 @@ namespace pcs::lts {
 		void AddSegment(const std::string& start_state, const std::string& label, const std::string& end_state);
 
 		bool operator==(const LabelledTransitionSystem& other) const;
+		friend std::ostream& operator<<(std::ostream& os, const LabelledTransitionSystem& lts);
 	};
 }

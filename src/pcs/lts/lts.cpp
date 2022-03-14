@@ -2,6 +2,7 @@
 
 #include <utility>
 #include <algorithm>
+#include <ostream>
 
 namespace pcs::lts {
 	
@@ -65,7 +66,7 @@ namespace pcs::lts {
 	 * sx ay sz
 	 * where sx = start state, ay = label/action, sz = end state
 	 * 
-	 * If the initial state doesn't exist, it will first be created.
+	 * If the initial/end state(s) don't exist, they will be created.
 	 */
 	void LabelledTransitionSystem::AddSegment(const std::string& start_state, const std::string& label, const std::string& end_state) {
 		if (!HasState(start_state)) {
@@ -76,26 +77,35 @@ namespace pcs::lts {
 		s.AddTransistion(label, end_state);
 
 		if (!HasState(end_state)) {
-			states_.emplace(std::make_pair(end_state, State(start_state)));
-
+			states_.emplace(std::make_pair(end_state, State(end_state)));
 		}
 	}
 
 	/*
-	 * @brief Equality operator for LTS, useful for testing purposes
+	 * @brief Equality operator for LTS, mainly useful for testing
 	 * @returns Whether the given LTS is equivalent to the other specified one
 	 */
 	bool LabelledTransitionSystem::operator==(const LabelledTransitionSystem& other) const {
 		return (initial_state_ == other.initial_state_) && (states_.size() == other.states_.size()) &&
-			std::equal(states_.begin(), states_.end(), other.states_.begin());
+			(states_ == other.states_);
 	}
-
 
 	/*
 	 * @brief Destructor for LTS 
 	 */
 	LabelledTransitionSystem::~LabelledTransitionSystem() {
 		states_.clear();
+	}
+
+	/*
+	 * @brief Output operator overload 
+	 */
+	std::ostream& operator<<(std::ostream& os, const LabelledTransitionSystem& lts) {
+		os << "Initial state: " << lts.initial_state_ << '\n';
+		for (const auto& s : lts.states_) {
+			os << s.second;
+		}
+		return os;
 	}
 
 }

@@ -1,6 +1,7 @@
 #include "pcs/lts/state.h"
 
 #include <string>
+#include <ostream>
 
 namespace pcs::lts {
 
@@ -37,5 +38,29 @@ namespace pcs::lts {
 	bool State::operator==(const State& other) const {
 		return (name_ == other.name_) && (transitions_ == other.transitions_);
 	}
+
+	/*
+	 * @brief State destructor 
+	 */
+	State::~State() {
+		transitions_.clear();
+	}
+	
+	/* 
+	 * @brief Output operator overload 
+	 */
+	std::ostream& operator<<(std::ostream& os, const State& state) {
+		os << "State name: " << state.GetName() << '\n';
+		if (state.transitions_.empty()) {
+			" with 0 transitions";
+			return os;
+		}
+		os << "Transitions: " << '\n';
+		for (const auto& t : state.transitions_) {
+			os << "	Label: " << t.first << " " << "End State: " << t.second << '\n';
+		}
+		return os;
+	}
+
 
 }

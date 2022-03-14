@@ -6,9 +6,8 @@
 
 #include "pcs/lts/lts.h"
 
-TEST(ParseLTS, DISABLED_LTS1) {
+TEST(ParseLTS, LTS1) {
 	pcs::lts::LabelledTransitionSystem got;
-	std::cout << "CUR PATH: " << std::filesystem::current_path() << std::endl;
 	pcs::lts::ReadFromFile(got, "../../../../data/lts1.txt");
 	
 	pcs::lts::LabelledTransitionSystem expected;
