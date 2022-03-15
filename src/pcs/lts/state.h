@@ -13,6 +13,7 @@ namespace pcs::lts {
 	private:
 		std::string name_;
 	public:
+		State() = default;
 		State(const std::string& name);
 		~State();
 
