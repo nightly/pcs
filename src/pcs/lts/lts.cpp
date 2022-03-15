@@ -9,7 +9,7 @@
 #include "pcs/lts/parser.h"
 
 namespace pcs::lts {
-	
+
 	/*
 	 * @brief Labelled Transition System (LTS) constructor
 	 */
@@ -23,14 +23,6 @@ namespace pcs::lts {
 		ReadFromFile(*this, filepath);
 	}
 
-	std::unordered_map<std::string, lts::State> LabelledTransitionSystem::getStates() {
-		return states_;
-	}
-
-	std::string LabelledTransitionSystem::getInitialState() {
-		return initial_state_;
-	}
-
 	/*
 	 * @brief Sets the initial state of the LTS
 	 */
@@ -39,10 +31,18 @@ namespace pcs::lts {
 	}
 
 	/*
-	 * @brief Returns the initial state of the LTS 
+	 * @brief Returns the initial state of the LTS
 	 */
 	std::string LabelledTransitionSystem::GetInitialState() const {
 		return initial_state_;
+	}
+
+	const std::unordered_map<std::string, lts::State>& LabelledTransitionSystem::GetStates() {
+		return states_;
+	}
+
+	size_t LabelledTransitionSystem::NumberOfStates() const {
+		return states_.size();
 	}
 
 	/*
@@ -51,7 +51,7 @@ namespace pcs::lts {
 	bool LabelledTransitionSystem::HasState(const std::string& key) const {
 		return states_.contains(key);
 	}
-	
+
 	/*
 	 * @brief Adds a new state to the LTS providing it doesn't exist in the HashMap already
 	 * @returns False if state already exists, true if it doesn't.
@@ -64,10 +64,6 @@ namespace pcs::lts {
 		return false;
 	}
 
-	int LabelledTransitionSystem::getSize() {
-		return states_.size();
-	}
-
 	/*
 	 * @brief Adds a new state with move semantics
 	 * @returns False if state already exists, true if it doesn't.
@@ -78,7 +74,7 @@ namespace pcs::lts {
 		}
 		return false;
 	}
-	
+
 	/*
 	* @brief Removes a state if it exists within the LTS
 	* @returns False if a removal cannot occur (because the state isn't present), true if successful
@@ -87,13 +83,13 @@ namespace pcs::lts {
 		if (HasState(key)) {
 			states_.erase(key);
 			return true;
-		} 
+		}
 		return false;
 	}
 
 	/*
 	 * @brief Adds an arbitrary transition to the LTS
-	 * 
+	 *
 	 * If the initial and/or end state don't exist, they will be created
 	 */
 	void LabelledTransitionSystem::AddTransition(const std::string& start_state, const std::string& label, const std::string& end_state) {
@@ -120,7 +116,7 @@ namespace pcs::lts {
 	}
 
 	/*
-	 * @brief Destructor for LTS 
+	 * @brief Destructor for LTS
 	 */
 	LabelledTransitionSystem::~LabelledTransitionSystem() {
 		states_.clear();
@@ -139,6 +135,14 @@ namespace pcs::lts {
 			os << pair.second;
 		}
 		return os;
+	}
+
+	State& LabelledTransitionSystem::operator[](const std::string& key) {
+		return states_[key];
+	}
+
+	const State& LabelledTransitionSystem::operator[](const std::string& key) const {
+		return states_.at(key);
 	}
 
 }

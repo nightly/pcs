@@ -5,14 +5,14 @@
 #include <ostream>
 #include <filesystem>
 
-#include "state.h"
+#include "pcs/lts/state.h"
 
 namespace pcs::lts {
-	
+
 	class LabelledTransitionSystem {
-	public: 
-		// @Todo: private data members + replace unordered_map
-		std::unordered_map<std::string, lts::State> states_; 
+	public:
+		// @Todo: unordered map is inefficent STL container
+		std::unordered_map<std::string, lts::State> states_;
 		std::string initial_state_;
 	public:
 		LabelledTransitionSystem();
@@ -21,21 +21,18 @@ namespace pcs::lts {
 
 		void SetInitialState(const std::string& state);
 		std::string GetInitialState() const;
-		void SetEndState(const std::string& state);
+		const std::unordered_map<std::string, lts::State>& GetStates();
+		size_t NumberOfStates() const;
 		bool HasState(const std::string& key) const;
 		bool AddState(lts::State& state);
 		bool AddState(lts::State&& state);
 		bool RemoveState(const std::string& key);
-		int getSize();
-		std::string getInitialState();
-		std::string getEndState();
 
 		void AddTransition(const std::string& start_state, const std::string& label, const std::string& end_state);
 
-		std::unordered_map<std::string, lts::State> getStates();
-		void AddSegment(const std::string& start_state, const std::string& label, const std::string& end_state);
-
 		bool operator==(const LabelledTransitionSystem& other) const;
+		State& operator[](const std::string& key);
+		const State& operator[](const std::string& key) const;
 		friend std::ostream& operator<<(std::ostream& os, const LabelledTransitionSystem& lts);
 	};
 }

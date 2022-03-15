@@ -39,7 +39,7 @@ namespace pcs::lts {
 				std::getline(ss, end_state);
 				lts.AddTransition(start_state, label, end_state);
 			}
-		} catch (std::ifstream::failure e) {
+		} catch (std::ifstream::failure& e) {
 			throw;
 		}
 	}
