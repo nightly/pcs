@@ -21,12 +21,19 @@ namespace pcs::lts {
 
 		void SetInitialState(const std::string& state);
 		std::string GetInitialState() const;
+		void SetEndState(const std::string& state);
 		bool HasState(const std::string& key) const;
 		bool AddState(lts::State& state);
 		bool AddState(lts::State&& state);
 		bool RemoveState(const std::string& key);
+		int getSize();
+		std::string getInitialState();
+		std::string getEndState();
 
 		void AddTransition(const std::string& start_state, const std::string& label, const std::string& end_state);
+
+		std::unordered_map<std::string, lts::State> getStates();
+		void AddSegment(const std::string& start_state, const std::string& label, const std::string& end_state);
 
 		bool operator==(const LabelledTransitionSystem& other) const;
 		friend std::ostream& operator<<(std::ostream& os, const LabelledTransitionSystem& lts);

@@ -23,6 +23,14 @@ namespace pcs::lts {
 		ReadFromFile(*this, filepath);
 	}
 
+	std::unordered_map<std::string, lts::State> LabelledTransitionSystem::getStates() {
+		return states_;
+	}
+
+	std::string LabelledTransitionSystem::getInitialState() {
+		return initial_state_;
+	}
+
 	/*
 	 * @brief Sets the initial state of the LTS
 	 */
@@ -54,6 +62,10 @@ namespace pcs::lts {
 			return true;
 		}
 		return false;
+	}
+
+	int LabelledTransitionSystem::getSize() {
+		return states_.size();
 	}
 
 	/*

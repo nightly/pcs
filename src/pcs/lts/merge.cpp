@@ -44,10 +44,36 @@ namespace pcs::lts {
 			}
 		}
 	}
+	pcs::lts::merge::merge()
+	{
 
-	/*
-	 * @brief Transforms a vector of states into a singular state string (_,_,_,_) 
-	 */
+	}
+
+	void pcs::lts::merge::createVisitedDictionary(std::vector<LabelledTransitionSystem> lts, std::map<std::string, bool>& isVisited)
+	{
+		std::set<std::string> combination;
+		for (auto ele : lts.at(0).getStates()) {
+			combination.insert(ele.first);
+		}
+
+		for (int i = 1; i < lts.size(); i++) {
+			std::vector<std::string> temp(combination.begin(), combination.end());
+			combination.clear();
+			for (int j = 0; j < temp.size(); j++) {
+				for (auto ele : lts.at(i).getStates()) {
+					combination.insert(temp[j] + ele.first);
+				}
+			}
+		}
+		/*
+		 * @brief Transforms a vector of states into a singular state string (_,_,_,_)
+		 */
+
+		for (auto i : combination) {
+			isVisited.insert(std::pair<std::string, bool>(i.c_str(), false));
+		}
+	}
+
 	std::string StateVectorToString(const std::span<std::string>& vec) {
 		std::string ret;
 		for (uint_fast8_t i = 0; i < vec.size(); i++) {
@@ -59,4 +85,49 @@ namespace pcs::lts {
 		return ret;
 	}
 
+	void pcs::lts::merge::merger(std::vector<LabelledTransitionSystem> lts)
+	{
+		std::map<std::string, bool> isVisited;
+		std::vector<std::string> currState;
+
+		for (int i = 0; i < lts.size(); i++) {
+			currState.push_back(lts.at(i).getInitialState());
+		}
+
+		createVisitedDictionary(lts, isVisited);
+		combine(lts, currState, isVisited);
+	}
+
+	void pcs::lts::merge::combine(std::vector<LabelledTransitionSystem> lts, std::vector<std::string> currState, std::map<std::string, bool>& isVisited)
+	{
+		std::string decision = "";
+		for (int i = 0; i < currState.size(); i++) {
+			decision += currState[i];
+		}
+		if (isVisited.at(decision)) {
+			return;
+		}
+		isVisited[decision] = true;
+
+		for (int i = 0; i < currState.size(); i++) {
+			for (auto ele : lts[i].getStates()) {
+				if (ele.first == currState[i]) {
+					std::vector<std::vector<std::string>> currstatecopies;
+					for (int j = 0; j < ele.second.transitions_.size(); j++) {
+						std::vector<std::string> copy = currState;
+						copy[i] = ele.second.transitions_[j].first;
+						std::string finaldecision = "";
+						for (int i = 0; i < copy.size(); i++) {
+							finaldecision += copy[i];
+						}
+						std::cout << decision << "->" << ele.second.transitions_[j].second << "->" << finaldecision << std::endl;
+						currstatecopies.push_back(copy);
+					}
+					for (auto copy : currstatecopies) {
+						combine(lts, copy, isVisited);
+					}
+				}
+			}
+		}
+	}
 }
