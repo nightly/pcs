@@ -2,30 +2,50 @@
 
 #include <utility>
 #include <algorithm>
+#include <string>
+#include <filesystem>
 #include <ostream>
+
+#include "pcs/lts/parser.h"
 
 namespace pcs::lts {
 	
 	/*
-	 * @brief Labelled Transition System constructor.
+	 * @brief Labelled Transition System (LTS) constructor
 	 */
-	LabelledTransitionSystem::LabelledTransitionSystem() {
+	LabelledTransitionSystem::LabelledTransitionSystem() {}
 
+	/*
+	 * @brief LTS constructor overloaded to read file input into a LTS
+	 * @param filepath: file in form of data/ (also specified in ReadFromFile)
+	 */
+	LabelledTransitionSystem::LabelledTransitionSystem(const std::filesystem::path& filepath) {
+		ReadFromFile(*this, filepath);
 	}
 
 	/*
-	 * @brief Sets the initial state of the LTS. 
+	 * @brief Sets the initial state of the LTS
 	 */
 	void LabelledTransitionSystem::SetInitialState(const std::string& state) {
 		initial_state_ = state;
 	}
 
+	/*
+	 * @brief Returns the initial state of the LTS 
+	 */
+	std::string LabelledTransitionSystem::GetInitialState() const {
+		return initial_state_;
+	}
+
+	/*
+	 * @brief Determines whether a named state exists within the LTS
+	 */
 	bool LabelledTransitionSystem::HasState(const std::string& key) const {
 		return states_.contains(key);
 	}
 	
 	/*
-	 * @brief Adds a new state to the LTS providing it doesn't exist in the HashMap already. 
+	 * @brief Adds a new state to the LTS providing it doesn't exist in the HashMap already
 	 * @returns False if state already exists, true if it doesn't.
 	 */
 	bool LabelledTransitionSystem::AddState(lts::State& state) {
@@ -37,7 +57,7 @@ namespace pcs::lts {
 	}
 
 	/*
-	 * @brief Adds a new state with move semantics.
+	 * @brief Adds a new state with move semantics
 	 * @returns False if state already exists, true if it doesn't.
 	 */
 	bool LabelledTransitionSystem::AddState(lts::State&& state) {
@@ -48,7 +68,7 @@ namespace pcs::lts {
 	}
 	
 	/*
-	* @brief Removes a state if it exists within the LTS.
+	* @brief Removes a state if it exists within the LTS
 	* @returns False if a removal cannot occur (because the state isn't present), true if successful
 	*/
 	bool LabelledTransitionSystem::RemoveState(const std::string& key) {
@@ -60,26 +80,23 @@ namespace pcs::lts {
 	}
 
 	/*
-	 * @brief Adds a segment to the Labelled Transition System.
+	 * @brief Adds an arbitrary transition to the LTS
 	 * 
-	 * This is composed of the form based on the three parameters:
-	 * sx ay sz
-	 * where sx = start state, ay = label/action, sz = end state
-	 * 
-	 * If the initial/end state(s) don't exist, they will be created.
+	 * If the initial and/or end state don't exist, they will be created
 	 */
-	void LabelledTransitionSystem::AddSegment(const std::string& start_state, const std::string& label, const std::string& end_state) {
+	void LabelledTransitionSystem::AddTransition(const std::string& start_state, const std::string& label, const std::string& end_state) {
 		if (!HasState(start_state)) {
-			states_.emplace(std::make_pair(start_state, State(start_state)));
+			AddState(pcs::lts::State(start_state));
 		}
 
 		State& s = states_.at(start_state);
 		s.AddTransistion(label, end_state);
 
 		if (!HasState(end_state)) {
-			states_.emplace(std::make_pair(end_state, State(end_state)));
+			AddState(pcs::lts::State(end_state));
 		}
 	}
+
 
 	/*
 	 * @brief Equality operator for LTS, mainly useful for testing
@@ -98,12 +115,16 @@ namespace pcs::lts {
 	}
 
 	/*
-	 * @brief Output operator overload 
+	 * @brief Output operator overload
 	 */
 	std::ostream& operator<<(std::ostream& os, const LabelledTransitionSystem& lts) {
+		if (lts.initial_state_.empty() && lts.states_.empty()) {
+			os << "Empty Labelled Transition System\n";
+			return os;
+		}
 		os << "Initial state: " << lts.initial_state_ << '\n';
-		for (const auto& s : lts.states_) {
-			os << s.second;
+		for (const auto& pair : lts.states_) {
+			os << pair.second;
 		}
 		return os;
 	}

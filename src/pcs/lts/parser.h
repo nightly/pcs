@@ -7,5 +7,5 @@
 
 namespace pcs::lts {
 
-	void ReadFromFile(LabelledTransitionSystem& lts, const std::string& filepath);
+	void ReadFromFile(LabelledTransitionSystem& lts, const std::filesystem::path& filepath);
 }

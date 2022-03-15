@@ -9,8 +9,8 @@ namespace pcs::lts {
 	 * @brief State constructor, representing a single state within the LTS and its transitions. 
 	 * @param name: given name of the State. This is represented by a LTS as a key within the HashMap.
 	 */
-	State::State(const std::string& name) {
-		name_ = name;
+	State::State(const std::string& name) 
+		: name_(name) {
 	}
 
 	/*
@@ -52,15 +52,14 @@ namespace pcs::lts {
 	std::ostream& operator<<(std::ostream& os, const State& state) {
 		os << "State name: " << state.GetName() << '\n';
 		if (state.transitions_.empty()) {
-			" with 0 transitions";
+			os << "  With 0 transitions" << '\n';
 			return os;
 		}
 		os << "Transitions: " << '\n';
-		for (const auto& t : state.transitions_) {
-			os << "	Label: " << t.first << " " << "End State: " << t.second << '\n';
+		for (const auto& pair : state.transitions_) {
+			os << "  Label: " << pair.second << " " << "End State: " << pair.first << '\n';
 		}
 		return os;
 	}
-
 
 }
