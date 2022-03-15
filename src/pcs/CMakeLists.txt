@@ -8,7 +8,7 @@ set(PCS_SOURCES "lts/lts.cpp"
 
 add_library(pcs STATIC ${PCS_SOURCES})
 
-target_compile_features(pcs PRIVATE cxx_std_23)
+target_compile_features(pcs PRIVATE cxx_std_20)
 
 target_include_directories(pcs
     PUBLIC

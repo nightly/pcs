@@ -7,7 +7,7 @@ add_subdirectory("${PROJECT_SOURCE_DIR}/external/googletest" "external/googletes
 macro(package_add_test TESTNAME)
     add_executable(${TESTNAME} ${ARGN})
 
-    target_compile_features(${TESTNAME}  PRIVATE cxx_std_23)
+    target_compile_features(${TESTNAME}  PRIVATE cxx_std_20)
 
     target_link_libraries(${TESTNAME} 
     PRIVATE 

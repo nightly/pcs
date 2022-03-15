@@ -1,6 +1,6 @@
 # Process Controller Synthesis
 
-![standard](https://img.shields.io/badge/c%2B%2B-23-blue.svg)
+![standard](https://img.shields.io/badge/c%2B%2B-20-blue.svg)
 ![ci.yml](https://github.com/nightly/pcs/actions/workflows/ci.yml/badge.svg)
 
 ## Requirements
