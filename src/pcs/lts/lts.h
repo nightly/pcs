@@ -13,15 +13,17 @@ namespace pcs::lts {
 	public:
 		// @Todo: unordered map is inefficent STL container
 		std::unordered_map<std::string, lts::State> states_;
+	private:
 		std::string initial_state_;
 	public:
 		LabelledTransitionSystem();
+		LabelledTransitionSystem(const std::string& initial_state, bool create_initial);
 		LabelledTransitionSystem(const std::filesystem::path& filepath);
 		~LabelledTransitionSystem();
 
-		void SetInitialState(const std::string& state);
+		void SetInitialState(const std::string& state, bool create_if_not_exists);
 		std::string GetInitialState() const;
-		const std::unordered_map<std::string, lts::State>& GetStates();
+
 		size_t NumberOfStates() const;
 		bool HasState(const std::string& key) const;
 		bool AddState(lts::State& state);

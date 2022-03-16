@@ -13,8 +13,8 @@ TEST(ParseLTS, LTS1) {
 	pcs::lts::LabelledTransitionSystem expected;
 	pcs::lts::State s0("s0");
 	s0.AddTransistion("a1", "s1");
-	expected.SetInitialState("s0");
 	expected.AddState(s0);
+	expected.SetInitialState("s0", false);
 
 	pcs::lts::State s1("s1");
 	s1.AddTransistion("a2", "s2");

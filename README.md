@@ -6,6 +6,7 @@
 ## Requirements
 - CMake (>=3.8)
 - Git (for submodule cloning)
+- C++20 compiler
 
 ## Build instructions
 Clone the repository alongside its submodules.

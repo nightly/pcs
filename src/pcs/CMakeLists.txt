@@ -4,7 +4,7 @@ set(PCS_SOURCES "lts/lts.cpp"
 "lts/state.cpp"
 "lts/merge.cpp"
 "lts/parser.cpp"
-)
+ "lts/export.cpp")
 
 add_library(pcs STATIC ${PCS_SOURCES})
 

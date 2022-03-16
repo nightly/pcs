@@ -28,7 +28,7 @@ namespace pcs::lts {
 			stream.exceptions(std::ifstream::badbit);
 			while (std::getline(stream, line)) {
 				if (first_line) {
-					lts.SetInitialState(line);
+					lts.SetInitialState(line, true);
 					first_line = false;
 					continue;
 				}

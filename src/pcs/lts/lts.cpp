@@ -16,6 +16,15 @@ namespace pcs::lts {
 	LabelledTransitionSystem::LabelledTransitionSystem() {}
 
 	/*
+	 * @brief Constructor with overload for setting initial state
+	 * @param initial_state: string key of initial state
+	 * @param create_initial: will create the initial lts::State object if true
+	 */
+	LabelledTransitionSystem::LabelledTransitionSystem(const std::string& initial_state, bool create_initial) {
+		SetInitialState(initial_state, create_initial);
+	}
+
+	/*
 	 * @brief LTS constructor overloaded to read file input into a LTS
 	 * @param filepath: file in form of data/ (also specified in ReadFromFile)
 	 */
@@ -25,8 +34,12 @@ namespace pcs::lts {
 
 	/*
 	 * @brief Sets the initial state of the LTS
+	 * @param create_if_not_exists: will create the lts::State object for initial state unless it already exists
 	 */
-	void LabelledTransitionSystem::SetInitialState(const std::string& state) {
+	void LabelledTransitionSystem::SetInitialState(const std::string& state, bool create_if_not_exists) {
+		if (!HasState(state) && create_if_not_exists) {
+			AddState(pcs::lts::State(state));
+		}
 		initial_state_ = state;
 	}
 
@@ -34,13 +47,10 @@ namespace pcs::lts {
 	 * @brief Returns the initial state of the LTS
 	 */
 	std::string LabelledTransitionSystem::GetInitialState() const {
+
 		return initial_state_;
 	}
-
-	const std::unordered_map<std::string, lts::State>& LabelledTransitionSystem::GetStates() {
-		return states_;
-	}
-
+	
 	size_t LabelledTransitionSystem::NumberOfStates() const {
 		return states_.size();
 	}
@@ -105,14 +115,26 @@ namespace pcs::lts {
 		}
 	}
 
-
 	/*
 	 * @brief Equality operator for LTS, mainly useful for testing
 	 * @returns Whether the given LTS is equivalent to the other specified one
 	 */
 	bool LabelledTransitionSystem::operator==(const LabelledTransitionSystem& other) const {
-		return (initial_state_ == other.initial_state_) && (states_.size() == other.states_.size()) &&
-			(states_ == other.states_);
+		return (initial_state_ == other.initial_state_) && (states_ == other.states_);
+	}
+
+	/*
+	 * @brief Operator[] overload to access a State object at any given key
+	 */
+	State& LabelledTransitionSystem::operator[](const std::string& key) {
+		return states_[key];
+	}
+
+	/*
+	  * @brief Operator[] overload to access a State object at given key in a const-manner 
+	  */
+	const State& LabelledTransitionSystem::operator[](const std::string& key) const {
+		return states_.at(key);
 	}
 
 	/*
@@ -120,29 +142,6 @@ namespace pcs::lts {
 	 */
 	LabelledTransitionSystem::~LabelledTransitionSystem() {
 		states_.clear();
-	}
-
-	/*
-	 * @brief Output operator overload
-	 */
-	std::ostream& operator<<(std::ostream& os, const LabelledTransitionSystem& lts) {
-		if (lts.initial_state_.empty() && lts.states_.empty()) {
-			os << "Empty Labelled Transition System\n";
-			return os;
-		}
-		os << "Initial state: " << lts.initial_state_ << '\n';
-		for (const auto& pair : lts.states_) {
-			os << pair.second;
-		}
-		return os;
-	}
-
-	State& LabelledTransitionSystem::operator[](const std::string& key) {
-		return states_[key];
-	}
-
-	const State& LabelledTransitionSystem::operator[](const std::string& key) const {
-		return states_.at(key);
 	}
 
 }

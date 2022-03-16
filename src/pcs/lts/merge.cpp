@@ -25,8 +25,7 @@ namespace pcs::lts {
 			state_strings.emplace_back(lts.GetInitialState());
 		}
 		std::string initial_key = StateVectorToString(state_strings);
-		combined_lts.AddState(initial_key);
-		combined_lts.SetInitialState(initial_key);
+		combined_lts.SetInitialState(initial_key, true);
 
 		CombineRecursive(ltss, state_strings, combined_lts);
 
