@@ -19,6 +19,7 @@ namespace pcs::lts {
 
 		std::string GetName() const;
 		void AddTransistion(const std::string& label, const std::string& end_state);
+		bool TransistionExists(const std::string& label, const std::string& end_state) const;
 		bool IsEmpty() const;
 
 		bool operator==(const State& other) const;

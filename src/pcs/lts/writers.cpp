@@ -66,7 +66,8 @@ namespace pcs::lts {
 			os << "	" << "\"" << state.name_ << "\"" << "\n";
 		}
 		for (const auto& t : state.transitions_) {
-			os << "	" << "\"" << state.name_ << "\"" << " -> " << t.second << " [label = " << "\"" << t.first << "\"];\n";
+			os << "	" << "\"" << state.name_ << "\"" << " -> " << "\"" << t.second << "\"" 
+				<< " [label = " << "\"" << t.first << "\"];\n";
 		}
 		return os;
 	}

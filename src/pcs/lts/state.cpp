@@ -22,7 +22,7 @@ namespace pcs::lts {
 	}
 
 	/*
-	 * @brief Adds a transitition to the given state.
+	 * @brief Adds a transitition to the given state
 	 * @param label: label for transitition. Special cases: nop, in, out.
 	 * @param end_state: the state the transition ends at/points to.
 	 */
@@ -30,6 +30,19 @@ namespace pcs::lts {
 		std::pair<std::string, std::string> transistion = std::make_pair(label, end_state);
 		transitions_.emplace_back(transistion);
 	}
+
+	/*
+	 * @brief Returns whether or not a given state has a transistion that matches the one specified
+	 */
+	bool State::TransistionExists(const std::string& label, const std::string& end_state) const {
+		for (const auto& t : transitions_) {
+			if ((t.first == label) && (t.second == end_state)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 
 	/*
 	 * @brief Returns whether or not the State is empty (which is defined by having no transitions) 
