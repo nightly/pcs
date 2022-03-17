@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <string>
 #include <ostream>
+#include <fstream>
 #include <filesystem>
 
 #include "pcs/lts/state.h"
@@ -26,7 +27,7 @@ namespace pcs::lts {
 
 		size_t NumberOfStates() const;
 		bool HasState(const std::string& key) const;
-		bool AddState(lts::State& state);
+		bool AddState(const lts::State& state);
 		bool AddState(lts::State&& state);
 		bool RemoveState(const std::string& key);
 
@@ -35,6 +36,8 @@ namespace pcs::lts {
 		bool operator==(const LabelledTransitionSystem& other) const;
 		State& operator[](const std::string& key);
 		const State& operator[](const std::string& key) const;
+
 		friend std::ostream& operator<<(std::ostream& os, const LabelledTransitionSystem& lts);
+		friend std::ofstream& operator<<(std::ofstream& os, const LabelledTransitionSystem& lts);
 	};
 }

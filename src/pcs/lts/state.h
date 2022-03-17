@@ -18,11 +18,13 @@ namespace pcs::lts {
 		~State();
 
 		std::string GetName() const;
-		void AddTransistion(std::string label, std::string end_state);
+		void AddTransistion(const std::string& label, const std::string& end_state);
+		bool IsEmpty() const;
 
 		bool operator==(const State& other) const;
-		friend std::ostream& operator<<(std::ostream& os, const State& state);
 
+		friend std::ostream& operator<<(std::ostream& os, const State& state);
+		friend std::ofstream& operator<<(std::ofstream& os, const State& state);
 	};
 
 }

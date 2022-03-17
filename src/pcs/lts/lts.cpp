@@ -47,10 +47,12 @@ namespace pcs::lts {
 	 * @brief Returns the initial state of the LTS
 	 */
 	std::string LabelledTransitionSystem::GetInitialState() const {
-
 		return initial_state_;
 	}
 	
+	/*
+	 * @brief Returns the number of states contained within the LTS. 
+	 */
 	size_t LabelledTransitionSystem::NumberOfStates() const {
 		return states_.size();
 	}
@@ -66,7 +68,7 @@ namespace pcs::lts {
 	 * @brief Adds a new state to the LTS providing it doesn't exist in the HashMap already
 	 * @returns False if state already exists, true if it doesn't.
 	 */
-	bool LabelledTransitionSystem::AddState(lts::State& state) {
+	bool LabelledTransitionSystem::AddState(const lts::State& state) {
 		if (!HasState(state.GetName())) {
 			states_.emplace(std::make_pair(state.GetName(), state));
 			return true;
@@ -100,7 +102,7 @@ namespace pcs::lts {
 	/*
 	 * @brief Adds an arbitrary transition to the LTS
 	 *
-	 * If the initial and/or end state don't exist, they will be created
+	 * If the start and/or end state don't exist, they will be created
 	 */
 	void LabelledTransitionSystem::AddTransition(const std::string& start_state, const std::string& label, const std::string& end_state) {
 		if (!HasState(start_state)) {

@@ -26,9 +26,16 @@ namespace pcs::lts {
 	 * @param label: label for transitition. Special cases: nop, in, out.
 	 * @param end_state: the state the transition ends at/points to.
 	 */
-	void State::AddTransistion(std::string end_state, std::string label) {
+	void State::AddTransistion(const std::string& label, const std::string& end_state) {
 		std::pair<std::string, std::string> transistion = std::make_pair(label, end_state);
 		transitions_.emplace_back(transistion);
+	}
+
+	/*
+	 * @brief Returns whether or not the State is empty (which is defined by having no transitions) 
+	 */
+	bool State::IsEmpty() const {
+		return transitions_.empty();
 	}
 
 	/* 
@@ -44,22 +51,6 @@ namespace pcs::lts {
 	 */
 	State::~State() {
 		transitions_.clear();
-	}
-	
-	/* 
-	 * @brief Output operator overload 
-	 */
-	std::ostream& operator<<(std::ostream& os, const State& state) {
-		os << "State name: " << state.GetName() << '\n';
-		if (state.transitions_.empty()) {
-			os << "  With 0 transitions" << '\n';
-			return os;
-		}
-		os << "Transitions: " << '\n';
-		for (const auto& pair : state.transitions_) {
-			os << "  Label: " << pair.second << " " << "End State: " << pair.first << '\n';
-		}
-		return os;
 	}
 
 }

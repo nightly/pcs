@@ -35,10 +35,10 @@ namespace pcs::lts {
 	void CombineRecursive(const std::span<LabelledTransitionSystem>& ltss, std::vector<std::string>& state_strings,
 		LabelledTransitionSystem& combined_lts) {
 
-		for (uint_fast8_t i = 0; i < ltss.size(); i++) {
+		for (size_t i = 0; i < ltss.size(); i++) {
 			for (const auto& t : ltss[i].states_.at(state_strings[i]).transitions_) {
-				combined_lts.AddTransition(StateVectorToString(state_strings), t.second, t.first);
-				state_strings[i] = t.first;
+				state_strings[i] = t.second;
+				combined_lts.AddTransition(StateVectorToString(state_strings), t.first, t.second);
 				CombineRecursive(ltss, state_strings, combined_lts);
 			}
 		}
