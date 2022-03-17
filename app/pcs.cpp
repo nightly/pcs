@@ -29,11 +29,16 @@ int main() {
 	std::cout << "Combined LTS: \n" << lts_combined << '\n';
 
 	// File output
-	for (size_t i = 0; i < ltss.size(); i++) {
-		std::string path = "../../../../exports/lts" + std::to_string(i+1) + ".txt";
-		pcs::lts::ExportToFile(ltss[i], path);
+	try {
+		for (size_t i = 0; i < ltss.size(); i++) {
+			std::string path = "../../../../exports/lts" + std::to_string(i + 1) + ".txt";
+			pcs::lts::ExportToFile(ltss[i], path);
+		}
+		pcs::lts::ExportToFile(lts_combined, "../../../../exports/combined-lts.txt");
+	} catch (std::ofstream::failure) {
+		std::cerr << "Error writing to files or creating directory\n";
+		return 1;
 	}
-	pcs::lts::ExportToFile(lts_combined, "../../../../exports/combined-lts.txt");
 
 	return 0;
 }

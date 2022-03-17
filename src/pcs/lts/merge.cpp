@@ -18,24 +18,28 @@ namespace pcs::lts {
 	 */
 	LabelledTransitionSystem Combine(const std::span<LabelledTransitionSystem>& ltss) {
 		LabelledTransitionSystem combined_lts;
-		std::vector<std::string> state_strings;
+		std::vector<std::string> states_vec;
 		for (const auto& lts : ltss) {
 			// Populate with initial states
-			state_strings.emplace_back(lts.GetInitialState());
+			states_vec.emplace_back(lts.GetInitialState());
 		}
-		std::string initial_key = StateVectorToString(state_strings);
+		std::string initial_key = StateVectorToString(states_vec);
 		combined_lts.SetInitialState(initial_key, true);
-		CombineRecursive(ltss, state_strings, combined_lts);
+		CombineRecursive(ltss, states_vec, combined_lts);
 		return combined_lts;
 	}
 
-	void CombineRecursive(const std::span<LabelledTransitionSystem>& ltss, std::vector<std::string>& state_strings,
+	/*
+	 * @brief CombineRecursive will recursively apply all transititions to generate a topology
+	 * All possible transitions will be considered from each given state (_, _, _, _)
+	 */
+	void CombineRecursive(const std::span<LabelledTransitionSystem>& ltss, std::vector<std::string>& states_vec,
 	LabelledTransitionSystem& combined_lts) {
 		for (size_t i = 0; i < ltss.size(); i++) {
-			for (const auto& t : ltss[i].states_.at(state_strings[i]).transitions_) {
-				std::vector<std::string> next_states = state_strings;
+			for (const auto& t : ltss[i].states_.at(states_vec[i]).transitions_) {
+				std::vector<std::string> next_states = states_vec;
 				next_states[i] = t.second;
-				combined_lts.AddTransition(StateVectorToString(state_strings), t.first, StateVectorToString(next_states));
+				combined_lts.AddTransition(StateVectorToString(states_vec), t.first, StateVectorToString(next_states));
 				CombineRecursive(ltss, next_states, combined_lts);
 			}
 		}
