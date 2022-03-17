@@ -6,8 +6,6 @@
 #include <set>
 #include <utility>
 
-#include <iostream>
-
 #include "pcs/lts/lts.h"
 #include "pcs/lts/state.h"
 
@@ -35,11 +33,9 @@ namespace pcs::lts {
 	LabelledTransitionSystem& combined_lts) {
 		for (size_t i = 0; i < ltss.size(); i++) {
 			for (const auto& t : ltss[i].states_.at(state_strings[i]).transitions_) {
-				std::string current_states = StateVectorToString(state_strings);
-				std::cout << current_states << std::endl;
 				std::vector<std::string> next_states = state_strings;
 				next_states[i] = t.second;
-				combined_lts.AddTransition(current_states, t.first, StateVectorToString(next_states));
+				combined_lts.AddTransition(StateVectorToString(state_strings), t.first, StateVectorToString(next_states));
 				CombineRecursive(ltss, next_states, combined_lts);
 			}
 		}
