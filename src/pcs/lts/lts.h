@@ -31,7 +31,8 @@ namespace pcs::lts {
 		bool AddState(lts::State&& state);
 		bool RemoveState(const std::string& key);
 
-		void AddTransition(const std::string& start_state, const std::string& label, const std::string& end_state);
+		void AddTransition(const std::string& start_state, const std::string& label, 
+			const std::string& end_state, bool create_missing_states=true);
 
 		bool operator==(const LabelledTransitionSystem& other) const;
 		State& operator[](const std::string& key);

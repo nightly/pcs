@@ -17,19 +17,20 @@ int main() {
 		pcs::lts::ReadFromFile(ltss[0], "../../../../data/lts1.txt");
 		pcs::lts::ReadFromFile(ltss[1], "../../../../data/lts1.txt"); // <- merges self, both lts1.txt
 	} catch (std::ifstream::failure) {
-		std::cerr << "Unable to read the file at specified path" << std::endl;
+		std::cerr << "Unable to read the file at specified path\n";
 		return 1;
 	}
 	pcs::lts::LabelledTransitionSystem lts_combined = pcs::lts::Combine(ltss);
 
 	// Console output
-	std::cout << "Labelled Transition System 1: \n" << ltss[0] << std::endl;
-	std::cout << "Labelled Transition System 2: \n" << ltss[1] << std::endl;
-	std::cout << "Combined LTS: \n" << lts_combined << std::endl;
+	for (size_t i = 0; i < ltss.size(); i++) {
+		std::cout << "Labelled Transition System "<< (i+1) <<":\n" << ltss[i] << std::endl;
+	}
+	std::cout << "Combined LTS: \n" << lts_combined << '\n';
 
 	// File output
 	for (size_t i = 0; i < ltss.size(); i++) {
-		std::string path = "../../../../exports/lts" + std::to_string(i + 1) + ".txt";
+		std::string path = "../../../../exports/lts" + std::to_string(i+1) + ".txt";
 		pcs::lts::ExportToFile(ltss[i], path);
 	}
 	pcs::lts::ExportToFile(lts_combined, "../../../../exports/combined-lts.txt");

@@ -33,7 +33,7 @@ namespace pcs::lts {
 		os << "	edge [fontname=\"Helvetica, Arial, sans - serif\"]\n";
 		os << "	rankdir=LR;\n";
 		os << "	node [shape = doublecircle];\n";
-		os << "	" << lts.initial_state_ << ";\n";
+		os << "	" << "\"" << lts.initial_state_ << "\"" << ";\n";
 		os << "	node [shape = circle];\n";
 		for (const auto& pair : lts.states_) {
 			os << pair.second;
@@ -53,7 +53,7 @@ namespace pcs::lts {
 		}
 		os << "  Transitions: " << '\n';
 		for (const auto& pair : state.transitions_) {
-			os << "    Label: " << pair.second << " " << "End State: " << pair.first << '\n';
+			os << "    Label: " << pair.first << " " << "End State: " << pair.second << '\n';
 		}
 		return os;
 	}
@@ -63,10 +63,10 @@ namespace pcs::lts {
 	 */
 	std::ofstream& operator<<(std::ofstream& os, const State& state) {
 		if (state.IsEmpty()) {
-			os << "	" << state.name_ << "\n";
+			os << "	" << "\"" << state.name_ << "\"" << "\n";
 		}
 		for (const auto& t : state.transitions_) {
-			os << "	" << state.name_ << " -> " << t.second << " [label = " << "\"" << t.first << "\"];\n";
+			os << "	" << "\"" << state.name_ << "\"" << " -> " << t.second << " [label = " << "\"" << t.first << "\"];\n";
 		}
 		return os;
 	}

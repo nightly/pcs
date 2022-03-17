@@ -4,9 +4,10 @@
 ![ci.yml](https://github.com/nightly/pcs/actions/workflows/ci.yml/badge.svg)
 
 ## Requirements
-- CMake (>=3.8)
-- Git (for submodule cloning)
+- [CMake](https://cmake.org/) (>=3.8)
+- [Git](https://git-scm.com/) (for submodule cloning)
 - C++20 compiler
+- [GraphViz](https://graphviz.org/) (*optional*: for visualisation purposes)
 
 ## Build instructions
 Clone the repository alongside its submodules.
@@ -30,3 +31,13 @@ ctest -j 8 --output-on-failure --verbose
 - `app`: contains an executable command line application
 - `src/pcs`: contains the PCS library code
 - `tests`: contains all tests & test data
+
+## GraphViz visualisation support
+The labelled transition systems parsed and generated can be visualised using the GraphViz tool.
+
+The output generated in the `exports/` can be visualised entirely online [here](http://magjac.com/graphviz-visual-editor/) without installing GraphViz on your system.
+
+Alternatively with GraphViz installed, the following command can be run for a given LTS file:
+```
+dot -Tpng lts1.txt -o lts1.png
+```

@@ -102,17 +102,19 @@ namespace pcs::lts {
 	/*
 	 * @brief Adds an arbitrary transition to the LTS
 	 *
-	 * If the start and/or end state don't exist, they will be created
+	 * @params start_state, label, end_state: the starting transition, the action/label, and the ending state.
+	 * @param create_missing_states: if the start/end state don't exist, they will be created if true. Default: true.
 	 */
-	void LabelledTransitionSystem::AddTransition(const std::string& start_state, const std::string& label, const std::string& end_state) {
-		if (!HasState(start_state)) {
+	void LabelledTransitionSystem::AddTransition(const std::string& start_state, const std::string& label,
+	const std::string& end_state, bool create_missing_states) {
+		if (!HasState(start_state) && create_missing_states) {
 			AddState(pcs::lts::State(start_state));
 		}
 
 		State& s = states_.at(start_state);
 		s.AddTransistion(label, end_state);
 
-		if (!HasState(end_state)) {
+		if (!HasState(end_state) && create_missing_states) {
 			AddState(pcs::lts::State(end_state));
 		}
 	}
