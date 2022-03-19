@@ -4,5 +4,5 @@ add_executable(pcs_app "pcs.cpp")
 
 target_compile_features(pcs_app PRIVATE cxx_std_20)
 
-# Dependencies
 target_link_libraries(pcs_app PRIVATE pcs)
+

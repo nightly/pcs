@@ -17,13 +17,13 @@ git clone --recurse-submodules https://github.com/nightly/pcs
 
 Build the project using CMake, which will automatically invoke the tests unless otherwise specified.
 ```
-cmake -S. -B build/x64/release -DCMAKE_BUILD_TYPE=Release
-cmake --build build/x64/release
+cmake -S. -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build
 ```
 
 The tests can also be run with the following:
 ```
-cd build/x64/release
+cd build
 ctest -j 8 --output-on-failure --verbose
 ```
 

@@ -8,7 +8,7 @@
 
 TEST(ParseLTS, LTS1) {
 	pcs::lts::LabelledTransitionSystem got;
-	pcs::lts::ReadFromFile(got, "../../../../data/lts1.txt");
+	pcs::lts::ReadFromFile(got, "../../data/lts1.txt");
 
 	pcs::lts::LabelledTransitionSystem expected;
 	pcs::lts::State s0("s0");

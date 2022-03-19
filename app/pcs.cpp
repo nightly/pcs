@@ -9,13 +9,12 @@
 #include "pcs/lts/parser.h"
 #include "pcs/lts/writers.h"
 
-
 int main() {
 	// Read LTS' & combine
 	std::array<pcs::lts::LabelledTransitionSystem, 2> ltss;
 	try {
-		pcs::lts::ReadFromFile(ltss[0], "../../../../data/lts1.txt");
-		pcs::lts::ReadFromFile(ltss[1], "../../../../data/lts1.txt"); // <- merges self, both lts1.txt
+		pcs::lts::ReadFromFile(ltss[0], "../../data/lts1.txt");
+		pcs::lts::ReadFromFile(ltss[1], "../../data/lts1.txt"); // <- merges self, both lts1.txt
 	} catch (std::ifstream::failure) {
 		std::cerr << "Unable to read the file at specified path\n";
 		return 1;
@@ -31,10 +30,10 @@ int main() {
 	// File output
 	try {
 		for (size_t i = 0; i < ltss.size(); i++) {
-			std::string path = "../../../../exports/lts" + std::to_string(i + 1) + ".txt";
+			std::string path = "../../exports/lts" + std::to_string(i + 1) + ".txt";
 			pcs::lts::ExportToFile(ltss[i], path);
 		}
-		pcs::lts::ExportToFile(lts_combined, "../../../../exports/combined-lts.txt");
+		pcs::lts::ExportToFile(lts_combined, "../../exports/combined-lts.txt");
 	} catch (std::ofstream::failure) {
 		std::cerr << "Error writing to files or creating directory\n";
 		return 1;
