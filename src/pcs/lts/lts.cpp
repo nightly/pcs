@@ -100,7 +100,7 @@ namespace pcs::lts {
 	}
 
 	/*
-	 * @brief Adds an arbitrary transition to the LTS - first checking if it exists or not
+	 * @brief Adds an arbitrary transition to the LTS - allows duplicate transitions
 	 *
 	 * @params start_state, label, end_state: the starting transition, the action/label, and the ending state.
 	 * @param create_missing_states: if the start/end state don't exist, they will be created if true. Default: true.
@@ -115,9 +115,7 @@ namespace pcs::lts {
 		}
 
 		State& s = states_.at(start_state);
-		if (!s.TransistionExists(label, end_state)) {
-			s.AddTransistion(label, end_state);
-		}
+		s.AddTransistion(label, end_state);
 	}
 
 	/*

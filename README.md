@@ -28,7 +28,7 @@ ctest -j 8 --output-on-failure --verbose
 ```
 
 ## Layout 
-- `app`: contains an executable command line application
+- `app`: contains a CLI executable application
 - `src/pcs`: contains the PCS library code
 - `tests`: contains all tests & test data
 

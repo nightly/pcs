@@ -19,7 +19,7 @@ endif()
 # Application
 add_subdirectory(app)
 
-set_target_properties(pcs pcs_app
+set_target_properties(pcs pcs_cli 
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib/${CMAKE_BUILD_TYPE}"
     LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib/${CMAKE_BUILD_TYPE}"

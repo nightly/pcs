@@ -11,6 +11,6 @@ namespace pcs::lts {
 
 	LabelledTransitionSystem Combine(const std::span<LabelledTransitionSystem>& ltss);
 	void CombineRecursive(const std::span<LabelledTransitionSystem>& ltss, std::vector<std::string>& states_vec,
-		LabelledTransitionSystem& combined_lts);
+		std::unordered_map<std::string, bool>& visited, LabelledTransitionSystem& combined_lts);
 	std::string StateVectorToString(const std::span<std::string>& vec);
 }

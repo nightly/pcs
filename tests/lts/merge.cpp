@@ -19,16 +19,14 @@ TEST(LTSMerge, SelfMerge) {
 }
 
 TEST(LTSMerge, Merge1And2) {
-	// @Todo: expected output
+	pcs::lts::LabelledTransitionSystem expected, got;
+	std::array<pcs::lts::LabelledTransitionSystem, 2> ltss;
+	pcs::lts::ReadFromFile(ltss[0], "../../tests/lts/testdata/lts_1.txt");
+	pcs::lts::ReadFromFile(ltss[1], "../../tests/lts/testdata/lts_2.txt");
+	pcs::lts::ReadFromFile(expected, "../../tests/lts/testdata/lts_2_1_expected.txt");
 
-	//pcs::lts::LabelledTransitionSystem expected, got;
-	//std::array<pcs::lts::LabelledTransitionSystem, 2> ltss;
-	//pcs::lts::ReadFromFile(ltss[0], "../../../../tests/lts/testdata/lts_1.txt");
-	//pcs::lts::ReadFromFile(ltss[1], "../../../../tests/lts/testdata/lts_2.txt");
-	//pcs::lts::ReadFromFile(expected, "../../../../tests/lts/testdata/lts_2_1_expected.txt");
-
-	//got = pcs::lts::Combine(ltss);
-	// ASSERT_EQ(expected, got);
+	got = pcs::lts::Combine(ltss);
+	ASSERT_EQ(expected, got);
 }
 
 TEST(LTSMerge, MergeMany) {
