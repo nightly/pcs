@@ -4,7 +4,7 @@
 #include <filesystem>
 
 #include "pcs/lts/lts.h"
-#include "pcs/lts/merge.h"
+#include "pcs/controller/topology.h"
 #include "pcs/lts/state.h"
 #include "pcs/lts/parser.h"
 #include "pcs/lts/writers.h"

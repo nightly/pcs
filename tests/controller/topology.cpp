@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "pcs/lts/merge.h"
+#include "pcs/controller/topology.h"
 
 #include <array>
 

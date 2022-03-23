@@ -28,4 +28,5 @@ endmacro()
 # Test Suite
 package_add_test("lts" "lts/lts.cpp")
 package_add_test("parser" "lts/parser.cpp")
-package_add_test("merge" "lts/merge.cpp")
+
+package_add_test("topology" "controller/topology.cpp")
