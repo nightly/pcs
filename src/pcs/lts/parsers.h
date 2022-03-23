@@ -8,4 +8,5 @@
 namespace pcs::lts {
 
 	void ReadFromFile(LabelledTransitionSystem& lts, const std::filesystem::path& filepath);
+	void ReadFromJSONFile(LabelledTransitionSystem& lts, const std::filesystem::path& filepath);
 }

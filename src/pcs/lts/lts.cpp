@@ -6,7 +6,7 @@
 #include <filesystem>
 #include <ostream>
 
-#include "pcs/lts/parser.h"
+#include "pcs/lts/parsers.h"
 
 namespace pcs::lts {
 

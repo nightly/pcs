@@ -1,8 +1,9 @@
 cmake_minimum_required (VERSION 3.8)
 
-set(PCS_SOURCES "lts/lts.cpp" "lts/state.cpp" "lts/parser.cpp" "lts/writers.cpp"
+set(PCS_SOURCES "lts/lts.cpp" "lts/state.cpp" "lts/parsers.cpp" "lts/writers.cpp"
 "controller/topology.cpp" "controller/controller.cpp" "controller/realisability.cpp"
-"product/recipe.cpp" "product/parser.cpp")
+"product/recipe.cpp"  
+"operation/composite.cpp")
 
 add_library(pcs STATIC ${PCS_SOURCES})
 
@@ -14,3 +15,5 @@ target_include_directories(pcs
 )
 
 # Dependencies 
+add_subdirectory("${PROJECT_SOURCE_DIR}/external/json" "external/json")
+target_link_libraries(pcs PRIVATE nlohmann_json)

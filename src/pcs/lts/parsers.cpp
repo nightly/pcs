@@ -1,4 +1,4 @@
-#include "pcs/lts/parser.h"
+#include "pcs/lts/parsers.h"
 
 #include "pcs/lts/lts.h"
 
@@ -7,16 +7,18 @@
 #include <filesystem>
 #include <sstream>
 
+#include <nlohmann/json.hpp>
+
 namespace pcs::lts {
 
 	/*
-	 * @brief ReadFromFile will parse an input file into the corresponding LTS class.
+	 * @brief ReadFromFile will parse an input file into an instance of the LTS class.
 	 * 
 	 * The first line represents the initial state, and proceeding lines represent a 
 	 * transition, composed of the form:
 	 *		StartState Action EndState
 	 * 
-	 * @param lts: Labelled Transition System to work on
+	 * @param lts: Labelled Transition System to parse into
 	 * @param filepath: path to the file containing a LTS, examples contained within the data folder.
 	 * @exception Propagates std::ifstream::failure
 	 */
@@ -43,4 +45,30 @@ namespace pcs::lts {
 			throw;
 		}
 	}
+
+	/*
+	 * @brief ReadFromFile will parse a JSON input file into an instance of the LTS class.
+	 *
+	 * The expected form consists of: initialState as a string, and an array of transitions
+	 * consisting of startState, label, and endState strings.
+	 *
+	 * @param lts: Labelled Transition System to parse into
+	 * @param filepath: path to the file containing a LTS, examples contained within the data folder.
+	 * @exception Propagates std::ifstream::failure
+	 */
+	void ReadFromJSONFile(LabelledTransitionSystem& lts, const std::filesystem::path& filepath) {
+		nlohmann::json j;
+		try {
+			std::ifstream stream(filepath);
+			stream >> j;
+		}
+		catch (std::ifstream::failure& e) {
+			throw;
+		}
+		lts.SetInitialState(j["initialState"], true);
+		for (const auto& t : j["transitions"]) {
+			lts.AddTransition(t["startState"], t["label"], t["endState"], true);
+		}
+	}
+
 }

@@ -5,7 +5,7 @@
 
 #include "pcs/lts/lts.h"
 #include "pcs/lts/state.h"
-#include "pcs/lts/parser.h"
+#include "pcs/lts/parsers.h"
 
 TEST(LTSMerge, SelfMerge) {
 	pcs::lts::LabelledTransitionSystem expected, got;

@@ -6,7 +6,7 @@
 #include "pcs/lts/lts.h"
 #include "pcs/controller/topology.h"
 #include "pcs/lts/state.h"
-#include "pcs/lts/parser.h"
+#include "pcs/lts/parsers.h"
 #include "pcs/lts/writers.h"
 
 int main() {
