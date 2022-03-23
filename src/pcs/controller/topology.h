@@ -7,7 +7,9 @@
 #include "pcs/lts/state.h"
 #include "pcs/lts/lts.h"
 
-namespace pcs::lts {
+namespace pcs::topology {
+	using LabelledTransitionSystem = pcs::lts::LabelledTransitionSystem;
+	using State = pcs::lts::State;
 
 	LabelledTransitionSystem Combine(const std::span<LabelledTransitionSystem>& ltss);
 	void CombineRecursive(const std::span<LabelledTransitionSystem>& ltss, std::vector<std::string>& states_vec,

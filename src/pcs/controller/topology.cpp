@@ -9,7 +9,7 @@
 #include "pcs/lts/lts.h"
 #include "pcs/lts/state.h"
 
-namespace pcs::lts {
+namespace pcs::topology {
 
 	/*
 	 * @brief Combines multiple Labelled Transition Systems into one.

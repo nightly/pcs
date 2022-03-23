@@ -19,7 +19,7 @@ int main() {
 		std::cerr << "Unable to read the file at specified path\n";
 		return 1;
 	}
-	pcs::lts::LabelledTransitionSystem lts_combined = pcs::lts::Combine(ltss);
+	pcs::lts::LabelledTransitionSystem lts_combined = pcs::topology::Combine(ltss);
 
 	// Console output
 	for (size_t i = 0; i < ltss.size(); i++) {

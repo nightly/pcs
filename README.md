@@ -7,7 +7,9 @@
 - [CMake](https://cmake.org/) (>=3.8)
 - [Git](https://git-scm.com/) (for submodule cloning)
 - C++20 compiler
-- [GraphViz](https://graphviz.org/) (*optional*: for visualisation purposes)
+
+And *optionally*:
+- [GraphViz](https://graphviz.org/) (for visualisation purposes)
 
 ## Build instructions
 Clone the repository alongside its submodules.

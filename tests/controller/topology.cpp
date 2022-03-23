@@ -14,7 +14,7 @@ TEST(LTSMerge, SelfMerge) {
 	pcs::lts::ReadFromFile(ltss[1], "../../tests/lts/testdata/lts_1.txt");
 	pcs::lts::ReadFromFile(expected, "../../tests/lts/testdata/lts_1_self_merge_expected.txt"); 
 
-	got = pcs::lts::Combine(ltss);
+	got = pcs::topology::Combine(ltss);
 	ASSERT_EQ(expected, got);
 }
 
@@ -25,7 +25,7 @@ TEST(LTSMerge, Merge1And2) {
 	pcs::lts::ReadFromFile(ltss[1], "../../tests/lts/testdata/lts_2.txt");
 	pcs::lts::ReadFromFile(expected, "../../tests/lts/testdata/lts_2_1_expected.txt");
 
-	got = pcs::lts::Combine(ltss);
+	got = pcs::topology::Combine(ltss);
 	ASSERT_EQ(expected, got);
 }
 
