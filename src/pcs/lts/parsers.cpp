@@ -13,11 +13,11 @@ namespace pcs::lts {
 
 	/*
 	 * @brief ReadFromFile will parse an input file into an instance of the LTS class.
-	 * 
-	 * The first line represents the initial state, and proceeding lines represent a 
+	 *
+	 * The first line represents the initial state, and proceeding lines represent a
 	 * transition, composed of the form:
 	 *		StartState Action EndState
-	 * 
+	 *
 	 * @param lts: Labelled Transition System to parse into
 	 * @param filepath: path to the file containing a LTS, examples contained within the data folder.
 	 * @exception Propagates std::ifstream::failure
@@ -41,7 +41,8 @@ namespace pcs::lts {
 				std::getline(ss, end_state);
 				lts.AddTransition(start_state, label, end_state);
 			}
-		} catch (std::ifstream::failure& e) {
+		}
+		catch (std::ifstream::failure& e) {
 			throw;
 		}
 	}
@@ -56,7 +57,7 @@ namespace pcs::lts {
 	 * @param filepath: path to the file containing a LTS, examples contained within the data folder.
 	 * @exception Propagates std::ifstream::failure
 	 */
-	void ReadFromJSONFile(LabelledTransitionSystem& lts, const std::filesystem::path& filepath) {
+	void ReadFromJsonFile(LabelledTransitionSystem& lts, const std::filesystem::path& filepath) {
 		nlohmann::json j;
 		try {
 			std::ifstream stream(filepath);
@@ -65,10 +66,18 @@ namespace pcs::lts {
 		catch (std::ifstream::failure& e) {
 			throw;
 		}
+		ParseJson(lts, j);
+	}
+
+	/*
+	 * @brief ParseJson will read data into a LTS instance from a JSON object instance.
+	 * @param lts: Labelled Transition System to parse into
+	 * @param j: json object containing the "initialState" and "transitions" array of "startState", "label" & "endState"
+	 */
+	void ParseJson(LabelledTransitionSystem& lts, const nlohmann::json& j) {
 		lts.SetInitialState(j["initialState"], true);
 		for (const auto& t : j["transitions"]) {
 			lts.AddTransition(t["startState"], t["label"], t["endState"], true);
 		}
 	}
-
 }

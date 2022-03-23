@@ -16,4 +16,4 @@ target_include_directories(pcs
 
 # Dependencies 
 add_subdirectory("${PROJECT_SOURCE_DIR}/external/json" "external/json")
-target_link_libraries(pcs PRIVATE nlohmann_json)
+target_link_libraries(pcs PUBLIC nlohmann_json)

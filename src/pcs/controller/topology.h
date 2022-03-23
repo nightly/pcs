@@ -15,4 +15,7 @@ namespace pcs::topology {
 	void CombineRecursive(const std::span<LabelledTransitionSystem>& ltss, std::vector<std::string>& states_vec,
 		std::unordered_map<std::string, bool>& visited, LabelledTransitionSystem& combined_lts);
 	std::string StateVectorToString(const std::span<std::string>& vec);
+
+	void RemoveResources(LabelledTransitionSystem& topology, std::initializer_list<size_t> resources);
+	void AddResources(LabelledTransitionSystem& topology, const std::span<LabelledTransitionSystem>& ltss);
 }

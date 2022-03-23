@@ -12,11 +12,17 @@ And *optionally*:
 - [GraphViz](https://graphviz.org/) (for visualisation purposes)
 
 ## Build instructions
+### Cloning & updating
 Clone the repository alongside its submodules.
 ```
 git clone --recurse-submodules https://github.com/nightly/pcs
 ```
+To correctly pull any newly added Git submodules to your local repository (`git pull` alone doesn't suffice):
+```
+git submodule update --recursive
+```
 
+### CMake
 Build the project using CMake, which will automatically invoke the tests unless otherwise specified.
 ```
 cmake -S. -B build -DCMAKE_BUILD_TYPE=Release

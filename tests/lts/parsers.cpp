@@ -28,7 +28,7 @@ TEST(ParseLTS, LTS1) {
 
 TEST(ParseJsonLTS, LTS1) {
 	pcs::lts::LabelledTransitionSystem got;
-	pcs::lts::ReadFromJSONFile(got, "../../tests/lts/testdata/lts_1.json");
+	pcs::lts::ReadFromJsonFile(got, "../../tests/lts/testdata/lts_1.json");
 
 	pcs::lts::LabelledTransitionSystem expected;
 	pcs::lts::State s0("s0");
