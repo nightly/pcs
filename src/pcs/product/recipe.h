@@ -5,7 +5,7 @@
 
 #include "pcs/lts/lts.h"
 
-namespace pcs::product {
+namespace pcs {
 
 	using LabelledTransitionSystem = pcs::lts::LabelledTransitionSystem;
 	using State = pcs::lts::State;

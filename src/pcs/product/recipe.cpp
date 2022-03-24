@@ -2,8 +2,7 @@
 
 #include "pcs/lts/parsers.h"
 
-namespace pcs::product {
-
+namespace pcs {
 
 	Recipe::Recipe() {};
 

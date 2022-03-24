@@ -3,15 +3,19 @@
 #include <string>
 #include <vector>
 
+#include "pcs/operation/guard.h"
+#include "pcs/operation/operation.h"
+
 namespace pcs {
 
 	struct CompositeOperation {
 	public:
-		std::pair<std::string, std::vector<std::string>> guard; // Also referred to as "test"
-		std::vector<std::tuple<std::string, std::vector<std::string>, std::vector<std::string>>> parallel_ops;
-		std::vector<std::tuple<std::string, std::vector<std::string>, std::vector<std::string>>> sequential_ops;
+		Guard guard;
+		std::vector<Operation> parallel;
+		std::vector<Operation> sequential;
 	public:
 		CompositeOperation();
+		CompositeOperation(Guard&& guard, std::vector<Operation>&& parallel_operations, std::vector<Operation>&& sequential_operations);
 		CompositeOperation(const std::string& str);
 
 		bool operator==(const CompositeOperation& other) const;

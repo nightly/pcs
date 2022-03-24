@@ -4,7 +4,7 @@
 #include <string>
 
 namespace pcs {
-	CompositeOperation::CompositeOperation() {};
+	CompositeOperation::CompositeOperation() {};	
 
 	CompositeOperation::CompositeOperation(const std::string& str) {
 		// 1. Delimit the string based on (";" & "||")
@@ -13,6 +13,6 @@ namespace pcs {
 	}
 
 	bool CompositeOperation::operator==(const CompositeOperation& other) const {
-		return (guard == other.guard) && (sequential_ops == other.sequential_ops) && (parallel_ops == other.parallel_ops);
+		return (guard == other.guard) && (sequential == other.sequential) && (parallel == other.parallel);
 	}
 }
