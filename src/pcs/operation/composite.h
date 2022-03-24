@@ -16,7 +16,6 @@ namespace pcs {
 	public:
 		CompositeOperation();
 		CompositeOperation(Guard&& guard, std::vector<Operation>&& parallel_operations, std::vector<Operation>&& sequential_operations);
-		CompositeOperation(const std::string& str);
 
 		bool operator==(const CompositeOperation& other) const;
 	};
