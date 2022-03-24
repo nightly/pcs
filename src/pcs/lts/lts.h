@@ -10,10 +10,11 @@
 
 namespace pcs::lts {
 
+	template <typename TransitionT = std::string>
 	class LabelledTransitionSystem {
 	public:
-		// @Todo: unordered map is inefficent STL container
-		std::unordered_map<std::string, lts::State> states_;
+		using State = State<TransitionT>;
+		std::unordered_map<std::string, State> states_; // @Todo: unordered map is inefficent STL container
 	private:
 		std::string initial_state_;
 	public:
@@ -27,11 +28,11 @@ namespace pcs::lts {
 
 		size_t NumberOfStates() const;
 		bool HasState(const std::string& key) const;
-		bool AddState(const lts::State& state);
-		bool AddState(lts::State&& state);
+		bool AddState(const State& state);
+		bool AddState(State&& state);
 		bool RemoveState(const std::string& key);
 
-		void AddTransition(const std::string& start_state, const std::string& label, 
+		void AddTransition(const std::string& start_state, const TransitionT label,
 			const std::string& end_state, bool create_missing_states=true);
 
 		bool operator==(const LabelledTransitionSystem& other) const;

@@ -3,13 +3,16 @@
 #include <string>
 #include <ostream>
 
+#include "pcs/operation/composite.h"
+
 namespace pcs::lts {
 
 	/*
 	 * @brief State constructor, representing a single state within the LTS and its transitions. 
 	 * @param name: given name of the State. This is represented by a LTS as a key within the HashMap.
 	 */
-	State::State(const std::string& name) 
+	template <typename TransitionT>
+	State<TransitionT>::State(const std::string& name)
 		: name_(name) {
 	}
 
@@ -17,7 +20,8 @@ namespace pcs::lts {
 	 * @brief Gets the name of the given state
 	 * @returns Name of the state — which also corresponds to the name within the hashmap
 	 */
-	std::string State::GetName() const {
+	template <typename TransitionT>
+	std::string State<TransitionT>::GetName() const {
 		return name_;
 	}
 
@@ -26,15 +30,17 @@ namespace pcs::lts {
 	 * @param label: label for transitition. Special cases: nop, in, out.
 	 * @param end_state: the state the transition ends at/points to.
 	 */
-	void State::AddTransistion(const std::string& label, const std::string& end_state) {
-		std::pair<std::string, std::string> transistion = std::make_pair(label, end_state);
+	template <typename TransitionT>
+	void State<TransitionT>::AddTransistion(const TransitionT& label, const std::string& end_state) {
+		std::pair<TransitionT, std::string> transistion = std::make_pair(label, end_state);
 		transitions_.emplace_back(transistion);
 	}
 
 	/*
 	 * @brief Returns whether or not a given state has a transistion that matches the one specified
 	 */
-	bool State::TransistionExists(const std::string& label, const std::string& end_state) const {
+	template <typename TransitionT>
+	bool State<TransitionT>::TransistionExists(const TransitionT& label, const std::string& end_state) const {
 		for (const auto& t : transitions_) {
 			if ((t.first == label) && (t.second == end_state)) {
 				return true;
@@ -47,7 +53,8 @@ namespace pcs::lts {
 	/*
 	 * @brief Returns whether or not the State is empty (which is defined by having no transitions) 
 	 */
-	bool State::IsEmpty() const {
+	template <typename TransitionT>
+	bool State<TransitionT>::IsEmpty() const {
 		return transitions_.empty();
 	}
 
@@ -55,15 +62,21 @@ namespace pcs::lts {
 	 * @brief Compares two State objects for equality
 	 * @returns True if both objects are equal, false otherwise
 	 */
-	bool State::operator==(const State& other) const {
+	template <typename TransitionT>
+	bool State<TransitionT>::operator==(const State& other) const {
 		return (name_ == other.name_) && (transitions_ == other.transitions_);
 	}
 
 	/*
 	 * @brief State destructor 
 	 */
-	State::~State() {
+	template <typename TransitionT>
+	State<TransitionT>::~State() {
 		transitions_.clear();
 	}
+
+	/* Explicit template instantiations */
+	template class State<std::string>;
+	template class State<CompositeOperation>;
 
 }

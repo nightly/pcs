@@ -11,7 +11,7 @@ namespace pcs::lts {
 	/*
 	 * @brief LTS output operator overload
 	 */
-	std::ostream& operator<<(std::ostream& os, const LabelledTransitionSystem& lts) {
+	std::ostream& operator<<(std::ostream& os, const LabelledTransitionSystem<>& lts) {
 		if (lts.initial_state_.empty() && lts.states_.empty()) {
 			os << "Empty Labelled Transition System\n";
 			return os;
@@ -26,7 +26,7 @@ namespace pcs::lts {
 	/*
 	 * @brief LTS file output operator overload 
 	 */
-	std::ofstream& operator<<(std::ofstream& os, const LabelledTransitionSystem& lts) {
+	std::ofstream& operator<<(std::ofstream& os, const LabelledTransitionSystem<>& lts) {
 		os << "digraph finite_state_machine {\n";
 		os << "	fontname=\"Helvetica, Arial, sans - serif\"\n";
 		os << "	node [fontname=\"Helvetica, Arial, sans - serif\"]\n";
@@ -45,7 +45,7 @@ namespace pcs::lts {
 	/*
 	 * @brief State output operator overload
 	 */
-	std::ostream& operator<<(std::ostream& os, const State& state) {
+	std::ostream& operator<<(std::ostream& os, const State<>& state) {
 		os << "State name: " << state.GetName() << '\n';
 		if (state.transitions_.empty()) {
 			os << "  With 0 transitions" << '\n';
@@ -61,7 +61,7 @@ namespace pcs::lts {
 	/*
 	 * @brief State file output operator overload 
 	 */
-	std::ofstream& operator<<(std::ofstream& os, const State& state) {
+	std::ofstream& operator<<(std::ofstream& os, const State<>& state) {
 		if (state.IsEmpty()) {
 			os << "	" << "\"" << state.name_ << "\"" << "\n";
 		}
@@ -78,7 +78,7 @@ namespace pcs::lts {
 	 * @param path: the filepath to export to - if the given directory doesn't exist, it will be created
 	 * @exception Propagates std::ofstream::failure
 	 */
-	void ExportToFile(const lts::LabelledTransitionSystem& lts, const std::filesystem::path& path) {
+	void ExportToFile(const lts::LabelledTransitionSystem<>& lts, const std::filesystem::path& path) {
 		std::ofstream stream;
 		stream.exceptions(std::ofstream::badbit);
 		if (!std::filesystem::is_directory(path.parent_path()) && path.has_parent_path()) {

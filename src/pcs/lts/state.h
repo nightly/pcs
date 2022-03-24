@@ -7,9 +7,10 @@
 
 namespace pcs::lts {
 
+	template <typename TransitionT = std::string>
 	class State {
 	public:
-		std::vector<std::pair<std::string, std::string>> transitions_;
+		std::vector<std::pair<TransitionT, std::string>> transitions_;
 	private:
 		std::string name_;
 	public:
@@ -18,8 +19,8 @@ namespace pcs::lts {
 		~State();
 
 		std::string GetName() const;
-		void AddTransistion(const std::string& label, const std::string& end_state);
-		bool TransistionExists(const std::string& label, const std::string& end_state) const;
+		void AddTransistion(const TransitionT& label, const std::string& end_state);
+		bool TransistionExists(const TransitionT& label, const std::string& end_state) const;
 		bool IsEmpty() const;
 
 		bool operator==(const State& other) const;

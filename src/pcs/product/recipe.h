@@ -4,15 +4,15 @@
 #include <unordered_map>
 
 #include "pcs/lts/lts.h"
+#include "pcs/operation/composite.h"
 
 namespace pcs {
 
-	using LabelledTransitionSystem = pcs::lts::LabelledTransitionSystem;
-	using State = pcs::lts::State;
+	using namespace pcs::lts;
 
 	class Recipe {
 	public:
-		LabelledTransitionSystem lts_;
+		LabelledTransitionSystem<CompositeOperation> lts_;
 	public:
 		Recipe();
 		Recipe(const std::filesystem::path& filepath);

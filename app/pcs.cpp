@@ -11,7 +11,7 @@
 
 int main() {
 	// Read LTS' & combine
-	std::array<pcs::lts::LabelledTransitionSystem, 2> ltss;
+	std::array<pcs::lts::LabelledTransitionSystem<>, 2> ltss;
 	try {
 		pcs::lts::ReadFromFile(ltss[0], "../../data/lts1.txt");
 		pcs::lts::ReadFromFile(ltss[1], "../../data/lts2.txt"); // <- merges self, both lts1.txt

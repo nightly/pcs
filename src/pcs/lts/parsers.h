@@ -9,7 +9,7 @@
 
 namespace pcs::lts {
 
-	void ReadFromFile(LabelledTransitionSystem& lts, const std::filesystem::path& filepath);
-	void ReadFromJsonFile(LabelledTransitionSystem& lts, const std::filesystem::path& filepath);
-	void ParseJson(LabelledTransitionSystem& lts, const nlohmann::json& j);
+	void ReadFromFile(LabelledTransitionSystem<std::string>& lts, const std::filesystem::path& filepath);
+	void ReadFromJsonFile(LabelledTransitionSystem<std::string>& lts, const std::filesystem::path& filepath);
+	void ParseJson(LabelledTransitionSystem<std::string>& lts, const nlohmann::json& j);
 }

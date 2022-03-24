@@ -7,7 +7,7 @@
 
 namespace pcs {
 
-	using LabelledTransitionSystem = pcs::lts::LabelledTransitionSystem;
+	using LabelledTransitionSystem = pcs::lts::LabelledTransitionSystem<std::string>;
 	using State = pcs::lts::State;
 
 	class Machine {

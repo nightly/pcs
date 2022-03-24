@@ -12,7 +12,7 @@
 namespace pcs::lts {
 
 	/*
-	 * @brief ReadFromFile will parse an input file into an instance of the LTS class.
+	 * @brief ReadFromFile will parse an input file into an instance of the LTS<Transition = string> class.
 	 *
 	 * The first line represents the initial state, and proceeding lines represent a
 	 * transition, composed of the form:
@@ -22,7 +22,7 @@ namespace pcs::lts {
 	 * @param filepath: path to the file containing a LTS, examples contained within the data folder.
 	 * @exception Propagates std::ifstream::failure
 	 */
-	void ReadFromFile(LabelledTransitionSystem& lts, const std::filesystem::path& filepath) {
+	void ReadFromFile(LabelledTransitionSystem<std::string>& lts, const std::filesystem::path& filepath) {
 		std::string line;
 		bool first_line = true;
 		try {
@@ -48,7 +48,7 @@ namespace pcs::lts {
 	}
 
 	/*
-	 * @brief ReadFromFile will parse a JSON input file into an instance of the LTS class.
+	 * @brief ReadFromFile will parse a JSON input file into an instance of the LTS<Transition = string> class.
 	 *
 	 * The expected form consists of: initialState as a string, and an array of transitions
 	 * consisting of startState, label, and endState strings.
@@ -57,7 +57,7 @@ namespace pcs::lts {
 	 * @param filepath: path to the file containing a LTS, examples contained within the data folder.
 	 * @exception Propagates std::ifstream::failure
 	 */
-	void ReadFromJsonFile(LabelledTransitionSystem& lts, const std::filesystem::path& filepath) {
+	void ReadFromJsonFile(LabelledTransitionSystem<std::string>& lts, const std::filesystem::path& filepath) {
 		nlohmann::json j;
 		try {
 			std::ifstream stream(filepath);
@@ -74,7 +74,7 @@ namespace pcs::lts {
 	 * @param lts: Labelled Transition System to parse into
 	 * @param j: json object containing the "initialState" and "transitions" array of "startState", "label" & "endState"
 	 */
-	void ParseJson(LabelledTransitionSystem& lts, const nlohmann::json& j) {
+	void ParseJson(LabelledTransitionSystem<std::string>& lts, const nlohmann::json& j) {
 		lts.SetInitialState(j["initialState"], true);
 		for (const auto& t : j["transitions"]) {
 			lts.AddTransition(t["startState"], t["label"], t["endState"], true);
