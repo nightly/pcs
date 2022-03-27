@@ -3,9 +3,11 @@
 #include <vector>
 #include <string>
 
+#include "pcs/operation/operation.h"
+
 namespace pcs {
 
-	struct Guard {
+	struct Guard : public IOperation {
 	public:
 		std::string name;
 		std::vector<std::string> input;

@@ -5,7 +5,12 @@
 
 namespace pcs {
 
-	struct Operation {
+	class IOperation {
+	public:
+		virtual ~IOperation();
+	};
+
+	class Operation : public IOperation {
 	public:
 		std::string name;
 		std::vector<std::string> input;
