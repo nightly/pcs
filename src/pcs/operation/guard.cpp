@@ -8,7 +8,7 @@ namespace pcs {
 	Guard::Guard() {}
 
 	bool Guard::operator==(const Guard& other) const {
-		return (name == other.name) && (input == other.input);
+		return (name_ == other.name_) && (input_ == other.input_);
 	}
 
 }

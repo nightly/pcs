@@ -38,28 +38,28 @@ namespace pcs {
 		lts.SetInitialState(j["initialState"], true);
 		for (const auto& t : j["transitions"]) {
 			CompositeOperation co;
-			co.guard.name = t["guard"]["name"];
+			co.guard.name_ = t["guard"]["name"];
 			for (const auto& g : t["guard"]["input"]) {
-				co.guard.input.emplace_back(g);
+				co.guard.input_.emplace_back(g);
 			}
 			for (const auto& seq_op : t["sequential"]) {
 				Operation o;
-				o.name = seq_op["name"];
+				o.name_ = seq_op["name"];
 				for (const auto& in : seq_op["input"]) {
-					o.input.emplace_back(in);
+					o.input_.emplace_back(in);
 				}
 				for (const auto& out : seq_op["output"]) {
-					o.input.emplace_back(out);
+					o.input_.emplace_back(out);
 				}
 			}
 			for (const auto& par_op : t["parallel"]) {
 				Operation o;
-				o.name = par_op["name"];
+				o.name_ = par_op["name"];
 				for (const auto& in : par_op["input"]) {
-					o.input.emplace_back(in);
+					o.input_.emplace_back(in);
 				}
 				for (const auto& out : par_op["output"]) {
-					o.input.emplace_back(out);
+					o.input_.emplace_back(out);
 				}
 			}
 			lts.AddTransition(t["startState"], std::move(co), t["endState"], true);

@@ -3,7 +3,7 @@
 namespace pcs {
 
 	bool Operation::operator==(const Operation& other) const {
-		return (name == other.name) && (input == other.input) && (output == other.output);
+		return (name_ == other.name_) && (input_ == other.input_) && (output_ == other.output_);
 	}
 
 }

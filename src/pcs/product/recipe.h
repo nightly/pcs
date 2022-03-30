@@ -14,5 +14,6 @@ namespace pcs {
 	public:
 		Recipe();
 		Recipe(const std::filesystem::path& filepath);
+		void SetRecipe(const std::filesystem::path& filepath);
 	};
 }

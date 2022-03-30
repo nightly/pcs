@@ -4,7 +4,7 @@ set(PCS_SOURCES "lts/lts.cpp" "lts/state.cpp" "lts/parsers.cpp" "lts/writers.cpp
 "controller/topology.cpp" "controller/controller.cpp" "controller/realisability.cpp"
 "product/recipe.cpp"  "product/parser.cpp"
 "operation/composite.cpp" "operation/guard.cpp" "operation/operation.cpp"
-"machine/machine.cpp")
+"machine/machine.cpp" "machine/writers.cpp")
 
 add_library(pcs STATIC ${PCS_SOURCES})
 
