@@ -3,7 +3,8 @@
 ![standard](https://img.shields.io/badge/c%2B%2B-20-blue.svg)
 ![ci.yml](https://github.com/nightly/pcs/actions/workflows/ci.yml/badge.svg)
 
-## Requirements
+## Build instructions
+### Requirements
 - [CMake](https://cmake.org/) (>=3.8)
 - [Git](https://git-scm.com/) (for submodule cloning)
 - C++20 compiler
@@ -11,7 +12,6 @@
 And *optionally*:
 - [GraphViz](https://graphviz.org/) (for visualisation purposes)
 
-## Build instructions
 ### Cloning & updating
 Clone the repository alongside its submodules.
 ```
@@ -37,8 +37,11 @@ ctest -j 8 --output-on-failure --verbose
 
 ## Layout 
 - `app`: contains a CLI executable application
-- `src/pcs`: contains the PCS library code
-- `tests`: contains all tests & test data
+- `benchmarks`: contains all the project's benchmarks
+- `data`: has some sample recipes and modelled resources#
+- `external`: 3rd party dependencies added as Git submodules
+- `src/pcs`: PCS library code
+- `tests`: holds all tests & test data
 
 ## GraphViz visualisation support
 The labelled transition systems parsed and generated can be visualised using the GraphViz tool.

@@ -4,7 +4,7 @@
 #include "pcs/operation/guard.h"
 #include "pcs/operation/operation.h"
 
-namespace pcs::product {
+namespace pcs {
 
 	/*
 	 * @brief ReadFromFile will parse a JSON input file into an instance of the LTS<Transition = CompositeOperation> class.
@@ -17,7 +17,7 @@ namespace pcs::product {
 	 * @param filepath: path to the file containing a LTS, examples contained within the data folder.
 	 * @exception Propagates std::ifstream::failure
 	 */
-	void ReadFromJsonFile(lts::LabelledTransitionSystem<CompositeOperation>& lts, const std::filesystem::path& filepath) {
+	void ReadFromJsonFile(LabelledTransitionSystem<CompositeOperation>& lts, const std::filesystem::path& filepath) {
 		nlohmann::json j;
 		try {
 			std::ifstream stream(filepath);
@@ -34,7 +34,7 @@ namespace pcs::product {
 	 * @param lts: Labelled Transition System to parse into
 	 * @param j: json object containing the correct object layout as previously defined
 	 */
-	void ParseJson(lts::LabelledTransitionSystem<CompositeOperation>& lts, const nlohmann::json& j) {
+	void ParseJson(LabelledTransitionSystem<CompositeOperation>& lts, const nlohmann::json& j) {
 		lts.SetInitialState(j["initialState"], true);
 		for (const auto& t : j["transitions"]) {
 			CompositeOperation co;

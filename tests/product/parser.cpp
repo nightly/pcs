@@ -5,7 +5,8 @@
 #include "pcs/operation/composite.h"
 
 TEST(ProductParser, DISABLED_Recipe1) {
-	pcs::lts::LabelledTransitionSystem<pcs::CompositeOperation> got("../../tests/product/testdata/recipe_1.json"), expected;
+	pcs::LabelledTransitionSystem<pcs::CompositeOperation> got, expected;
+	pcs::ReadFromJsonFile(got, "../../tests/product/testdata/recipe_1.json");
 
 	// ASSERT_EQ(got, expected);
 }

@@ -4,3 +4,6 @@
 [submodule "external/json"]
 	path = external/json
 	url = https://github.com/nlohmann/json
+[submodule "external/googlebenchmark"]
+	path = external/googlebenchmark
+	url = https://github.com/google/benchmark

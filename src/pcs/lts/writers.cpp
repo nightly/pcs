@@ -6,7 +6,7 @@
 
 #include "pcs/lts/lts.h"
 
-namespace pcs::lts {
+namespace pcs {
 
 	/*
 	 * @brief LTS output operator overload
@@ -78,7 +78,7 @@ namespace pcs::lts {
 	 * @param path: the filepath to export to - if the given directory doesn't exist, it will be created
 	 * @exception Propagates std::ofstream::failure
 	 */
-	void ExportToFile(const lts::LabelledTransitionSystem<>& lts, const std::filesystem::path& path) {
+	void ExportToFile(const LabelledTransitionSystem<>& lts, const std::filesystem::path& path) {
 		std::ofstream stream;
 		stream.exceptions(std::ofstream::badbit);
 		if (!std::filesystem::is_directory(path.parent_path()) && path.has_parent_path()) {

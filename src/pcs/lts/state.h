@@ -5,7 +5,7 @@
 #include <ostream>
 #include <utility>
 
-namespace pcs::lts {
+namespace pcs {
 
 	template <typename TransitionT = std::string>
 	class State {

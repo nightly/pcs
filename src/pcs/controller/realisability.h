@@ -1,5 +1,5 @@
 #pragma once
 
-namespace pcs::controller {
+namespace pcs {
 
 }

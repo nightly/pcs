@@ -9,7 +9,7 @@
 
 #include <nlohmann/json.hpp>
 
-namespace pcs::lts {
+namespace pcs {
 
 	/*
 	 * @brief ReadFromFile will parse an input file into an instance of the LTS<Transition = string> class.

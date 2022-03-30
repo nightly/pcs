@@ -7,7 +7,7 @@ namespace pcs {
 
 	class IOperation {
 	public:
-		virtual ~IOperation();
+		virtual ~IOperation() = default;
 	};
 
 	class Operation : public IOperation {
@@ -16,7 +16,7 @@ namespace pcs {
 		std::vector<std::string> input;
 		std::vector<std::string> output;
 	public:
-		Operation();
+		Operation() = default;
 		Operation(std::string&& name, std::vector<std::string>&& input, std::vector<std::string>&& output);
 
 		bool operator==(const Operation& other) const;

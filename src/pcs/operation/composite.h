@@ -14,7 +14,7 @@ namespace pcs {
 		std::vector<Operation> parallel;
 		std::vector<Operation> sequential;
 	public:
-		CompositeOperation();
+		CompositeOperation() = default;
 		CompositeOperation(Guard&& guard, std::vector<Operation>&& parallel_operations, std::vector<Operation>&& sequential_operations);
 
 		bool operator==(const CompositeOperation& other) const;

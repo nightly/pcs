@@ -8,7 +8,7 @@
 
 #include "pcs/lts/state.h"
 
-namespace pcs::lts {
+namespace pcs {
 
 	template <typename TransitionT = std::string>
 	class LabelledTransitionSystem {
@@ -28,8 +28,8 @@ namespace pcs::lts {
 
 		size_t NumberOfStates() const;
 		bool HasState(const std::string& key) const;
-		bool AddState(const State& state);
 		bool AddState(State&& state);
+		bool AddState(const State& state);
 		bool RemoveState(const std::string& key);
 
 		void AddTransition(const std::string& start_state, const TransitionT label,

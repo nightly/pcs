@@ -11,15 +11,17 @@
 
 int main() {
 	// Read LTS' & combine
-	std::array<pcs::lts::LabelledTransitionSystem<>, 2> ltss;
+	std::array<pcs::LabelledTransitionSystem<>, 4> ltss;
 	try {
-		pcs::lts::ReadFromFile(ltss[0], "../../data/lts1.txt");
-		pcs::lts::ReadFromFile(ltss[1], "../../data/lts2.txt"); // <- merges self, both lts1.txt
+		pcs::ReadFromFile(ltss[0], "../../data/lts1.txt");
+		pcs::ReadFromFile(ltss[1], "../../data/lts2.txt");
+		pcs::ReadFromFile(ltss[2], "../../data/lts3.txt");
+		pcs::ReadFromFile(ltss[3], "../../data/lts4.txt");
 	} catch (std::ifstream::failure) {
 		std::cerr << "Unable to read the file at specified path\n";
 		return 1;
 	}
-	pcs::lts::LabelledTransitionSystem lts_combined = pcs::topology::Combine(ltss);
+	pcs::LabelledTransitionSystem lts_combined = pcs::Combine(ltss);
 
 	// Console output
 	for (size_t i = 0; i < ltss.size(); i++) {
@@ -31,9 +33,9 @@ int main() {
 	try {
 		for (size_t i = 0; i < ltss.size(); i++) {
 			std::string path = "../../exports/lts" + std::to_string(i + 1) + ".txt";
-			pcs::lts::ExportToFile(ltss[i], path);
+			pcs::ExportToFile(ltss[i], path);
 		}
-		pcs::lts::ExportToFile(lts_combined, "../../exports/combined-lts.txt");
+		pcs::ExportToFile(lts_combined, "../../exports/combined-lts.txt");
 	} catch (std::ofstream::failure) {
 		std::cerr << "Error writing to files or creating directory\n";
 		return 1;

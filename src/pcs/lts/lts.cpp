@@ -10,10 +10,11 @@
 #include "pcs/operation/composite.h"
 #include "pcs/product/parser.h"
 
-namespace pcs::lts {
+namespace pcs {
 
 	/*
 	 * @brief Labelled Transition System (LTS) constructor
+	 * @tparam TransitionT: defines the data type used to represent a given transition. Defaults to std::string.
 	 */
 	template <typename TransitionT>
 	LabelledTransitionSystem<TransitionT>::LabelledTransitionSystem() {}
@@ -38,22 +39,13 @@ namespace pcs::lts {
 	}
 
 	/*
-	 * @brief LTS constructor overloaded to read file input into a LTS (template specialization for CompositeOperation)
-	 * @param filepath: JSON filepath
-	 */
-	template <>
-	LabelledTransitionSystem<CompositeOperation>::LabelledTransitionSystem(const std::filesystem::path& filepath) {
-		pcs::product::ReadFromJsonFile(*this, filepath);
-	}
-
-	/*
 	 * @brief Sets the initial state of the LTS
 	 * @param create_if_not_exists: will create the lts::State object for initial state unless it already exists
 	 */
 	template <typename TransitionT>
 	void LabelledTransitionSystem<TransitionT>::SetInitialState(const std::string& state, bool create_if_not_exists) {
 		if (!HasState(state) && create_if_not_exists) {
-			AddState(pcs::lts::State<TransitionT>(state));
+			AddState(State(state));
 		}
 		initial_state_ = state;
 	}
@@ -130,10 +122,10 @@ namespace pcs::lts {
 	void LabelledTransitionSystem<TransitionT>::AddTransition(const std::string& start_state, const TransitionT label,
 	const std::string& end_state, bool create_missing_states) {
 		if (!HasState(start_state) && create_missing_states) {
-			AddState(pcs::lts::State<TransitionT>(start_state));
+			AddState(State(start_state));
 		}
 		if (!HasState(end_state) && create_missing_states) {
-			AddState(pcs::lts::State<TransitionT>(end_state));
+			AddState(State(end_state));
 		}
 
 		State& s = states_.at(start_state);

@@ -8,8 +8,6 @@
 
 namespace pcs {
 
-	using namespace pcs::lts;
-
 	class Recipe {
 	public:
 		LabelledTransitionSystem<CompositeOperation> lts_;

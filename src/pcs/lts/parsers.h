@@ -7,7 +7,7 @@
 
 #include <nlohmann/json.hpp>
 
-namespace pcs::lts {
+namespace pcs {
 
 	void ReadFromFile(LabelledTransitionSystem<std::string>& lts, const std::filesystem::path& filepath);
 	void ReadFromJsonFile(LabelledTransitionSystem<std::string>& lts, const std::filesystem::path& filepath);

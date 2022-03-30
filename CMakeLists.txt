@@ -3,6 +3,7 @@
 project ("pcs" VERSION 0 LANGUAGES CXX)
 
 option(PCS_RUN_TESTS "Run tests" ON)
+option(PCS_RUN_BENCHMARKS "Run benchmarks" ON)
 
 # Library
 add_subdirectory(src/pcs)
@@ -19,6 +20,12 @@ endif()
 # Application
 add_subdirectory(app)
 
+# Benchmarks
+if (PCS_RUN_BENCHMARKS) 
+    add_subdirectory(benchmarks)
+endif()
+
+# Output directories
 set_target_properties(pcs pcs_cli 
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib/${CMAKE_BUILD_TYPE}"

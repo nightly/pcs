@@ -9,14 +9,14 @@
 #include "pcs/lts/lts.h"
 #include "pcs/lts/state.h"
 
-namespace pcs::topology {
+namespace pcs {
 
 	/*
 	 * @brief Combines multiple Labelled Transition Systems into one.
 	 * @param ltss: lts' to combine
 	 * @returns the combined LTS
 	 */
-	LabelledTransitionSystem Combine(const std::span<LabelledTransitionSystem>& ltss) {
+	LabelledTransitionSystem<> Combine(const std::span<LabelledTransitionSystem<>>& ltss) {
 		LabelledTransitionSystem combined_lts;
 		std::vector<std::string> states_vec;
 		for (const auto& lts : ltss) {
@@ -34,8 +34,8 @@ namespace pcs::topology {
 	 * @brief CombineRecursive will recursively apply all transititions to generate a topology
 	 * All possible transitions will be considered from each given state (_, _, _, _)
 	 */
-	void CombineRecursive(const std::span<LabelledTransitionSystem>& ltss, std::vector<std::string>& states_vec,
-		std::unordered_map<std::string, bool>& visited, LabelledTransitionSystem& combined_lts) {
+	void CombineRecursive(const std::span<LabelledTransitionSystem<>>& ltss, std::vector<std::string>& states_vec,
+		std::unordered_map<std::string, bool>& visited, LabelledTransitionSystem<>& combined_lts) {
 		std::string states_str = StateVectorToString(states_vec);
 		if (visited[states_str] == true) {
 			return;
@@ -71,7 +71,7 @@ namespace pcs::topology {
 	 * @param resources: the resource to be removed relative to which position it is in the topology (_,x,_), x = 1,
 	 *		  which coincides with the order of ltss' specified in the original span container of combine()
 	 */
-	void RemoveResources(LabelledTransitionSystem& topology, std::initializer_list<size_t> resources) {
+	void RemoveResources(LabelledTransitionSystem<>& topology, std::initializer_list<size_t> resources) {
 
 	}
 
@@ -80,7 +80,7 @@ namespace pcs::topology {
 	 * @param topology: the pre-existing/current LTS topology
 	 * @param ltss: the new LTSS to add to be merged with the existing topology
 	 */
-	void AddResources(LabelledTransitionSystem& topology, const std::span<LabelledTransitionSystem>& ltss) {
+	void AddResources(LabelledTransitionSystem<>& topology, const std::span<LabelledTransitionSystem<>>& ltss) {
 
 	}
 

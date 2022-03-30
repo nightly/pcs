@@ -5,7 +5,7 @@
 
 #include "pcs/operation/composite.h"
 
-namespace pcs::lts {
+namespace pcs {
 
 	/*
 	 * @brief State constructor, representing a single state within the LTS and its transitions. 
