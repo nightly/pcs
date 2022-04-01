@@ -32,5 +32,3 @@ package_add_test("lts-parsers" "lts/parsers.cpp")
 package_add_test("product-lts-parser" "product/parser.cpp")
 
 package_add_test("topology" "controller/topology.cpp")
-
-package_add_test("composite-operation" "operation/composite.cpp")

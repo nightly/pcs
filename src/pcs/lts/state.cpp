@@ -10,6 +10,7 @@ namespace pcs {
 	/*
 	 * @brief State constructor, representing a single state within the LTS and its transitions. 
 	 * @param name: given name of the State. This is represented by a LTS as a key within the HashMap.
+	 * @tparam TransitionT: defines the data type used to represent transitions. Defaults to std::string.
 	 */
 	template <typename TransitionT>
 	State<TransitionT>::State(const std::string& name)

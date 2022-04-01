@@ -5,14 +5,30 @@
 
 namespace pcs {
 
-	Machine::Machine(std::vector<LabelledTransitionSystem<>>&& resources, bool compute_topology) {
+	Machine::Machine(std::vector<LabelledTransitionSystem<std::string>>&& resources, bool compute_topology) {
 		resources_ = std::move(resources);
 		if (compute_topology) {
 			ComputeTopology();
 		}
 	}
 
-	Machine::Machine(const std::span<LabelledTransitionSystem<>>& resources, bool compute_topology)  {
+	size_t Machine::NumberOfResources() const {
+		return resources_.size();
+	}
+
+	size_t Machine::NumberOfTopologyStates() const {
+		return topology_.NumberOfStates();
+	}
+
+	const std::vector<LabelledTransitionSystem<std::string>>& Machine::GetResources() const {
+		return resources_;
+	}
+
+	const LabelledTransitionSystem<std::string>& Machine::GetTopology() const {
+		return topology_;
+	}
+
+	Machine::Machine(const std::span<LabelledTransitionSystem<std::string>>& resources, bool compute_topology)  {
 		resources_.assign(resources.begin(), resources.end());
 		if (compute_topology) {
 			ComputeTopology();
@@ -33,10 +49,9 @@ namespace pcs {
 		LabelledTransitionSystem<std::string> lts;
 		try {
 			if (is_json) {
-				ReadFromFile(lts, filepath);
-			}
-			else {
 				ReadFromJsonFile(lts, filepath);
+			} else {
+				ReadFromFile(lts, filepath);
 			}
 		} catch (const std::ifstream::failure& e) {
 			throw;

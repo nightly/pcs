@@ -18,7 +18,7 @@ namespace pcs {
 	private:
 		std::string initial_state_;
 	public:
-		LabelledTransitionSystem();
+		LabelledTransitionSystem() = default;
 		LabelledTransitionSystem(const std::string& initial_state, bool create_initial);
 		LabelledTransitionSystem(const std::filesystem::path& filepath);
 		~LabelledTransitionSystem();
@@ -39,7 +39,32 @@ namespace pcs {
 		State& operator[](const std::string& key);
 		const State& operator[](const std::string& key) const;
 
-		friend std::ostream& operator<<(std::ostream& os, const LabelledTransitionSystem& lts);
-		friend std::ofstream& operator<<(std::ofstream& os, const LabelledTransitionSystem& lts);
+		friend std::ostream& operator<<(std::ostream& os, const LabelledTransitionSystem& lts) {
+			if (lts.initial_state_.empty() && lts.states_.empty()) {
+				os << "Empty Labelled Transition System\n";
+				return os;
+			}
+			os << "Initial state: " << lts.initial_state_ << '\n';
+			for (const auto& pair : lts.states_) {
+				os << pair.second;
+			}
+			return os;
+		}
+
+		friend std::ofstream& operator<<(std::ofstream& os, const LabelledTransitionSystem& lts) {
+			os << "digraph finite_state_machine {\n";
+			os << "	fontname=\"Helvetica, Arial, sans - serif\"\n";
+			os << "	node [fontname=\"Helvetica, Arial, sans - serif\"]\n";
+			os << "	edge [fontname=\"Helvetica, Arial, sans - serif\"]\n";
+			os << "	rankdir=LR;\n";
+			os << "	node [shape = doublecircle];\n";
+			os << "	" << "\"" << lts.initial_state_ << "\"" << ";\n";
+			os << "	node [shape = circle];\n";
+			for (const auto& pair : lts.states_) {
+				os << pair.second;
+			}
+			os << "}";
+			return os;
+		}
 	};
 }

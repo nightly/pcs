@@ -12,7 +12,7 @@ namespace pcs {
 	public:
 		LabelledTransitionSystem<CompositeOperation> lts_;
 	public:
-		Recipe();
+		Recipe() = default;
 		Recipe(const std::filesystem::path& filepath);
 		void SetRecipe(const std::filesystem::path& filepath);
 	};

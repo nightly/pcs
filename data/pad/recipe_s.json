@@ -1,0 +1,107 @@
+{
+  "initialState": "A",
+  "transitions": [
+    {
+      "startState": "A",
+      "label": {
+        "guard": {},
+        "sequential": [
+          {
+            "name": "load",
+            "input": [],
+            "output": [
+              "f"
+            ]
+          },
+          {
+            "name": "separate",
+            "input": [
+              "f"
+            ],
+            "output": [
+              "p",
+              "h"
+            ]
+          },
+          {
+            "name": "applyglue",
+            "input": [
+              "p"
+            ],
+            "output": [
+              "p"
+            ]
+          },
+          {
+            "name": "engrave",
+            "input": [
+              "h"
+            ],
+            "output": [
+              "h"
+            ]
+          },
+          {
+            "name": "insert",
+            "input": [
+              "p",
+              "h"
+            ],
+            "output": [
+              "h2"
+            ]
+          },
+          {
+            "name": "getimages",
+            "input": [
+              "h2"
+            ],
+            "output": [
+              "h2"
+            ]
+          }
+        ],
+        "parallel": []
+      },
+      "endState": "B"
+    },
+    {
+      "startState": "B",
+      "label": {
+        "guard": {},
+        "sequential": [
+          {
+            "name": "getforce",
+            "input": [
+              "h2"
+            ],
+            "output": [
+              "h2"
+            ]
+          }
+        ],
+        "parallel": []
+      },
+      "endState": "C"
+    },
+    {
+      "startState": "C",
+      "label": {
+        "guard": {},
+        "sequential": [
+          {
+            "name": "store",
+            "input": [
+              "h2"
+            ],
+            "output": [
+              "h2"
+            ]
+          }
+        ],
+        "parallel": []
+      },
+      "endState": "D"
+    }
+  ]
+}

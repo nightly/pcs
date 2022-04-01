@@ -13,16 +13,10 @@
 namespace pcs {
 
 	/*
-	 * @brief Labelled Transition System (LTS) constructor
-	 * @tparam TransitionT: defines the data type used to represent a given transition. Defaults to std::string.
-	 */
-	template <typename TransitionT>
-	LabelledTransitionSystem<TransitionT>::LabelledTransitionSystem() {}
-
-	/*
 	 * @brief Constructor with overload for setting initial state
 	 * @param initial_state: string key of initial state
 	 * @param create_initial: will create the initial lts::State object if true
+	 * @tparam TransitionT: defines the data type used to represent transitions. Defaults to std::string.
 	 */
 	template <typename TransitionT>
 	LabelledTransitionSystem<TransitionT>::LabelledTransitionSystem(const std::string& initial_state, bool create_initial) {

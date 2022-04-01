@@ -13,9 +13,7 @@
         "sequential": [
           {
             "name": "load",
-            "input": [
-              ""
-            ],
+            "input": [],
             "output": [
               "f"
             ]
@@ -23,51 +21,53 @@
           {
             "name": "separate",
             "input": [
-              ""
+              "f"
             ],
             "output": [
               "p",
               "h"
             ]
-          }
-        ],
-        "parallel": [
+          },
           {
-            "name": "par",
+            "name": "applyglue",
             "input": [
-              ""
+              "p"
             ],
             "output": [
-              ""
-            ]
-          }
-        ]
-      },
-      "endState": "B"
-    },
-    {
-      "startState": "B",
-      "label": {
-        "guard": {
-          "name": "check",
-          "input": [
-            "h2"
-          ]
-        },
-        "sequential": [
-          {
-            "name": "getforce",
-            "input": [
-              "h2"
-            ],
-            "output": [
-              "h2"
+              "p"
             ]
           }
         ],
         "parallel": []
       },
-      "endState": "C"
+      "endState": "B"
+    },
+    {
+      "startState": "A",
+      "label": {
+        "guard": {},
+        "sequential": [
+          {
+            "name": "rem",
+            "input": [
+              "h2"
+            ],
+            "output": [
+              "h2"
+            ]
+          }
+        ],
+        "parallel": [
+          {
+            "name": "store",
+            "input": [
+              "p0"
+            ],
+            "output": []
+          }
+        ]
+      },
+      "endState": "E"
     }
   ]
 }

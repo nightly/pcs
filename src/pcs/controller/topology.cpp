@@ -8,6 +8,7 @@
 
 #include "pcs/lts/lts.h"
 #include "pcs/lts/state.h"
+#include "pcs/common/strings.h"
 
 namespace pcs {
 
@@ -23,7 +24,7 @@ namespace pcs {
 			// Populate with initial states
 			states_vec.emplace_back(lts.GetInitialState());
 		}
-		std::string initial_key = StateVectorToString(states_vec);
+		std::string initial_key = VectorToString(states_vec);
 		combined_lts.SetInitialState(initial_key, true);
 		std::unordered_map<std::string, bool> visited;
 		CombineRecursive(ltss, states_vec, visited, combined_lts);
@@ -36,7 +37,7 @@ namespace pcs {
 	 */
 	void CombineRecursive(const std::span<LabelledTransitionSystem<>>& ltss, std::vector<std::string>& states_vec,
 		std::unordered_map<std::string, bool>& visited, LabelledTransitionSystem<>& combined_lts) {
-		std::string states_str = StateVectorToString(states_vec);
+		std::string states_str = VectorToString(states_vec);
 		if (visited[states_str] == true) {
 			return;
 		}
@@ -45,24 +46,10 @@ namespace pcs {
 			for (const auto& t : ltss[i].states_.at(states_vec[i]).transitions_) {
 				std::vector<std::string> next_states = states_vec;
 				next_states[i] = t.second;
-				combined_lts.AddTransition(states_str, t.first, StateVectorToString(next_states));
+				combined_lts.AddTransition(states_str, t.first, VectorToString(next_states));
 				CombineRecursive(ltss, next_states, visited, combined_lts);
 			}
 		}
-	}
-
-	/*
-	 * @brief Transforms a vector of states into a singular state string (_,_,_,_)
-	 */
-	std::string StateVectorToString(const std::span<std::string>& vec) {
-		std::string ret;
-		for (uint_fast8_t i = 0; i < vec.size(); i++) {
-			ret += vec[i];
-			if (i != vec.size() - 1) {
-				ret += ',';
-			}
-		}
-		return ret;
 	}
 
 	/*

@@ -11,12 +11,18 @@ namespace pcs {
 
 	class Machine {
 	private:
-		std::vector<LabelledTransitionSystem<>> resources_;
-		LabelledTransitionSystem<> topology_;
+		std::vector<LabelledTransitionSystem<std::string>> resources_;
+		LabelledTransitionSystem<std::string> topology_;
 	public:
 		Machine() = default;
-		Machine(const std::span<LabelledTransitionSystem<>>& resources, bool compute_topology);
-		Machine(std::vector<LabelledTransitionSystem<>>&& resources, bool compute_topology);
+		Machine(const std::span<LabelledTransitionSystem<std::string>>& resources, bool compute_topology);
+		Machine(std::vector<LabelledTransitionSystem<std::string>>&& resources, bool compute_topology);
+
+		const std::vector<LabelledTransitionSystem<std::string>>& GetResources() const;
+		const LabelledTransitionSystem<std::string>& GetTopology() const;
+
+		size_t NumberOfResources() const;
+		size_t NumberOfTopologyStates() const;
 
 		void ComputeTopology();
 		void ComputeTopology(std::initializer_list<size_t> resources);
