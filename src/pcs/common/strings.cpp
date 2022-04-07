@@ -2,6 +2,7 @@
 
 #include <span>
 #include <string>
+#include <sstream>
 
 namespace pcs {
 
@@ -17,6 +18,18 @@ namespace pcs {
 			}
 		}
 		return ret;
+	}
+
+	/*
+	 * @brief Transforms (_,_,_) into a vector 
+	 * @param delimiter: default argument of ','
+	 */
+	void StringToVector(const std::string& str, std::vector<std::string>& vec, char delimiter) {
+		std::stringstream stream(str);
+		std::string cur;
+		while (std::getline(stream, cur, delimiter)) {
+			vec.emplace_back(cur);
+		}
 	}
 
 }

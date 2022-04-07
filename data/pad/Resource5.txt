@@ -7,5 +7,5 @@ s2 out:3 s0
 s2 out:4 s0
 s0 in:4 s4
 s4 out:1 s0
-s3 in:3 s0
+s0 in:3 s3
 s3 out:2 s0

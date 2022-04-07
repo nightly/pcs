@@ -4,11 +4,14 @@
 #include "pcs/product/recipe.h"
 #include "pcs/lts/lts.h"
 
+#include <optional>
+
 namespace pcs {
 
-	LabelledTransitionSystem<std::string> GenerateController(const Machine& machine, const Recipe& recipe);
+	std::optional<LabelledTransitionSystem<std::string>> GenerateController(const Machine& machine, const Recipe& recipe);
 
-	void ProcessRecipe(LabelledTransitionSystem<std::string>& controller, const LabelledTransitionSystem<std::string>& topology, const Recipe& recipe,
-	const std::vector<LabelledTransitionSystem<std::string>>& resources, const std::string& current_recipe_state);
+	bool ProcessRecipe(LabelledTransitionSystem<std::string>& controller, const Machine& machine, const Recipe& recipe,
+		const std::string& current_recipe_state, std::string& topology_state, size_t iteration,
+		std::vector<std::vector<std::string>>& ResParts);
 
 }

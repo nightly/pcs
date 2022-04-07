@@ -29,6 +29,4 @@ namespace pcs {
 		}
 	}
 
-	// @Note: ostream & ofstream overloads are inlined in lts.h and state.h
-
 }

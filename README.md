@@ -36,7 +36,7 @@ ctest -j 8 --output-on-failure --verbose
 ```
 
 ## Layout 
-- `app`: contains a CLI executable application
+- `app`: contains a CLI executable application. The `examples/` subdirectory has pre-made examples to run.
 - `benchmarks`: contains all the project's benchmarks
 - `data`: has some sample recipes and modelled resources#
 - `external`: 3rd party dependencies added as Git submodules
@@ -51,4 +51,8 @@ The output generated in `exports/` can be visualised entirely online [here](http
 Alternatively with GraphViz installed, the following command can be run for a given LTS file `lts1.txt`:
 ```
 dot -Tpng lts1.txt -o lts1.png
+```
+Or for SVG format:
+```
+dot -Tsvg lts1.txt -o lts1.svg
 ```

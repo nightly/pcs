@@ -1,43 +1,80 @@
 #include "pcs/controller/controller.h"
 
+#include "pcs/lts/lts.h"
+
+#include <optional>
+#include <vector>
+#include <string>
+
+#include <iostream>
+
 namespace pcs {
 
-	LabelledTransitionSystem<std::string> GenerateController(const Machine& machine, const Recipe& recipe) {
+	std::optional<LabelledTransitionSystem<std::string>> GenerateController(const Machine& machine, const Recipe& recipe) {
 		LabelledTransitionSystem<std::string> controller;
+		std::vector<std::vector<std::string>> ResParts;
+
 		const LabelledTransitionSystem<std::string>& topology = machine.GetTopology();
-		const std::vector<LabelledTransitionSystem<std::string>>& resources = machine.GetResources();
-		controller.SetInitialState(topology.GetInitialState(), true);
+		std::string initial_state = topology.GetInitialState();
+		controller.SetInitialState(initial_state, true);
 
-		ProcessRecipe(controller, topology, recipe, resources, recipe.lts_.GetInitialState());
-
+		bool successful_generation = ProcessRecipe(controller, machine, recipe, 
+			recipe.lts_.GetInitialState(), initial_state, 0, ResParts);
+		
+		if (!successful_generation) {
+			return std::nullopt;
+		}
 		return controller;
 	}
 
+
+
 	// Recursively process each recipe state until there is none left, also flowing down the correct path based on the guard outcome
-	void ProcessRecipe(LabelledTransitionSystem<std::string>& controller, const LabelledTransitionSystem<std::string>& topology, const Recipe& recipe,
-	const std::vector<LabelledTransitionSystem<std::string>>& resources, const std::string& current_recipe_state) {
+	// If the recipe cannot be realised at any point, false will be returned
+	bool ProcessRecipe(LabelledTransitionSystem<std::string>& controller, const Machine& machine, const Recipe& recipe, 
+	const std::string& current_recipe_state, std::string& topology_state, size_t iteration, std::vector<std::vector<std::string>>& ResParts) {
 		if (recipe.lts_[current_recipe_state].transitions_.empty()) {
-			return;
+			return true; // No further recipe states to process
 		}
-		const CompositeOperation& co = recipe.lts_[current_recipe_state].transitions_[0].first; // assume 1st transition for guard passing
+		const LabelledTransitionSystem<std::string>& topology = machine.GetTopology();
+		const std::vector<LabelledTransitionSystem<std::string>>& resources = machine.GetResources();
+		std::string controller_state = "s" + std::to_string(iteration);
+		std::string transition;
 
-		const Guard& guard = co.guard; // <- handle guard 
-
-		for (const auto& o : co.parallel) {}
-
+		const CompositeOperation& co = recipe.lts_[current_recipe_state].transitions_[0].first; // assume 1st transition as guard passing
 		for (const auto& o : co.sequential) {
-			
+			if (o.input_.empty() || (o.input_ == o.output_)) {
+				bool found_matching = false;
+				for (const auto& t : topology[topology_state].transitions_) {
+					if (t.first == o.name_) {
+						found_matching = true;
+						// Update ResParts with the corresponding resource index
+						// ResParts[i] = o.output_;
+						topology_state = t.second;
+						transition += "[" + topology_state + "]\n";
+						break;
+					}
+				}
+				if (!found_matching) {
+					return false; // break recursion, as no operation can be found, return nullopt
+				}
+			}
 
+			// Operations with input consider ResParts + moving between resources using the current topology state,
+			// with transfer transitions occuring together in 1
 		}
 
-
-		ProcessRecipe(controller, topology, recipe, resources, recipe.lts_[current_recipe_state].transitions_[0].second);
+		++iteration;
+		controller.AddTransition(controller_state, transition, "s" + std::to_string(iteration));
+		ProcessRecipe(controller, machine, recipe,
+			recipe.lts_[current_recipe_state].transitions_[0].second, topology_state, iteration, ResParts);
 	}
 
 }
 
-/* @Todo:
- 	1. Topology currently applies all possible transitions, but neglects proper in/out matching during generation
 
-	1. Handle guard failure conditions
-*/
+/*
+ * @Todo: separate logic for handling each operation 
+ * @Todo: guard operations, handle failure case
+ * @Todo: parallel operations
+ */

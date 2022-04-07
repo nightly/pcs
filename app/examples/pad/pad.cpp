@@ -1,6 +1,8 @@
 #include "pad.h"
 
 #include <vector>
+#include <optional>
+#include <iostream>
 
 #include "pcs/lts/parsers.h"
 #include "pcs/lts/writers.h"
@@ -23,8 +25,12 @@ void PadExample() {
 	const pcs::LabelledTransitionSystem<std::string>& topology = machine.GetTopology();
 	pcs::ExportToFile(topology, "../../exports/pad/topology.txt");
 	
-	pcs::LabelledTransitionSystem<std::string> controller = pcs::GenerateController(machine, recipe);
-	pcs::ExportToFile(controller, "../../exports/pad/controller.txt");
+	std::optional<pcs::LabelledTransitionSystem<std::string>> controller = pcs::GenerateController(machine, recipe);
+	if (controller.has_value()) {
+		pcs::ExportToFile(*controller, "../../exports/pad/controller.txt");
+	} else {
+		std::cout << "[PAD] No controller generated\n";
+	}
 }
 
 pcs::Recipe LoadPadRecipe() {

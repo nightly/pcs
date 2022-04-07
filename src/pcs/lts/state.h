@@ -15,16 +15,41 @@ namespace pcs {
 	private:
 		std::string name_;
 	public:
+
+		/* @tparam TransitionT : defines the data type used to represent transitions. E.g. std::string, CompositeOperation 
+		 */
 		State() = default;
-		State(const std::string& name);
-		~State();
 
-		std::string GetName() const;
-		void AddTransistion(const TransitionT& label, const std::string& end_state);
-		bool TransistionExists(const TransitionT& label, const std::string& end_state) const;
-		bool IsEmpty() const;
+		State(const std::string& name) 
+			: name_(name) {}
 
-		bool operator==(const State& other) const;
+		~State() = default;
+
+		std::string GetName() const {
+			return name_;
+		}
+
+		void AddTransistion(const TransitionT& label, const std::string& end_state) {
+			std::pair<TransitionT, std::string> transistion = std::make_pair(label, end_state);
+			transitions_.emplace_back(transistion);
+		}
+
+		bool TransistionExists(const TransitionT& label, const std::string& end_state) const {
+			for (const auto& t : transitions_) {
+				if ((t.first == label) && (t.second == end_state)) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		bool IsEmpty() const {
+			return transitions_.empty();
+		}
+
+		bool operator==(const State& other) const {
+			return (name_ == other.name_) && (transitions_ == other.transitions_);
+		}
 
 		friend std::ostream& operator<<(std::ostream& os, const State& state) {
 			os << "State name: " << state.GetName() << '\n';
@@ -38,6 +63,7 @@ namespace pcs {
 			}
 			return os;
 		}
+
 		friend std::ofstream& operator<<(std::ofstream& os, const State& state) {
 			if (state.IsEmpty()) {
 				os << "	" << "\"" << state.name_ << "\"" << "\n";
