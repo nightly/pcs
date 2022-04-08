@@ -11,13 +11,13 @@
 namespace pcs {
 
 	/*
-	 * @brief Exports a given LTS to the provided path, which can be visualised with GraphViz
+	 * @brief Exports a given LTS to the provided path, which can be visualised with GraphViz. Uses ofstream overloads.
 	 * @param lts: labelled transition system in question to write to file
 	 * @param path: export filepath, missing directories will be created. Filepath should include file extension.
 	 * @exception Propagates std::ofstream::failure
 	 */
-	template <typename TransitionT = std::string>
-	void ExportToFile(const LabelledTransitionSystem<TransitionT>& lts, const std::filesystem::path& path) {
+	template <typename KeyT = std::string, typename TransitionT = std::string>
+	void ExportToFile(const LabelledTransitionSystem<KeyT, TransitionT>& lts, const std::filesystem::path& path) {
 		std::ofstream stream;
 		stream.exceptions(std::ofstream::badbit);
 		CreateDirectoryForPath(path);

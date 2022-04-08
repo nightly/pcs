@@ -5,7 +5,7 @@
 
 namespace pcs {
 
-	Machine::Machine(std::vector<LabelledTransitionSystem<std::string>>&& resources, bool compute_topology) {
+	Machine::Machine(std::vector<LabelledTransitionSystem<std::string, std::string>>&& resources, bool compute_topology) {
 		resources_ = std::move(resources);
 		if (compute_topology) {
 			ComputeTopology();
@@ -20,15 +20,15 @@ namespace pcs {
 		return topology_.NumberOfStates();
 	}
 
-	const std::vector<LabelledTransitionSystem<std::string>>& Machine::GetResources() const {
+	const std::vector<LabelledTransitionSystem<std::string, std::string>>& Machine::GetResources() const {
 		return resources_;
 	}
 
-	const LabelledTransitionSystem<std::string>& Machine::GetTopology() const {
+	const LabelledTransitionSystem<std::string, std::string>& Machine::GetTopology() const {
 		return topology_;
 	}
 
-	Machine::Machine(const std::span<LabelledTransitionSystem<std::string>>& resources, bool compute_topology)  {
+	Machine::Machine(const std::span<LabelledTransitionSystem<std::string, std::string>>& resources, bool compute_topology)  {
 		resources_.assign(resources.begin(), resources.end());
 		if (compute_topology) {
 			ComputeTopology();
@@ -62,7 +62,7 @@ namespace pcs {
 	/*
 	 * @brief Adds a LTS<std::string> resource to the machine & handles the implications on the topology 
 	 */
-	void Machine::AddResource(const LabelledTransitionSystem<std::string>& resource) {
+	void Machine::AddResource(const LabelledTransitionSystem<std::string, std::string>& resource) {
 		if (topology_.NumberOfStates() == 0) {
 			resources_.emplace_back(resource);
 		} else {
@@ -73,7 +73,7 @@ namespace pcs {
 	/* 
 	 * @brief Adds a resource with move semantics
 	 */
-	void Machine::AddResource(LabelledTransitionSystem<std::string>&& resource) {
+	void Machine::AddResource(LabelledTransitionSystem<std::string, std::string>&& resource) {
 		if (topology_.NumberOfStates() == 0) {
 			resources_.emplace_back(std::move(resource));
 		} else {

@@ -11,10 +11,10 @@
 using namespace pcs;
 
 TEST(ProductParser, Recipe1) {
-	LabelledTransitionSystem<CompositeOperation> got, expected;
+	LabelledTransitionSystem<std::string, CompositeOperation> got, expected;
 	ReadFromJsonFile(got, "../../tests/product/testdata/recipe1.json");
 
-	expected.SetInitialState("A", false);
+	expected.initial_state("A", false);
 
 	CompositeOperation co1;
 	Operation co1_seq1, co1_seq2, co1_seq3;

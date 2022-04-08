@@ -9,15 +9,16 @@ namespace pcs {
 	/*
 	 * @brief ReadFromFile will parse a JSON input file into an instance of the LTS<Transition = CompositeOperation> class.
 	 *
-	 * The expected form consists of: initialState as a string, and an array of transitions
-	 * consisting of startState, label, and endState strings.
-	 * Label consists of the following objects: guard, parallelOperations (name, input), sequentialOperations (name, input, output).
+	 * The expected form consists of: `initialState` as a string, and an array of `transitions`
+	 * consisting of `startState`, `label`, and `endState` strings.
+	 * Label consists of the following objects: `guard`, `parallelOperations` (`name`, `input`), 
+	 * `sequentialOperations` (`name`, `input`, `output`).
 	 *
 	 * @param lts: Labelled Transition System to parse into
 	 * @param filepath: path to the file containing a LTS, examples contained within the data folder.
 	 * @exception Propagates std::ifstream::failure
 	 */
-	void ReadFromJsonFile(LabelledTransitionSystem<CompositeOperation>& lts, const std::filesystem::path& filepath) {
+	void ReadFromJsonFile(LabelledTransitionSystem<std::string, CompositeOperation>& lts, const std::filesystem::path& filepath) {
 		nlohmann::json j;
 		try {
 			std::ifstream stream(filepath);
@@ -34,8 +35,8 @@ namespace pcs {
 	 * @param lts: Labelled Transition System to parse into
 	 * @param j: json object containing the correct object layout as previously defined
 	 */
-	void ParseJson(LabelledTransitionSystem<CompositeOperation>& lts, const nlohmann::json& j) {
-		lts.SetInitialState(j["initialState"], true);
+	void ParseJson(LabelledTransitionSystem<std::string, CompositeOperation>& lts, const nlohmann::json& j) {
+		lts.initial_state(j["initialState"], true);
 		for (const auto& t : j["transitions"]) {
 			CompositeOperation co;
 			if (t["label"]["guard"] != nlohmann::json::object()) {

@@ -11,6 +11,7 @@
 
 And *optionally*:
 - [GraphViz](https://graphviz.org/) (for visualisation purposes)
+- [C++ style guide](https://google.github.io/styleguide/cppguide.html)
 
 ### Cloning & updating
 Clone the repository alongside its submodules.

@@ -6,6 +6,6 @@
 #include "pcs/operation/composite.h"
 
 namespace pcs {
-	void ReadFromJsonFile(LabelledTransitionSystem<CompositeOperation>& lts, const std::filesystem::path& filepath);
-	void ParseJson(LabelledTransitionSystem<CompositeOperation>& lts, const nlohmann::json& j);
+	void ReadFromJsonFile(LabelledTransitionSystem<std::string, CompositeOperation>& lts, const std::filesystem::path& filepath);
+	void ParseJson(LabelledTransitionSystem<std::string, CompositeOperation>& lts, const nlohmann::json& j);
 }

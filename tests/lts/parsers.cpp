@@ -11,17 +11,9 @@ TEST(ParseLTS, LTS1) {
 	pcs::ReadFromFile(got, "../../tests/lts/testdata/lts1.txt");
 
 	pcs::LabelledTransitionSystem expected;
-	pcs::State s0("s0");
-	s0.AddTransistion("a1", "s1");
-	expected.AddState(s0);
-	expected.SetInitialState("s0", false);
-
-	pcs::State s1("s1");
-	s1.AddTransistion("a2", "s2");
-	expected.AddState(s1);
-
-	pcs::State s2("s2");
-	expected.AddState(s2);
+	expected.initial_state("s0", true);
+	expected.AddTransition("s0", "a1", "s1");
+	expected.AddTransition("s1", "a2", "s2");
 
 	ASSERT_EQ(got, expected);
 }
@@ -31,17 +23,9 @@ TEST(ParseJsonLTS, LTS1) {
 	pcs::ReadFromJsonFile(got, "../../tests/lts/testdata/lts1.json");
 
 	pcs::LabelledTransitionSystem expected;
-	pcs::State s0("s0");
-	s0.AddTransistion("a1", "s1");
-	expected.AddState(s0);
-	expected.SetInitialState("s0", false);
-
-	pcs::State s1("s1");
-	s1.AddTransistion("a2", "s2");
-	expected.AddState(s1);
-
-	pcs::State s2("s2");
-	expected.AddState(s2);
+	expected.initial_state("s0", true);
+	expected.AddTransition("s0", "a1", "s1");
+	expected.AddTransition("s1", "a2", "s2");
 
 	ASSERT_EQ(got, expected);
 }

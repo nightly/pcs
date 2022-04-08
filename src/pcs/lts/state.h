@@ -6,35 +6,37 @@
 #include <fstream>
 #include <utility>
 
-namespace pcs {
+namespace pcs::internal {
 
-	template <typename TransitionT = std::string>
+	template <typename KeyT, typename TransitionT = std::string>
 	class State {
 	public:
-		std::vector<std::pair<TransitionT, std::string>> transitions_;
+		std::vector<std::pair<TransitionT, KeyT>> transitions_;
 	private:
-		std::string name_;
+		KeyT name_;
 	public:
 
-		/* @tparam TransitionT : defines the data type used to represent transitions. E.g. std::string, CompositeOperation 
+		/* 
+		 * @tparam KeyT: the data type used to defined keys/state names. E.g std::string, std::vector<std::string>
+		 * @tparam TransitionT : defines the data type used to represent transitions. E.g. std::string, CompositeOperation 
 		 */
 		State() = default;
 
-		State(const std::string& name) 
+		State(const KeyT& name) 
 			: name_(name) {}
 
 		~State() = default;
 
-		std::string GetName() const {
+		KeyT name() const {
 			return name_;
 		}
 
-		void AddTransistion(const TransitionT& label, const std::string& end_state) {
-			std::pair<TransitionT, std::string> transistion = std::make_pair(label, end_state);
+		void AddTransition(const TransitionT& label, const KeyT& end_state) {
+			std::pair<TransitionT, KeyT> transistion = std::make_pair(label, end_state);
 			transitions_.emplace_back(transistion);
 		}
 
-		bool TransistionExists(const TransitionT& label, const std::string& end_state) const {
+		bool TransistionExists(const TransitionT& label, const KeyT& end_state) const {
 			for (const auto& t : transitions_) {
 				if ((t.first == label) && (t.second == end_state)) {
 					return true;
@@ -52,7 +54,7 @@ namespace pcs {
 		}
 
 		friend std::ostream& operator<<(std::ostream& os, const State& state) {
-			os << "State name: " << state.GetName() << '\n';
+			os << "State name: " << state.name_ << '\n';
 			if (state.transitions_.empty()) {
 				os << "  With 0 transitions" << '\n';
 				return os;
@@ -77,3 +79,7 @@ namespace pcs {
 	};
 
 }
+
+/* 
+	@Todo: internal namespace
+*/

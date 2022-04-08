@@ -15,11 +15,11 @@ namespace pcs {
 		std::vector<std::vector<std::string>> ResParts;
 
 		const LabelledTransitionSystem<std::string>& topology = machine.GetTopology();
-		std::string initial_state = topology.GetInitialState();
-		controller.SetInitialState(initial_state, true);
+		std::string initial_state = topology.initial_state();
+		controller.initial_state(initial_state, true);
 
 		bool successful_generation = ProcessRecipe(controller, machine, recipe, 
-			recipe.lts_.GetInitialState(), initial_state, 0, ResParts);
+			recipe.lts_.initial_state(), initial_state, 0, ResParts);
 		
 		if (!successful_generation) {
 			return std::nullopt;
@@ -60,8 +60,6 @@ namespace pcs {
 				}
 			}
 
-			// Operations with input consider ResParts + moving between resources using the current topology state,
-			// with transfer transitions occuring together in 1
 		}
 
 		++iteration;

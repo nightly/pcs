@@ -4,43 +4,49 @@
 #include <string>
 #include <ostream>
 #include <fstream>
-#include <filesystem>
+#include <vector>
 
 #include "pcs/lts/state.h"
 
 namespace pcs {
 
-	template <typename TransitionT = std::string>
+	template <typename KeyT = std::string, typename TransitionT = std::string>
 	class LabelledTransitionSystem {
 	public:
-		using State = State<TransitionT>;
-		std::unordered_map<std::string, State> states_;
+		using State = internal::State<KeyT, TransitionT>;
 	private:
-		std::string initial_state_;
+		std::unordered_map<KeyT, State> states_;
+		KeyT initial_state_;
 	public:
 		
-		/* @tparam TransitionT : defines the data type used to represent transitions. E.g. std::string, CompositeOperation
-		*/
+		/*
+		 * @tparam KeyT: the data type used to defined keys/state names. E.g std::string, std::vector<std::string>
+		 * @tparam TransitionT : defines the data type used to represent transitions. E.g. std::string, CompositeOperation
+		 */
 		LabelledTransitionSystem() = default;
 
-		LabelledTransitionSystem(const std::string& initial_state, bool create_initial) {
+		LabelledTransitionSystem(const KeyT& initial_state, bool create_initial) {
 			SetInitialState(initial_state, create_initial);
 		}
 
 		~LabelledTransitionSystem() = default;
 
-		std::string GetInitialState() const {
+		const std::unordered_map<KeyT, State>& states() const {
+			return states_;
+		}
+
+		KeyT initial_state() const {
 			return initial_state_;
 		}
 
-		void SetInitialState(const std::string& state, bool create_if_not_exists) {
+		void initial_state(const KeyT& state, bool create_if_not_exists=true) {
 			if (!HasState(state) && create_if_not_exists) {
 				AddState(State(state));
 			}
 			initial_state_ = state;
 		}
 
-		bool HasState(const std::string& key) const {
+		bool HasState(const KeyT& key) const {
 			return states_.contains(key);
 		}
 
@@ -48,31 +54,26 @@ namespace pcs {
 			return states_.size();
 		}
 
-		bool AddState(State&& state) {
-			if (!HasState(state.GetName())) {
-				states_.emplace(std::make_pair(state.GetName(), state));
-				return true;
-			}
-			return false;
-		}
-
-		bool AddState(const State& state) {
-			if (!HasState(state.GetName())) {
-				states_.emplace(std::make_pair(state.GetName(), std::move(state)));
-			}
-			return false;
-		}
-
-		bool RemoveState(const std::string& key) {
+		bool RemoveState(const KeyT& key) {
 			if (HasState(key)) {
 				states_.erase(key);
+				for (auto& [k, v] : states_) { // Remove dangling references of the deleted state from other states
+					typename std::vector<std::pair<TransitionT, KeyT>>::iterator it = v.transitions_.begin();
+					while (it = v.transitions_.end()) {
+						if (it->first == key) {
+							v.transitions_.erase(it++);
+						} else {
+							++it;
+						}
+					}
+				}
 				return true;
 			}
 			return false;
 		}
 
-		void AddTransition(const std::string& start_state, const TransitionT label,
-		const std::string& end_state, bool create_missing_states = true) {
+		void AddTransition(const KeyT& start_state, const TransitionT label,
+		const KeyT& end_state, bool create_missing_states = true) {
 			if (!HasState(start_state) && create_missing_states) {
 				AddState(State(start_state));
 			}
@@ -81,18 +82,18 @@ namespace pcs {
 			}
 
 			State& s = states_.at(start_state);
-			s.AddTransistion(label, end_state);
+			s.AddTransition(label, end_state);
 		}
 
 		bool operator==(const LabelledTransitionSystem& other) const {
 			return (initial_state_ == other.initial_state_) && (states_ == other.states_);
 		}
 
-		State& operator[](const std::string& key) {
+		State& operator[](const KeyT& key) {
 			return states_[key];
 		}
 
-		const State& operator[](const std::string& key) const {
+		const State& operator[](const KeyT& key) const {
 			return states_.at(key);
 		}
 
@@ -124,12 +125,24 @@ namespace pcs {
 			return os;
 		}
 	private:
+		bool AddState(const State& state) {
+			if (!HasState(state.name())) {
+				states_.emplace(std::make_pair(state.name(), std::move(state)));
+				return true;
+			}
+			return false;
+		}
 
+		bool AddState(State&& state) {
+			if (!HasState(state.name())) {
+				states_.emplace(std::make_pair(state.name(), state));
+				return true;
+			}
+			return false;
+		}
 	};
 }
 
-/*  @Todo: further templatize with KeyT
-	@Todo: AddState methods should be private and the public interface should be accessed through only adding transitions,
-		allowing create_missing_states variables also to be removed
+/* 
 	@Todo: unordered map is an inefficent STL container
 */
