@@ -27,7 +27,7 @@ namespace pcs {
 			states_vec.emplace_back(lts.initial_state());
 		}
 		std::string initial_key = VectorToString(states_vec);
-		combined_lts.initial_state(initial_key, true);
+		combined_lts.set_initial_state(initial_key, true);
 		std::unordered_map<std::string, bool> visited;
 		CombineRecursive(ltss, states_vec, visited, combined_lts);
 		return combined_lts;

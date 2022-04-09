@@ -14,9 +14,9 @@ namespace pcs {
 		LabelledTransitionSystem<std::string> controller;
 		std::vector<std::vector<std::string>> ResParts;
 
-		const LabelledTransitionSystem<std::string>& topology = machine.GetTopology();
+		const LabelledTransitionSystem<std::string>& topology = machine.topology();
 		std::string initial_state = topology.initial_state();
-		controller.initial_state(initial_state, true);
+		controller.set_initial_state(initial_state, true);
 
 		bool successful_generation = ProcessRecipe(controller, machine, recipe, 
 			recipe.lts_.initial_state(), initial_state, 0, ResParts);
@@ -36,8 +36,8 @@ namespace pcs {
 		if (recipe.lts_[current_recipe_state].transitions_.empty()) {
 			return true; // No further recipe states to process
 		}
-		const LabelledTransitionSystem<std::string>& topology = machine.GetTopology();
-		const std::vector<LabelledTransitionSystem<std::string>>& resources = machine.GetResources();
+		const LabelledTransitionSystem<std::string>& topology = machine.topology();
+		const std::vector<LabelledTransitionSystem<std::string>>& resources = machine.resources();
 		std::string controller_state = "s" + std::to_string(iteration);
 		std::string transition;
 

@@ -39,7 +39,7 @@ namespace pcs {
 			return initial_state_;
 		}
 
-		void initial_state(const KeyT& state, bool create_if_not_exists=true) {
+		void set_initial_state(const KeyT& state, bool create_if_not_exists=true) {
 			if (!HasState(state) && create_if_not_exists) {
 				AddState(State(state));
 			}

@@ -12,20 +12,20 @@ namespace pcs {
 		}
 	}
 
-	size_t Machine::NumberOfResources() const {
-		return resources_.size();
-	}
-
-	size_t Machine::NumberOfTopologyStates() const {
-		return topology_.NumberOfStates();
-	}
-
-	const std::vector<LabelledTransitionSystem<std::string, std::string>>& Machine::GetResources() const {
+	const std::vector<LabelledTransitionSystem<std::string, std::string>>& Machine::resources() const {
 		return resources_;
 	}
 
-	const LabelledTransitionSystem<std::string, std::string>& Machine::GetTopology() const {
+	const LabelledTransitionSystem<std::string, std::string>& Machine::topology() const {
 		return topology_;
+	}
+
+	size_t Machine::NumOfResources() const {
+		return resources_.size();
+	}
+
+	size_t Machine::NumOfTopologyStates() const {
+		return topology_.NumberOfStates();
 	}
 
 	Machine::Machine(const std::span<LabelledTransitionSystem<std::string, std::string>>& resources, bool compute_topology)  {

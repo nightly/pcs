@@ -30,7 +30,7 @@ namespace pcs {
 			stream.exceptions(std::ifstream::badbit);
 			while (std::getline(stream, line)) {
 				if (first_line) {
-					lts.initial_state(line, true);
+					lts.set_initial_state(line, true);
 					first_line = false;
 					continue;
 				}
@@ -75,7 +75,7 @@ namespace pcs {
 	 * @param j: json object containing the "initialState" and "transitions" array of "startState", "label" & "endState"
 	 */
 	void ParseJson(LabelledTransitionSystem<std::string, std::string>& lts, const nlohmann::json& j) {
-		lts.initial_state(j["initialState"], true);
+		lts.set_initial_state(j["initialState"], true);
 		for (const auto& t : j["transitions"]) {
 			lts.AddTransition(t["startState"], t["label"], t["endState"], true);
 		}

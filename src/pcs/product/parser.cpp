@@ -36,7 +36,7 @@ namespace pcs {
 	 * @param j: json object containing the correct object layout as previously defined
 	 */
 	void ParseJson(LabelledTransitionSystem<std::string, CompositeOperation>& lts, const nlohmann::json& j) {
-		lts.initial_state(j["initialState"], true);
+		lts.set_initial_state(j["initialState"], true);
 		for (const auto& t : j["transitions"]) {
 			CompositeOperation co;
 			if (t["label"]["guard"] != nlohmann::json::object()) {

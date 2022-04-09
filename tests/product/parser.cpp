@@ -14,7 +14,7 @@ TEST(ProductParser, Recipe1) {
 	LabelledTransitionSystem<std::string, CompositeOperation> got, expected;
 	ReadFromJsonFile(got, "../../tests/product/testdata/recipe1.json");
 
-	expected.initial_state("A", false);
+	expected.set_initial_state("A", false);
 
 	CompositeOperation co1;
 	Operation co1_seq1, co1_seq2, co1_seq3;
