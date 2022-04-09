@@ -59,7 +59,7 @@ namespace pcs {
 				states_.erase(key);
 				for (auto& [k, v] : states_) { // Remove dangling references of the deleted state from other states
 					typename std::vector<std::pair<TransitionT, KeyT>>::iterator it = v.transitions_.begin();
-					while (it = v.transitions_.end()) {
+					while (it != v.transitions_.end()) {
 						if (it->first == key) {
 							v.transitions_.erase(it++);
 						} else {

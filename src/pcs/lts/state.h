@@ -79,7 +79,3 @@ namespace pcs::internal {
 	};
 
 }
-
-/* 
-	@Todo: internal namespace
-*/
