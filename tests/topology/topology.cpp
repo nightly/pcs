@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "pcs/controller/topology.h"
+#include "pcs/topology/topology.h"
 
 #include <array>
 #include <string>

@@ -15,7 +15,4 @@ namespace pcs {
 
 	bool MatchingTransfer(const std::span<LabelledTransitionSystem<std::string, std::string>>& ltss, std::vector<std::string>& states_vec,
 		size_t current_ltss_idx, const std::pair<std::string, std::string>& current_transition);
-
-	void RemoveResources(LabelledTransitionSystem<>& topology, std::initializer_list<size_t> resources);
-	void AddResources(LabelledTransitionSystem<>& topology, const std::span<LabelledTransitionSystem<>>& ltss);
 }

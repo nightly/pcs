@@ -3,7 +3,7 @@
 project ("pcs" VERSION 0 LANGUAGES CXX)
 
 option(PCS_RUN_TESTS "Run tests" ON)
-option(PCS_RUN_BENCHMARKS "Run benchmarks" ON)
+option(PCS_COMPILE_BENCHMARKS "Compile benchmarks" ON)
 
 # Library
 add_subdirectory(src/pcs)
@@ -21,7 +21,7 @@ endif()
 add_subdirectory(app)
 
 # Benchmarks
-if (PCS_RUN_BENCHMARKS) 
+if (PCS_COMPILE_BENCHMARKS) 
     add_subdirectory(benchmarks)
 endif()
 

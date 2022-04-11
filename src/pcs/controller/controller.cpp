@@ -1,12 +1,11 @@
 #include "pcs/controller/controller.h"
 
-#include "pcs/lts/lts.h"
-
 #include <optional>
 #include <vector>
 #include <string>
 
-#include <iostream>
+#include "pcs/lts/lts.h"
+#include "pcs/common/log.h"
 
 namespace pcs {
 
@@ -70,9 +69,7 @@ namespace pcs {
 
 }
 
-
-/*
- * @Todo: separate logic for handling each operation 
- * @Todo: guard operations, handle failure case
- * @Todo: parallel operations
+ /*
+	 @Todo: separate logic for handling each operation 
+     @Todo: guard operations, handle failure case
  */

@@ -1,6 +1,6 @@
 #include "pcs/machine/machine.h"
 
-#include "pcs/controller/topology.h"
+#include "pcs/topology/topology.h"
 #include "pcs/lts/parsers.h"
 
 namespace pcs {
@@ -25,7 +25,7 @@ namespace pcs {
 	}
 
 	size_t Machine::NumOfTopologyStates() const {
-		return topology_.NumberOfStates();
+		return topology_.NumOfStates();
 	}
 
 	Machine::Machine(const std::span<LabelledTransitionSystem<std::string, std::string>>& resources, bool compute_topology)  {
@@ -63,7 +63,7 @@ namespace pcs {
 	 * @brief Adds a LTS<std::string> resource to the machine & handles the implications on the topology 
 	 */
 	void Machine::AddResource(const LabelledTransitionSystem<std::string, std::string>& resource) {
-		if (topology_.NumberOfStates() == 0) {
+		if (topology_.NumOfStates() == 0) {
 			resources_.emplace_back(resource);
 		} else {
 			// @Todo: Consider case where topology must be recomputed or modified/adapted
@@ -74,7 +74,7 @@ namespace pcs {
 	 * @brief Adds a resource with move semantics
 	 */
 	void Machine::AddResource(LabelledTransitionSystem<std::string, std::string>&& resource) {
-		if (topology_.NumberOfStates() == 0) {
+		if (topology_.NumOfStates() == 0) {
 			resources_.emplace_back(std::move(resource));
 		} else {
 			// @Todo: Consider case where topology must be recomputed or modified/adapted

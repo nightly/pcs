@@ -1,6 +1,8 @@
 #include "pcs/common/directory.h"
 
 #include <filesystem>
+#include <ostream>
+#include <iostream>
 
 namespace pcs {
 
@@ -12,4 +14,9 @@ namespace pcs {
 			std::filesystem::create_directories(path.parent_path());
 		}
 	}
+
+	void PrintCurrentDir(std::ostream& os) {
+		os << std::filesystem::current_path() << std::endl;
+	}
+
 }

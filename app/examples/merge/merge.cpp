@@ -7,7 +7,7 @@
 #include <string>
 
 #include "pcs/lts/lts.h"
-#include "pcs/controller/topology.h"
+#include "pcs/topology/topology.h"
 #include "pcs/lts/state.h"
 #include "pcs/lts/parsers.h"
 #include "pcs/lts/writers.h"
@@ -16,10 +16,9 @@ void MergeExample() {
 	// Read LTS' & combine
 	std::array<pcs::LabelledTransitionSystem<std::string>, 2> ltss;
 	try {
-		pcs::ReadFromFile(ltss[0], "../../data/lts1.txt");
-		pcs::ReadFromFile(ltss[1], "../../data/lts2.txt");
-	}
-	catch (std::ifstream::failure) {
+		pcs::ReadFromFile(ltss[0], "../../data/lts/lts1.txt");
+		pcs::ReadFromFile(ltss[1], "../../data/lts/lts2.txt");
+	} catch (std::ifstream::failure) {
 		std::cerr << "Unable to read the file at specified path\n";
 		return std::exit(1);
 	}
@@ -38,8 +37,7 @@ void MergeExample() {
 			pcs::ExportToFile(ltss[i], path);
 		}
 		pcs::ExportToFile(lts_combined, "../../exports/merge/combined-lts.txt");
-	}
-	catch (std::ofstream::failure) {
+	} catch (std::ofstream::failure) {
 		std::cerr << "Error writing to files or creating directory\n";
 		return std::exit(1);
 	}

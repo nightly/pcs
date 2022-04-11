@@ -50,17 +50,31 @@ namespace pcs {
 			return states_.contains(key);
 		}
 
-		size_t NumberOfStates() const {
+		size_t NumOfStates() const {
 			return states_.size();
 		}
 
-		bool RemoveState(const KeyT& key) {
+		/*
+		 * @brief Removes a given state but allows dangling transitions to exist from other states to the deleted state 
+		 */
+		bool RemoveStateSoft(const KeyT& key) {
 			if (HasState(key)) {
 				states_.erase(key);
-				for (auto& [k, v] : states_) { // Remove dangling references of the deleted state from other states
+				return true;
+			}
+			return false;
+		}
+
+		/*
+		 * @brief Removes a given state and then checks for dangling transitions with all other states
+		 */
+		bool RemoveStateFull(const KeyT& key) {
+			if (HasState(key)) {
+				states_.erase(key);
+				for (auto& [k, v] : states_) {
 					typename std::vector<std::pair<TransitionT, KeyT>>::iterator it = v.transitions_.begin();
 					while (it != v.transitions_.end()) {
-						if (it->first == key) {
+						if (it->second == key) {
 							v.transitions_.erase(it++);
 						} else {
 							++it;
@@ -125,7 +139,7 @@ namespace pcs {
 			return os;
 		}
 	private:
-		bool AddState(const State& state) {
+		bool AddState(State&& state) {
 			if (!HasState(state.name())) {
 				states_.emplace(std::make_pair(state.name(), std::move(state)));
 				return true;
@@ -133,7 +147,7 @@ namespace pcs {
 			return false;
 		}
 
-		bool AddState(State&& state) {
+		bool AddState(const State&& state) {
 			if (!HasState(state.name())) {
 				states_.emplace(std::make_pair(state.name(), state));
 				return true;
