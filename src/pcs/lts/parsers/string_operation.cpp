@@ -7,6 +7,7 @@
 
 #include "pcs/operation/operation.h"
 #include "pcs/operation/transfer.h"
+#include "pcs/operation/nop.h"
 
 namespace pcs {
 
@@ -16,6 +17,8 @@ namespace pcs {
 			return TransferOperation(Transfer::in, stoull(label.substr(3)));
 		} else if (label.find("out:") != std::string::npos) {
 			return TransferOperation(Transfer::out, stoull(label.substr(4)));
+		} else if (label == "nop") {
+			return Nop();
 		}
 		return Operation(label);
 	}

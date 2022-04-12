@@ -8,7 +8,6 @@
 
 static void BM_TopoologyWithFiveResources(benchmark::State& state) {
     std::array<pcs::LabelledTransitionSystem<std::string, std::string>, 5> ltss;
-    pcs::PrintCurrentDir();
     for (size_t i = 0; i < 5; ++i) {
         pcs::ReadFromFile(ltss[i], "../../data/pad/Resource" + std::to_string(i + 1) + ".txt");
     }
