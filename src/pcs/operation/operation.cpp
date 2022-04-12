@@ -6,7 +6,10 @@
 
 namespace pcs {
 
-	Operation::Operation(std::string&& name, const std::span<std::string>& input, std::span<std::string>& output)
+	Operation::Operation(const std::string& name)
+		: name_(name) {}
+
+	Operation::Operation(const std::string& name, const std::span<std::string>& input, const std::span<std::string>& output)
 		: name_(name) {
 		input_.assign(input.begin(), input.end());
 		output_.assign(output.begin(), output.end());

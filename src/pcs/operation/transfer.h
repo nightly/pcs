@@ -4,10 +4,15 @@
 
 namespace pcs {
 
+	enum class Transfer { in, out };
+
 	struct TransferOperation : public IOperation {
 	public:
-		TransferOperation() = default;
-		bool is_out;
+		Transfer type;
 		size_t n;
+	public:
+		TransferOperation() = default;
+		TransferOperation(Transfer type, size_t n);
+		TransferOperation Inverse() const;
 	};
 }

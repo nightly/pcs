@@ -1,4 +1,4 @@
-#include "pcs/lts/parsers.h"
+#include "pcs/lts/parsers/string_string.h"
 
 #include "pcs/lts/lts.h"
 
@@ -41,14 +41,13 @@ namespace pcs {
 				std::getline(ss, end_state);
 				lts.AddTransition(start_state, label, end_state);
 			}
-		}
-		catch (std::ifstream::failure& e) {
+		} catch (std::ifstream::failure& e) {
 			throw;
 		}
 	}
 
 	/*
-	 * @brief ReadFromFile will parse a JSON input file into an instance of the LTS<Transition = string> class.
+	 * @brief ReadFromFile will parse a JSON input file into an instance of the LTS<Key = string, Transition = string> class.
 	 *
 	 * The expected form consists of: initialState as a string, and an array of transitions
 	 * consisting of startState, label, and endState strings.
@@ -62,8 +61,7 @@ namespace pcs {
 		try {
 			std::ifstream stream(filepath);
 			stream >> j;
-		}
-		catch (std::ifstream::failure& e) {
+		} catch (std::ifstream::failure& e) {
 			throw;
 		}
 		ParseJson(lts, j);

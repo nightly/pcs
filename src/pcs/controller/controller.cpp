@@ -9,6 +9,8 @@
 
 namespace pcs {
 
+	using Topology = LabelledTransitionSystem<std::vector<std::string>, std::string>;
+
 	std::optional<LabelledTransitionSystem<std::string>> GenerateController(const Machine& machine, const Recipe& recipe) {
 		LabelledTransitionSystem<std::string> controller;
 		std::vector<std::vector<std::string>> ResParts;

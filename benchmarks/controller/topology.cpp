@@ -3,7 +3,7 @@
 
 #include <array>
 
-#include "pcs/lts/parsers.h"
+#include "pcs/lts/parsers/string_string.h"
 #include "pcs/common/directory.h"
 
 static void BM_TopoologyWithFiveResources(benchmark::State& state) {

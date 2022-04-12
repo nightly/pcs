@@ -4,7 +4,7 @@
 #include <optional>
 #include <iostream>
 
-#include "pcs/lts/parsers.h"
+#include "pcs/lts/parsers/string_string.h"
 #include "pcs/lts/writers.h"
 #include "pcs/machine/machine.h"
 #include "pcs/product/recipe.h"

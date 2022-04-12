@@ -21,8 +21,8 @@ macro(package_add_test TESTNAME)
         PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${PROJECT_DIR}"
     )
     set_target_properties(${TESTNAME} PROPERTIES 
-    FOLDER tests
-    RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin/tests")
+        FOLDER tests
+        RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin/tests")
 endmacro()
 
 # Test Suite

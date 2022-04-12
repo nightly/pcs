@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "pcs/lts/state.h"
+#include "pcs/common/vec_comma_ostream.h"
 
 namespace pcs {
 

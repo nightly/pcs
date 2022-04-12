@@ -9,7 +9,7 @@
 #include "pcs/lts/lts.h"
 #include "pcs/topology/topology.h"
 #include "pcs/lts/state.h"
-#include "pcs/lts/parsers.h"
+#include "pcs/lts/parsers/string_string.h"
 #include "pcs/lts/writers.h"
 
 void MergeExample() {

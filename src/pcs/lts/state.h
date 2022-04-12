@@ -6,6 +6,8 @@
 #include <fstream>
 #include <utility>
 
+#include "pcs/common/vec_comma_ostream.h"
+
 namespace pcs::internal {
 
 	template <typename KeyT, typename TransitionT = std::string>

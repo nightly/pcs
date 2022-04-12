@@ -1,6 +1,6 @@
 #pragma once
 
-#if defined _DEBUG 
+#if defined _DEBUG == 1
 	#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_INFO
 #else 
 	#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_OFF
