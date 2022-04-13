@@ -24,12 +24,14 @@ namespace pcs {
 	 * @brief Transforms (_,_,_) into a vector 
 	 * @param delimiter: default argument of ','
 	 */
-	void StringToVector(const std::string& str, std::vector<std::string>& vec, char delimiter) {
+	std::vector<std::string> StringToVector(const std::string& str, char delimiter) {
+		std::vector<std::string> vec;
 		std::stringstream stream(str);
 		std::string cur;
 		while (std::getline(stream, cur, delimiter)) {
 			vec.emplace_back(cur);
 		}
+		return vec;
 	}
 
 }

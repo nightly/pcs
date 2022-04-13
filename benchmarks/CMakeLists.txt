@@ -20,4 +20,4 @@ macro(package_add_benchmark BENCHNAME)
 endmacro()
 
 # Benchmark Suite
-package_add_benchmark("topology-generation" "controller/topology.cpp")
+package_add_benchmark("topology-generation" "topology/topology.cpp")

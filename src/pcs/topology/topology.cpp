@@ -11,6 +11,7 @@
 #include "pcs/lts/lts.h"
 #include "pcs/lts/state.h"
 #include "pcs/common/strings.h"
+#include "pcs/operation/label.h"
 
 namespace pcs {
 
@@ -43,8 +44,8 @@ namespace pcs {
 		if (visited[states_str] == true) {
 			return;
 		}
-
 		visited[states_str] = true;
+		
 		for (size_t i = 0; i < ltss.size(); ++i) {
 			for (const auto& t : ltss[i].states().at(states_vec[i]).transitions_) {
 				if (t.first.find("in:") != std::string::npos || t.first.find("out:") != std::string::npos) {
@@ -67,17 +68,15 @@ namespace pcs {
 	 */
 	bool MatchingTransfer(const std::span<LabelledTransitionSystem<std::string, std::string>>& ltss, std::vector<std::string>& states_vec,
 	size_t current_ltss_idx, const std::pair<std::string, std::string>& current_transition) {
-		bool is_in = current_transition.first.find("in:") != std::string::npos ? true : false; // In vs Out
-		size_t n = is_in ? stoull(current_transition.first.substr(3)) : stoull(current_transition.first.substr(4));
-		std::string match_string; 
-		is_in ? match_string = "out:" : match_string = "in:";
-		match_string += std::to_string(n);
+		TransferOperation transfer = *(StringToTransfer(current_transition.first));
+		TransferOperation inverse = transfer.Inverse();
+
 		for (size_t i = 0; i < ltss.size(); ++i) {
 			if (i == current_ltss_idx) {
 				continue;
 			}
 			for (const auto& t : ltss[i].states().at(states_vec[i]).transitions_) {
-				if (t.first.find(match_string) != std::string::npos) {
+				if (t.first.find(inverse.name()) != std::string::npos) {
 					return true;
 				}
 			}

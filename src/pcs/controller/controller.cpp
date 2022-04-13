@@ -20,7 +20,7 @@ namespace pcs {
 		controller.set_initial_state(initial_state, true);
 
 		bool successful_generation = ProcessRecipe(controller, machine, recipe, 
-			recipe.lts_.initial_state(), initial_state, 0, ResParts);
+			recipe.lts().initial_state(), initial_state, 0, ResParts);
 		
 		if (!successful_generation) {
 			return std::nullopt;
@@ -34,7 +34,7 @@ namespace pcs {
 	// If the recipe cannot be realised at any point, false will be returned
 	bool ProcessRecipe(LabelledTransitionSystem<std::string>& controller, const Machine& machine, const Recipe& recipe, 
 	const std::string& current_recipe_state, std::string& topology_state, size_t iteration, std::vector<std::vector<std::string>>& ResParts) {
-		if (recipe.lts_[current_recipe_state].transitions_.empty()) {
+		if (recipe.lts()[current_recipe_state].transitions_.empty()) {
 			return true; // No further recipe states to process
 		}
 		const LabelledTransitionSystem<std::string>& topology = machine.topology();
@@ -42,7 +42,7 @@ namespace pcs {
 		std::string controller_state = "s" + std::to_string(iteration);
 		std::string transition;
 
-		const CompositeOperation& co = recipe.lts_[current_recipe_state].transitions_[0].first; // assume 1st transition as guard passing
+		const CompositeOperation& co = recipe.lts()[current_recipe_state].transitions_[0].first; // assume 1st transition as guard passing
 		for (const auto& tuple : co.sequential) {
 			const auto& [op, input, output] = tuple;
 			if (input.empty() || (input == output)) {
@@ -67,7 +67,7 @@ namespace pcs {
 		++iteration;
 		controller.AddTransition(controller_state, transition, "s" + std::to_string(iteration));
 		ProcessRecipe(controller, machine, recipe,
-			recipe.lts_[current_recipe_state].transitions_[0].second, topology_state, iteration, ResParts);
+			recipe.lts()[current_recipe_state].transitions_[0].second, topology_state, iteration, ResParts);
 	}
 
 }

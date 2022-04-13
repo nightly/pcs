@@ -40,7 +40,7 @@ inline static void ComputeExpTopology(pcs::Machine& machine) {
 
 inline void Experimental() {
 	pcs::Recipe recipe = LoadExpRecipe();
-	pcs::ExportToFile(recipe.lts_, "../../exports/experimental/recipe.txt");
+	pcs::ExportToFile(recipe.lts(), "../../exports/experimental/recipe.txt");
 
 	pcs::Machine machine = LoadExpMachine();
 	const std::vector<pcs::LabelledTransitionSystem<std::string>>& resources = machine.resources();

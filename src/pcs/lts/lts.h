@@ -87,8 +87,8 @@ namespace pcs {
 			return false;
 		}
 
-		void AddTransition(const KeyT& start_state, const TransitionT label,
-		const KeyT& end_state, bool create_missing_states = true) {
+		void AddTransition(const KeyT& start_state, const TransitionT& label, const KeyT& end_state, 
+		bool create_missing_states = true) {
 			if (!HasState(start_state) && create_missing_states) {
 				AddState(State(start_state));
 			}

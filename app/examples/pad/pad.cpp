@@ -12,7 +12,7 @@
 
 void PadExample() {
 	pcs::Recipe recipe = LoadPadRecipe();
-	pcs::ExportToFile(recipe.lts_, "../../exports/pad/recipe.txt");
+	pcs::ExportToFile(recipe.lts(), "../../exports/pad/recipe.txt");
 
 	pcs::Machine machine = LoadPadMachine();
 	const std::vector<pcs::LabelledTransitionSystem<std::string>>& resources =  machine.resources();

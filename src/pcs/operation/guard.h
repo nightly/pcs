@@ -15,6 +15,9 @@ namespace pcs {
 	public:
 		Guard() = default;
 		Guard(const std::string& name);
+		~Guard() = default;
+
+		const std::string& name() const override;
 
 		bool operator==(const Guard& other) const;
 		friend std::ostream& operator<<(std::ostream& os, const Guard& guard);

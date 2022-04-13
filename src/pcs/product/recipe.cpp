@@ -12,6 +12,10 @@ namespace pcs {
 		set_recipe(filepath);
 	}
 
+	const LabelledTransitionSystem<std::string, CompositeOperation>& Recipe::lts() const {
+		return lts_;
+	}
+
 	void Recipe::set_recipe(const std::filesystem::path& filepath) {
 		try {
 			ReadFromJsonFile(lts_, filepath);

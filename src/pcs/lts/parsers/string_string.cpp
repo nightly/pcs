@@ -9,6 +9,8 @@
 
 #include <nlohmann/json.hpp>
 
+#include "pcs/common/strings.h"
+
 namespace pcs {
 
 	/*
@@ -45,6 +47,33 @@ namespace pcs {
 			throw;
 		}
 	}
+
+	/*
+	 * @brief ReadFromFile overload where LTS `KeyT = std::vector<std::string>`. 
+	 */
+	//void ReadFromFile(LabelledTransitionSystem<std::vector<std::string>, std::string>& lts, const std::filesystem::path& filepath) {
+	//	std::string line;
+	//	bool first_line = true;
+	//	try {
+	//		std::ifstream stream(filepath);
+	//		stream.exceptions(std::ifstream::badbit);
+	//		while (std::getline(stream, line)) {
+	//			if (first_line) {
+	//				lts.set_initial_state(StringToVector(line), true);
+	//				first_line = false;
+	//				continue;
+	//			}
+	//			std::string start_state, label, end_state;
+	//			std::istringstream ss(line);
+	//			std::getline(ss, start_state, ' ');
+	//			std::getline(ss, label, ' ');
+	//			std::getline(ss, end_state);
+	//			lts.AddTransition(StringToVector(start_state), label, StringToVector(end_state));
+	//		}
+	//	} catch (std::ifstream::failure& e) {
+	//		throw;
+	//	}
+	//}
 
 	/*
 	 * @brief ReadFromFile will parse a JSON input file into an instance of the LTS<Key = string, Transition = string> class.

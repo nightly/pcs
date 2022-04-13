@@ -2,26 +2,18 @@
 
 #include <string>
 #include <filesystem>
+#include <memory>
 
 #include <nlohmann/json.hpp>
 
 #include "pcs/operation/operation.h"
 #include "pcs/operation/transfer.h"
 #include "pcs/operation/nop.h"
+#include "pcs/common/strings.h"
+#include "pcs/operation/label.h"
 
 namespace pcs {
 
-
-	static IOperation StringToOperation(const std::string& label) {
-		if (label.find("in:") != std::string::npos) {
-			return TransferOperation(Transfer::in, stoull(label.substr(3)));
-		} else if (label.find("out:") != std::string::npos) {
-			return TransferOperation(Transfer::out, stoull(label.substr(4)));
-		} else if (label == "nop") {
-			return Nop();
-		}
-		return Operation(label);
-	}
 
 	/*
 	 * @brief Reads a text file into an instance of LTS<Key = string, Transition = IOperation>
@@ -34,7 +26,7 @@ namespace pcs {
 	 * @param filepath: path to the file containing a LTS
 	 * @exception Propagates std::ifstream::failure
 	 */
-	void ReadFromFile(LabelledTransitionSystem<std::string, IOperation>& lts, const std::filesystem::path& filepath) {
+	void ReadFromFile(LabelledTransitionSystem<std::string, IOperation*>& lts, const std::filesystem::path& filepath) {
 		std::string line;
 		bool first_line = true;
 		try {
@@ -52,11 +44,39 @@ namespace pcs {
 				std::getline(ss, label, ' ');
 				std::getline(ss, end_state);
 
-				lts.AddTransition(start_state, StringToOperation(label), end_state);
+				// lts.AddTransition(start_state, *StringToOperation(label), end_state);
 			}
 		} catch (std::ifstream::failure& e) {
 			throw;
 		}
 	}
+
+	/*
+	 * @brief ReadFromFile overload to specifically handle key type of std::vector<std::string> opposed to simply std::string 
+	 */
+	//void ReadFromFile(LabelledTransitionSystem<std::vector<std::string>, IOperation*>& lts, const std::filesystem::path& filepath) {
+	//	std::string line;
+	//	bool first_line = true;
+	//	try {
+	//		std::ifstream stream(filepath);
+	//		stream.exceptions(std::ifstream::badbit);
+	//		while (std::getline(stream, line)) {
+	//			if (first_line) {
+	//				lts.set_initial_state(StringToVector(line), true);
+	//				first_line = false;
+	//				continue;
+	//			}
+	//			std::string start_state, label, end_state;
+	//			std::istringstream ss(line);
+	//			std::getline(ss, start_state, ' ');
+	//			std::getline(ss, label, ' ');
+	//			std::getline(ss, end_state);
+
+	//			// lts.AddTransition(StringToVector(start_state), StringToOperation(label), StringToVector(end_state));
+	//		}
+	//	} catch (std::ifstream::failure& e) {
+	//		throw;
+	//	}
+	//}
 
 }

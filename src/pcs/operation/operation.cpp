@@ -12,6 +12,10 @@ namespace pcs {
 	bool Operation::operator==(const Operation& other) const {
 		return (name_ == other.name_);
 	}
+	
+	const std::string& Operation::name() const {
+		return name_;
+	}
 
 	std::ostream& operator<<(std::ostream& os, const Operation& operation) {
 		os << "Operation Name: " << operation.name_ << '\n';
