@@ -43,11 +43,12 @@ namespace pcs {
 		std::string transition;
 
 		const CompositeOperation& co = recipe.lts_[current_recipe_state].transitions_[0].first; // assume 1st transition as guard passing
-		for (const auto& o : co.sequential) {
-			if (o.input_.empty() || (o.input_ == o.output_)) {
+		for (const auto& tuple : co.sequential) {
+			const auto& [op, input, output] = tuple;
+			if (input.empty() || (input == output)) {
 				bool found_matching = false;
 				for (const auto& t : topology[topology_state].transitions_) {
-					if (t.first == o.name_) {
+					if (t.first == op.name_) {
 						found_matching = true;
 						// Update ResParts with the corresponding resource index
 						// ResParts[i] = o.output_;

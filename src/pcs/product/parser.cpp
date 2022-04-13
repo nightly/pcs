@@ -40,32 +40,36 @@ namespace pcs {
 		for (const auto& t : j["transitions"]) {
 			CompositeOperation co;
 			if (t["label"]["guard"] != nlohmann::json::object()) {
-				co.guard.name_ = t["label"]["guard"]["name"];
+				co.guard.first.name_ = t["label"]["guard"]["name"];
 				for (const auto& g : t["label"]["guard"]["input"]) {
-					co.guard.input_.emplace_back(g);
+					co.guard.second.emplace_back(g);
 				}
 			}
 			for (const auto& seq_op : t["label"]["sequential"]) {
 				Operation o;
 				o.name_ = seq_op["name"];
+				std::vector<std::string> input;
+				std::vector<std::string> output;
 				for (const auto& in : seq_op["input"]) {
-					o.input_.emplace_back(in);
+					input.emplace_back(in);
 				}
 				for (const auto& out : seq_op["output"]) {
-					o.output_.emplace_back(out);
+					output.emplace_back(out);
 				}
-				co.sequential.emplace_back(std::move(o));
+				co.sequential.emplace_back(std::move(o), input, output);
 			}
 			for (const auto& par_op : t["label"]["parallel"]) {
 				Operation o;
 				o.name_ = par_op["name"];
+				std::vector<std::string> input;
+				std::vector<std::string> output;
 				for (const auto& in : par_op["input"]) {
-					o.input_.emplace_back(in);
+					input.emplace_back(in);
 				}
 				for (const auto& out : par_op["output"]) {
-					o.output_.emplace_back(out);
+					output.emplace_back(out);
 				}
-				co.parallel.emplace_back(std::move(o));
+				co.parallel.emplace_back(std::move(o), input, output);
 			}
 			lts.AddTransition(t["startState"], std::move(co), t["endState"], true);
 		}

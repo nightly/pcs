@@ -14,27 +14,30 @@ namespace pcs {
 	}
 
 	bool CompositeOperation::HasGuard() const {
-		if (guard.name_ != "") {
+		if (guard.first.name_ != "") {
 			return true;
 		}
 		return false;
 	}
 
 	std::ostream& operator<<(std::ostream& os, const CompositeOperation& co) {
+		// @Todo: parts
 		if (co.HasGuard()) {
 			os << "Guard operation: \n";
-			os << "  " << co.guard;
+			os << "  " << co.guard.first;
 		}
 		if (co.sequential.size() >= 1) {
 			os << "  Sequential operations:\n";
 			for (const auto& o : co.sequential) {
-				os << "  " << o << "\n";
+				auto& [op, input, output] = o;
+				os << "  " << op << "\n";
 			}
 		}
 		if (co.parallel.size() >= 1) {
 			os << "  Parallel operations:\n";
 			for (const auto& o : co.parallel) {
-				os << "  " << o << "\n";
+				auto& [op, input, output] = o;
+				os << "  " << op << "\n";
 			}
 		}
 		return os;
@@ -42,11 +45,12 @@ namespace pcs {
 
 	std::ofstream& operator<<(std::ofstream& os, const CompositeOperation& co) {
 		if (co.HasGuard()) {
-			os << co.guard.name_ << "(" << VectorToString(co.guard.input_) << ") ; ";
+			os << co.guard.first.name_ << "(" << VectorToString(co.guard.second) << ") ; ";
 		}
 		for (size_t i = 0; i < co.sequential.size(); i++) {
-			os << co.sequential[i].name_ << "(" << VectorToString(co.sequential[i].input_) << ")" <<
-				"(" << VectorToString(co.sequential[i].output_) << ")";
+			auto& [op, input, output] = co.sequential[i];
+			os << op.name_ << "(" << VectorToString(input) << ")" <<
+				"(" << VectorToString(output) << ")";
 			if (i != co.sequential.size() - 1) {
 				os << " ;";
 			}
@@ -54,8 +58,9 @@ namespace pcs {
 		if (co.parallel.size() >= 1) {
 			os << "|| ";
 			for (size_t i = 0; i < co.parallel.size(); i++) {
-				os << co.parallel[i].name_ << "(" << VectorToString(co.parallel[i].input_) << ")" <<
-					"(" << VectorToString(co.parallel[i].output_) << ")";
+				auto& [op, input, output] = co.parallel[i];
+				os << op.name_ << "(" << VectorToString(input) << ")" <<
+					"(" << VectorToString(output) << ")";
 				if (i != co.parallel.size() - 1) {
 					os << " ;";
 				}
@@ -64,3 +69,7 @@ namespace pcs {
 		return os;
 	}
 }
+
+/*
+	@Todo: correct writers with proper spacing & ostream with parts
+*/

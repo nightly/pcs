@@ -12,9 +12,9 @@ namespace pcs {
 
 	struct CompositeOperation {
 	public:
-		Guard guard;
-		std::vector<Operation> parallel;
-		std::vector<Operation> sequential;
+		std::pair<Guard, std::vector<std::string>> guard; // Operation + Input parts
+		std::vector<std::tuple<Operation, std::vector<std::string>, std::vector<std::string>>> sequential; // Operation, Input, Output
+		std::vector<std::tuple<Operation, std::vector<std::string>, std::vector<std::string>>> parallel; // ^
 	public:
 		CompositeOperation() = default;
 		CompositeOperation(Guard&& guard, std::vector<Operation>&& parallel_operations, std::vector<Operation>&& sequential_operations);
