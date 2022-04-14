@@ -9,6 +9,7 @@
 // Log level must be defined prior to including spdlog.h
 #include <spdlog/spdlog.h>
 
+
 #if defined _DEBUG == 1
 	#define PCS_INFO(...) SPDLOG_INFO( __VA_ARGS__)
 	#define PCS_DEBUG(...) SPDLOG_DEBUG( __VA_ARGS__)

@@ -21,3 +21,6 @@ endmacro()
 
 # Benchmark Suite
 package_add_benchmark("topology-generation" "topology/topology.cpp")
+
+
+package_add_benchmark("experimental" "experimental/experimental.cpp")

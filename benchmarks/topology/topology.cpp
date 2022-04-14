@@ -30,6 +30,6 @@ static void BM_TopoologyWithFiveResources(benchmark::State& state) {
     }
 }
 
-BENCHMARK(BM_TopologyWithTwoResources); // 1000ns to 2000ns -
+BENCHMARK(BM_TopologyWithTwoResources); // 1600ns - 400,000 iterations
 
 BENCHMARK(BM_TopoologyWithFiveResources); // 414915 ns - 1659 iterations

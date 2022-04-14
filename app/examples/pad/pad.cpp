@@ -2,13 +2,14 @@
 
 #include <vector>
 #include <optional>
-#include <iostream>
 
 #include "pcs/lts/parsers/string_string.h"
 #include "pcs/lts/writers.h"
 #include "pcs/machine/machine.h"
 #include "pcs/product/recipe.h"
 #include "pcs/controller/controller.h"
+#include "pcs/controller/highlighter.h"
+#include "pcs/common/log.h"
 
 void PadExample() {
 	pcs::Recipe recipe = LoadPadRecipe();
@@ -28,8 +29,9 @@ void PadExample() {
 	std::optional<pcs::LabelledTransitionSystem<std::string>> controller = pcs::GenerateController(machine, recipe);
 	if (controller.has_value()) {
 		pcs::ExportToFile(*controller, "../../exports/pad/controller.txt");
+		pcs::HighlightTopology(topology, *controller, "../../exports/pad/highlighted_topology.txt");
 	} else {
-		std::cout << "[PAD] No controller generated\n";
+		PCS_INFO("[PAD] No controller generated");
 	}
 }
 
