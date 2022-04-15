@@ -5,6 +5,6 @@
 
 namespace pcs {
 
-	void RemoveResources(LabelledTransitionSystem<>& topology, std::initializer_list<size_t> resources);
-	void AddResources(LabelledTransitionSystem<>& topology, const std::span<LabelledTransitionSystem<>>& ltss);
+	void RemoveResources(LTS<>& topology, std::initializer_list<size_t> resources);
+	void AddResources(LTS<>& topology, const std::span<LTS<>>& ltss);
 }

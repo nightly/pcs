@@ -9,7 +9,7 @@ namespace pcs {
 	 * @param resources: the resource to be removed relative to which position it is in the topology (_,x,_), x = 1,
 	 *		  which coincides with the order of ltss' specified in the original span container of combine()
 	 */
-	void RemoveResources(LabelledTransitionSystem<>& topology, std::initializer_list<size_t> resources) {
+	void RemoveResources(LTS<>& topology, std::initializer_list<size_t> resources) {
 
 	}
 
@@ -18,7 +18,7 @@ namespace pcs {
 	 * @param topology: the pre-existing/current LTS topology
 	 * @param ltss: the new LTSS to add to be merged with the existing topology
 	 */
-	void AddResources(LabelledTransitionSystem<>& topology, const std::span<LabelledTransitionSystem<>>& ltss) {
+	void AddResources(LTS<>& topology, const std::span<LTS<>>& ltss) {
 
 	}
 

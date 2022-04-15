@@ -9,8 +9,8 @@
 #include "pcs/lts/parsers/string_string.h"
 
 TEST(LTSMerge, SelfMerge) {
-	pcs::LabelledTransitionSystem<std::string> expected, got;
-	std::array<pcs::LabelledTransitionSystem<std::string>, 2> ltss;
+	pcs::LTS<std::string> expected, got;
+	std::array<pcs::LTS<std::string>, 2> ltss;
 	pcs::ReadFromFile(ltss[0], "../../tests/lts/testdata/lts1.txt");
 	pcs::ReadFromFile(ltss[1], "../../tests/lts/testdata/lts1.txt");
 	pcs::ReadFromFile(expected, "../../tests/topology/testdata/lts_1_self_merge.txt"); 
@@ -20,8 +20,8 @@ TEST(LTSMerge, SelfMerge) {
 }
 
 TEST(LTSMerge, Merge1And2) {
-	pcs::LabelledTransitionSystem<std::string> expected, got;
-	std::array<pcs::LabelledTransitionSystem<std::string>, 2> ltss;
+	pcs::LTS<std::string> expected, got;
+	std::array<pcs::LTS<std::string>, 2> ltss;
 	pcs::ReadFromFile(ltss[0], "../../tests/lts/testdata/lts1.txt");
 	pcs::ReadFromFile(ltss[1], "../../tests/lts/testdata/lts2.txt");
 	pcs::ReadFromFile(expected, "../../tests/topology/testdata/lts_1_2_merge.txt");
@@ -31,8 +31,8 @@ TEST(LTSMerge, Merge1And2) {
 }
 
 TEST(LTSMerge, MergeMany) {
-	pcs::LabelledTransitionSystem<std::string> expected, got;
-	std::array<pcs::LabelledTransitionSystem<std::string>, 4> ltss;
+	pcs::LTS<std::string> expected, got;
+	std::array<pcs::LTS<std::string>, 4> ltss;
 	pcs::ReadFromFile(ltss[0], "../../tests/lts/testdata/lts1.txt");
 	pcs::ReadFromFile(ltss[1], "../../tests/lts/testdata/lts2.txt");
 	pcs::ReadFromFile(ltss[2], "../../tests/lts/testdata/lts3.txt");
@@ -44,8 +44,8 @@ TEST(LTSMerge, MergeMany) {
 }
 
 TEST(LTSMerge, DISABLED_MergeWithTransferOps) {
-	pcs::LabelledTransitionSystem<std::string> expected, got;
-	std::array<pcs::LabelledTransitionSystem<std::string>, 2> ltss;
+	pcs::LTS<std::string> expected, got;
+	std::array<pcs::LTS<std::string>, 2> ltss;
 	pcs::ReadFromFile(ltss[0], "../../data/pad/Resource1.txt");
 	pcs::ReadFromFile(ltss[1], "../../data/pad/Resource2.txt");
 	pcs::ReadFromFile(expected, "../../tests/topology/testdata/r1_5_merge.txt");

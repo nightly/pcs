@@ -12,8 +12,8 @@ namespace pcs {
 	/*
 	 * @brief Returns a highlighted topology showing the path the controller took
 	 */
-	void HighlightTopology(const LabelledTransitionSystem<std::string, std::string>& topology,
-	const LabelledTransitionSystem<std::string, std::string>& controller, const std::filesystem::path& out_path) {
+	void HighlightTopology(const LTS<std::string, std::string>& topology,
+	const LTS<std::string, std::string>& controller, const std::filesystem::path& out_path) {
 		std::ofstream os;
 		os.exceptions(std::ofstream::badbit);
 		CreateDirectoryForPath(out_path);
@@ -67,4 +67,5 @@ namespace pcs {
 
 /*
 	@Note: `  c -> d [color="blue"]`
+	@Cleanup: should probably be a functional option
 */

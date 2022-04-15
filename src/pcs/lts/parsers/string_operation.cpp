@@ -26,7 +26,7 @@ namespace pcs {
 	 * @param filepath: path to the file containing a LTS
 	 * @exception Propagates std::ifstream::failure
 	 */
-	void ReadFromFile(LabelledTransitionSystem<std::string, IOperation*>& lts, const std::filesystem::path& filepath) {
+	void ReadFromFile(LTS<std::string, IOperation*>& lts, const std::filesystem::path& filepath) {
 		std::string line;
 		bool first_line = true;
 		try {
@@ -54,7 +54,7 @@ namespace pcs {
 	/*
 	 * @brief ReadFromFile overload to specifically handle key type of std::vector<std::string> opposed to simply std::string 
 	 */
-	//void ReadFromFile(LabelledTransitionSystem<std::vector<std::string>, IOperation*>& lts, const std::filesystem::path& filepath) {
+	//void ReadFromFile(LTS<std::vector<std::string>, IOperation*>& lts, const std::filesystem::path& filepath) {
 	//	std::string line;
 	//	bool first_line = true;
 	//	try {

@@ -16,17 +16,17 @@ void PadExample() {
 	pcs::ExportToFile(recipe.lts(), "../../exports/pad/recipe.txt");
 
 	pcs::Machine machine = LoadPadMachine();
-	const std::vector<pcs::LabelledTransitionSystem<std::string>>& resources =  machine.resources();
+	const std::vector<pcs::LTS<std::string>>& resources =  machine.resources();
 	for (size_t i = 0; i < machine.NumOfResources(); i++) {
 		std::string path = "../../exports/pad/Resource" + std::to_string(i + 1) + ".txt";
 		pcs::ExportToFile(resources[i], path);
 	}
 
 	ComputePadTopology(machine);
-	const pcs::LabelledTransitionSystem<std::string>& topology = machine.topology();
+	const pcs::LTS<std::string>& topology = machine.topology();
 	pcs::ExportToFile(topology, "../../exports/pad/topology.txt");
 	
-	std::optional<pcs::LabelledTransitionSystem<std::string>> controller = pcs::GenerateController(machine, recipe);
+	std::optional<pcs::LTS<std::string>> controller = pcs::GenerateController(machine, recipe);
 	if (controller.has_value()) {
 		pcs::ExportToFile(*controller, "../../exports/pad/controller.txt");
 		pcs::HighlightTopology(topology, *controller, "../../exports/pad/highlighted_topology.txt");

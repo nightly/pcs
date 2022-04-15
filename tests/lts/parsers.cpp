@@ -7,10 +7,10 @@
 #include "pcs/lts/lts.h"
 
 TEST(ParseLTS, LTS1) {
-	pcs::LabelledTransitionSystem got;
+	pcs::LTS got;
 	pcs::ReadFromFile(got, "../../tests/lts/testdata/lts1.txt");
 
-	pcs::LabelledTransitionSystem expected;
+	pcs::LTS expected;
 	expected.set_initial_state("s0", true);
 	expected.AddTransition("s0", "a1", "s1");
 	expected.AddTransition("s1", "a2", "s2");
@@ -19,10 +19,10 @@ TEST(ParseLTS, LTS1) {
 }
 
 TEST(ParseJsonLTS, LTS1) {
-	pcs::LabelledTransitionSystem got;
+	pcs::LTS got;
 	pcs::ReadFromJsonFile(got, "../../tests/lts/testdata/lts1.json");
 
-	pcs::LabelledTransitionSystem expected;
+	pcs::LTS expected;
 	expected.set_initial_state("s0", true);
 	expected.AddTransition("s0", "a1", "s1");
 	expected.AddTransition("s1", "a2", "s2");

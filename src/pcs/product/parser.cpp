@@ -18,7 +18,7 @@ namespace pcs {
 	 * @param filepath: path to the file containing a LTS, examples contained within the data folder.
 	 * @exception Propagates std::ifstream::failure
 	 */
-	void ReadFromJsonFile(LabelledTransitionSystem<std::string, CompositeOperation>& lts, const std::filesystem::path& filepath) {
+	void ReadFromJsonFile(LTS<std::string, CompositeOperation>& lts, const std::filesystem::path& filepath) {
 		nlohmann::json j;
 		try {
 			std::ifstream stream(filepath);
@@ -35,7 +35,7 @@ namespace pcs {
 	 * @param lts: Labelled Transition System to parse into
 	 * @param j: json object containing the correct object layout as previously defined
 	 */
-	void ParseJson(LabelledTransitionSystem<std::string, CompositeOperation>& lts, const nlohmann::json& j) {
+	void ParseJson(LTS<std::string, CompositeOperation>& lts, const nlohmann::json& j) {
 		lts.set_initial_state(j["initialState"], true);
 		for (const auto& t : j["transitions"]) {
 			CompositeOperation co;

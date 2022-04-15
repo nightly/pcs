@@ -11,7 +11,7 @@
 using namespace pcs;
 
 TEST(ProductParser, Recipe1) {
-	LabelledTransitionSystem<std::string, CompositeOperation> got, expected;
+	LTS<std::string, CompositeOperation> got, expected;
 	ReadFromJsonFile(got, "../../tests/product/testdata/recipe1.json");
 
 	expected.set_initial_state("A", false);

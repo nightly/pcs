@@ -5,18 +5,18 @@
 
 namespace pcs {
 
-	Machine::Machine(std::vector<LabelledTransitionSystem<std::string, std::string>>&& resources, bool compute_topology) {
+	Machine::Machine(std::vector<LTS<std::string, std::string>>&& resources, bool compute_topology) {
 		resources_ = std::move(resources);
 		if (compute_topology) {
 			ComputeTopology();
 		}
 	}
 
-	const std::vector<LabelledTransitionSystem<std::string, std::string>>& Machine::resources() const {
+	const std::vector<LTS<std::string, std::string>>& Machine::resources() const {
 		return resources_;
 	}
 
-	const LabelledTransitionSystem<std::string, std::string>& Machine::topology() const {
+	const LTS<std::string, std::string>& Machine::topology() const {
 		return topology_;
 	}
 
@@ -28,7 +28,7 @@ namespace pcs {
 		return topology_.NumOfStates();
 	}
 
-	Machine::Machine(const std::span<LabelledTransitionSystem<std::string, std::string>>& resources, bool compute_topology)  {
+	Machine::Machine(const std::span<LTS<std::string, std::string>>& resources, bool compute_topology)  {
 		resources_.assign(resources.begin(), resources.end());
 		if (compute_topology) {
 			ComputeTopology();
@@ -46,7 +46,7 @@ namespace pcs {
 	 * @exception Propagates std::ifstream::failure
 	 */
 	void Machine::AddResource(const std::filesystem::path& filepath, bool is_json) {
-		LabelledTransitionSystem<std::string> lts;
+		LTS<std::string> lts;
 		try {
 			if (is_json) {
 				ReadFromJsonFile(lts, filepath);
@@ -62,7 +62,7 @@ namespace pcs {
 	/*
 	 * @brief Adds a LTS<std::string> resource to the machine & handles the implications on the topology 
 	 */
-	void Machine::AddResource(const LabelledTransitionSystem<std::string, std::string>& resource) {
+	void Machine::AddResource(const LTS<std::string, std::string>& resource) {
 		if (topology_.NumOfStates() == 0) {
 			resources_.emplace_back(resource);
 		} else {
@@ -73,7 +73,7 @@ namespace pcs {
 	/* 
 	 * @brief Adds a resource with move semantics
 	 */
-	void Machine::AddResource(LabelledTransitionSystem<std::string, std::string>&& resource) {
+	void Machine::AddResource(LTS<std::string, std::string>&& resource) {
 		if (topology_.NumOfStates() == 0) {
 			resources_.emplace_back(std::move(resource));
 		} else {

@@ -11,26 +11,26 @@
 
 namespace pcs {
 
+	/*
+	 * @brief Labelled Transition System: comprised of states and transitions to other states 
+	 * @tparam KeyT: the data type used to defined keys/state names. E.g std::string, std::vector<std::string>
+	 * @tparam TransitionT : defines the data type used to represent transitions. E.g. std::string, CompositeOperation
+	 */
 	template <typename KeyT = std::string, typename TransitionT = std::string>
-	class LabelledTransitionSystem {
+	class LTS {
 	public:
 		using State = internal::State<KeyT, TransitionT>;
 	private:
 		std::unordered_map<KeyT, State> states_;
 		KeyT initial_state_;
 	public:
-		
-		/*
-		 * @tparam KeyT: the data type used to defined keys/state names. E.g std::string, std::vector<std::string>
-		 * @tparam TransitionT : defines the data type used to represent transitions. E.g. std::string, CompositeOperation
-		 */
-		LabelledTransitionSystem() = default;
+		LTS() = default;
 
-		LabelledTransitionSystem(const KeyT& initial_state, bool create_initial) {
+		LTS(const KeyT& initial_state, bool create_initial) {
 			SetInitialState(initial_state, create_initial);
 		}
 
-		~LabelledTransitionSystem() = default;
+		~LTS() = default;
 
 		const std::unordered_map<KeyT, State>& states() const {
 			return states_;
@@ -100,7 +100,7 @@ namespace pcs {
 			s.AddTransition(label, end_state);
 		}
 
-		bool operator==(const LabelledTransitionSystem& other) const {
+		bool operator==(const LTS& other) const {
 			return (initial_state_ == other.initial_state_) && (states_ == other.states_);
 		}
 
@@ -112,7 +112,7 @@ namespace pcs {
 			return states_.at(key);
 		}
 
-		friend std::ostream& operator<<(std::ostream& os, const LabelledTransitionSystem& lts) {
+		friend std::ostream& operator<<(std::ostream& os, const LTS& lts) {
 			if (lts.initial_state_.empty() && lts.states_.empty()) {
 				os << "Empty Labelled Transition System\n";
 				return os;
@@ -124,7 +124,7 @@ namespace pcs {
 			return os;
 		}
 
-		friend std::ofstream& operator<<(std::ofstream& os, const LabelledTransitionSystem& lts) {
+		friend std::ofstream& operator<<(std::ofstream& os, const LTS& lts) {
 			os << "digraph finite_state_machine {\n";
 			os << "	fontname=\"Helvetica, Arial, sans - serif\"\n";
 			os << "	node [fontname=\"Helvetica, Arial, sans - serif\"]\n";

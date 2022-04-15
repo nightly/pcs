@@ -20,8 +20,8 @@ namespace pcs {
 	 * @param ltss: lts' to combine
 	 * @returns the combined LTS
 	 */
-	LabelledTransitionSystem<std::string> Combine(const std::span<LabelledTransitionSystem<std::string, std::string>>& ltss) {
-		LabelledTransitionSystem combined_lts;
+	LTS<std::string> Combine(const std::span<LTS<std::string, std::string>>& ltss) {
+		LTS combined_lts;
 		std::vector<std::string> states_vec;
 		for (const auto& lts : ltss) {
 			// Populate with initial states
@@ -38,8 +38,8 @@ namespace pcs {
 	 * @brief CombineRecursive will recursively apply all transititions to generate a topology
 	 * All possible transitions will be considered from each given state (_, _, _, _)
 	 */
-	void CombineRecursive(const std::span<LabelledTransitionSystem<std::string, std::string>>& ltss, std::vector<std::string>& states_vec,
-	std::unordered_map<std::string, bool>& visited, LabelledTransitionSystem<std::string>& combined_lts) {
+	void CombineRecursive(const std::span<LTS<std::string, std::string>>& ltss, std::vector<std::string>& states_vec,
+	std::unordered_map<std::string, bool>& visited, LTS<std::string>& combined_lts) {
 		std::string states_str = VectorToString(states_vec);
 		if (visited[states_str] == true) {
 			return;
@@ -66,7 +66,7 @@ namespace pcs {
 	 * @brief When coming across an "in:X" or "out:X" transition, a corresponding transfer transition is required
 	 * as a transition in one of the states of the other resources
 	 */
-	bool MatchingTransfer(const std::span<LabelledTransitionSystem<std::string, std::string>>& ltss, std::vector<std::string>& states_vec,
+	bool MatchingTransfer(const std::span<LTS<std::string, std::string>>& ltss, std::vector<std::string>& states_vec,
 	size_t current_ltss_idx, const std::pair<std::string, std::string>& current_transition) {
 		TransferOperation transfer = *(StringToTransfer(current_transition.first));
 		TransferOperation inverse = transfer.Inverse();

@@ -43,17 +43,17 @@ inline void Experimental() {
 	pcs::ExportToFile(recipe.lts(), "../../exports/experimental/recipe.txt");
 
 	pcs::Machine machine = LoadExpMachine();
-	const std::vector<pcs::LabelledTransitionSystem<std::string>>& resources = machine.resources();
+	const std::vector<pcs::LTS<std::string>>& resources = machine.resources();
 	for (size_t i = 0; i < machine.NumOfResources(); i++) {
 		std::string path = "../../exports/experimental/Resource" + std::to_string(i + 1) + ".txt";
 		pcs::ExportToFile(resources[i], path);
 	}
 
 	ComputeExpTopology(machine);
-	const pcs::LabelledTransitionSystem<std::string>& topology = machine.topology();
+	const pcs::LTS<std::string>& topology = machine.topology();
 	pcs::ExportToFile(topology, "../../exports/experimental/topology.txt");
 
-	std::optional<pcs::LabelledTransitionSystem<std::string>> controller = pcs::GenerateController(machine, recipe);
+	std::optional<pcs::LTS<std::string>> controller = pcs::GenerateController(machine, recipe);
 	if (controller.has_value()) {
 		pcs::ExportToFile(*controller, "../../exports/experimental/controller.txt");
 	} else {

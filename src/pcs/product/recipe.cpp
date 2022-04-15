@@ -12,7 +12,7 @@ namespace pcs {
 		set_recipe(filepath);
 	}
 
-	const LabelledTransitionSystem<std::string, CompositeOperation>& Recipe::lts() const {
+	const LTS<std::string, CompositeOperation>& Recipe::lts() const {
 		return lts_;
 	}
 

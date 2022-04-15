@@ -13,10 +13,7 @@
 
 namespace pcs {
 
-	template <typename T, typename U>
-	using LTS = pcs::LabelledTransitionSystem<T, U>;
-
-	using Topology = LabelledTransitionSystem<std::vector<std::string>, std::string>;
+	using Topology = LTS<std::vector<std::string>, std::string>;
 
 	std::optional<LTS<std::string, std::string>> GenerateController(const Machine& machine, const Recipe& recipe) {
 		LTS<std::string, std::string> controller;

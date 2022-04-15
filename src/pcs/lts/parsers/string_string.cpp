@@ -24,7 +24,7 @@ namespace pcs {
 	 * @param filepath: path to the file containing a LTS, examples contained within the data folder.
 	 * @exception Propagates std::ifstream::failure
 	 */
-	void ReadFromFile(LabelledTransitionSystem<std::string, std::string>& lts, const std::filesystem::path& filepath) {
+	void ReadFromFile(LTS<std::string, std::string>& lts, const std::filesystem::path& filepath) {
 		std::string line;
 		bool first_line = true;
 		try {
@@ -51,7 +51,7 @@ namespace pcs {
 	/*
 	 * @brief ReadFromFile overload where LTS `KeyT = std::vector<std::string>`. 
 	 */
-	//void ReadFromFile(LabelledTransitionSystem<std::vector<std::string>, std::string>& lts, const std::filesystem::path& filepath) {
+	//void ReadFromFile(LTS<std::vector<std::string>, std::string>& lts, const std::filesystem::path& filepath) {
 	//	std::string line;
 	//	bool first_line = true;
 	//	try {
@@ -85,7 +85,7 @@ namespace pcs {
 	 * @param filepath: path to the file containing a LTS, examples contained within the data folder.
 	 * @exception Propagates std::ifstream::failure
 	 */
-	void ReadFromJsonFile(LabelledTransitionSystem<std::string, std::string>& lts, const std::filesystem::path& filepath) {
+	void ReadFromJsonFile(LTS<std::string, std::string>& lts, const std::filesystem::path& filepath) {
 		nlohmann::json j;
 		try {
 			std::ifstream stream(filepath);
@@ -101,7 +101,7 @@ namespace pcs {
 	 * @param lts: Labelled Transition System to parse into
 	 * @param j: json object containing the "initialState" and "transitions" array of "startState", "label" & "endState"
 	 */
-	void ParseJson(LabelledTransitionSystem<std::string, std::string>& lts, const nlohmann::json& j) {
+	void ParseJson(LTS<std::string, std::string>& lts, const nlohmann::json& j) {
 		lts.set_initial_state(j["initialState"], true);
 		for (const auto& t : j["transitions"]) {
 			lts.AddTransition(t["startState"], t["label"], t["endState"], true);

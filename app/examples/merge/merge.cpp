@@ -14,7 +14,7 @@
 
 void MergeExample() {
 	// Read LTS' & combine
-	std::array<pcs::LabelledTransitionSystem<std::string>, 2> ltss;
+	std::array<pcs::LTS<std::string>, 2> ltss;
 	try {
 		pcs::ReadFromFile(ltss[0], "../../data/lts/lts1.txt");
 		pcs::ReadFromFile(ltss[1], "../../data/lts/lts2.txt");
@@ -22,7 +22,7 @@ void MergeExample() {
 		std::cerr << "Unable to read the file at specified path\n";
 		return std::exit(1);
 	}
-	pcs::LabelledTransitionSystem<std::string> lts_combined = pcs::Combine(ltss);
+	pcs::LTS<std::string> lts_combined = pcs::Combine(ltss);
 
 	// Console output
 	for (size_t i = 0; i < ltss.size(); i++) {

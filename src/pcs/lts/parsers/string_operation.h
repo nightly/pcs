@@ -11,9 +11,9 @@
 
 namespace pcs {
 
-	void ReadFromFile(LabelledTransitionSystem<std::string, IOperation*>& lts, const std::filesystem::path& filepath);
-	void ReadFromFile(LabelledTransitionSystem<std::vector<std::string>, IOperation&>& lts, const std::filesystem::path& filepath);
+	void ReadFromFile(LTS<std::string, IOperation*>& lts, const std::filesystem::path& filepath);
+	void ReadFromFile(LTS<std::vector<std::string>, IOperation&>& lts, const std::filesystem::path& filepath);
 
-	void ReadFromJsonFile(LabelledTransitionSystem<std::string, IOperation*>& lts, const std::filesystem::path& filepath);
-	void ParseJson(LabelledTransitionSystem<std::string, IOperation*>& lts, const nlohmann::json& j);
+	void ReadFromJsonFile(LTS<std::string, IOperation*>& lts, const std::filesystem::path& filepath);
+	void ParseJson(LTS<std::string, IOperation*>& lts, const nlohmann::json& j);
 }
