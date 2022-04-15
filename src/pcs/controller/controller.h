@@ -8,9 +8,22 @@
 
 namespace pcs {
 
-	std::optional<LTS<std::string>> GenerateController(const Machine& machine, const Recipe& recipe);
+	class ControllerGenerator {
+	private:
+		LTS<std::string, std::string> controller_;
+		const Machine& machine_;
+		const LTS<std::string, std::string>& topology_;
+		const Recipe& recipe_;
+		std::vector<std::vector<std::string>> parts_;
+		std::string recipe_state_;
+		std::string topology_state_;
+	public:
+		ControllerGenerator(const Machine& machine, const Recipe& recipe);
+		std::optional<const LTS<std::string, std::string>*> Generate();
+	private:
+		bool HandleComposite(const CompositeOperation& co);
+		bool ProcessRecipe(const std::string& state);
 
-	bool ProcessRecipe(LTS<std::string>& controller, const Machine& machine, const Recipe& recipe,
-		const std::string& current_recipe_state, std::string& topology_state, std::vector<std::vector<std::string>>& parts);
-
+		size_t CurrentResource(const std::string& old_state, const std::string& new_state);
+	};
 }

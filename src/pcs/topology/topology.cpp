@@ -47,16 +47,16 @@ namespace pcs {
 		visited[states_str] = true;
 		
 		for (size_t i = 0; i < ltss.size(); ++i) {
-			for (const auto& t : ltss[i].states().at(states_vec[i]).transitions_) {
-				if (t.first.find("in:") != std::string::npos || t.first.find("out:") != std::string::npos) {
-					bool found = MatchingTransfer(ltss, states_vec, i, t);
+			for (const auto& transition : ltss[i].states().at(states_vec[i]).transitions_) {
+				if (transition.first.find("in:") != std::string::npos || transition.first.find("out:") != std::string::npos) {
+					bool found = MatchingTransfer(ltss, states_vec, i, transition);
 					if (!found) {
 						continue;
 					}
 				}
 				std::vector<std::string> next_states = states_vec;
-				next_states[i] = t.second;
-				combined_lts.AddTransition(states_str, t.first, VectorToString(next_states));
+				next_states[i] = transition.second;
+				combined_lts.AddTransition(states_str, transition.first, VectorToString(next_states));
 				CombineRecursive(ltss, next_states, visited, combined_lts);
 			}
 		}

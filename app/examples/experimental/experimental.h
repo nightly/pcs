@@ -7,8 +7,10 @@
 #include "pcs/lts/parsers/string_string.h"
 #include "pcs/lts/writers.h"
 #include "pcs/machine/machine.h"
+#include "pcs/machine/writers.h"
 #include "pcs/product/recipe.h"
 #include "pcs/controller/controller.h"
+#include "pcs/common/log.h"
 
 inline static pcs::Recipe LoadExpRecipe() {
 	pcs::Recipe recipe;
@@ -43,20 +45,15 @@ inline void Experimental() {
 	pcs::ExportToFile(recipe.lts(), "../../exports/experimental/recipe.txt");
 
 	pcs::Machine machine = LoadExpMachine();
-	const std::vector<pcs::LTS<std::string>>& resources = machine.resources();
-	for (size_t i = 0; i < machine.NumOfResources(); i++) {
-		std::string path = "../../exports/experimental/Resource" + std::to_string(i + 1) + ".txt";
-		pcs::ExportToFile(resources[i], path);
-	}
-
 	ComputeExpTopology(machine);
-	const pcs::LTS<std::string>& topology = machine.topology();
-	pcs::ExportToFile(topology, "../../exports/experimental/topology.txt");
+	pcs::ExportMachine(machine, "../../exports/experimental");
 
-	std::optional<pcs::LTS<std::string>> controller = pcs::GenerateController(machine, recipe);
+	pcs::ControllerGenerator cg(machine, recipe);
+	std::optional<const pcs::LTS<std::string, std::string>*> controller = cg.Generate();
 	if (controller.has_value()) {
-		pcs::ExportToFile(*controller, "../../exports/experimental/controller.txt");
+		pcs::ExportToFile(**controller, "../../exports/experimental/controller.txt");
+		// Highlight
 	} else {
-		std::cout << "[Experimental] No controller generated\n";
+		PCS_INFO("[Experimental] No controller generated");
 	}
 }

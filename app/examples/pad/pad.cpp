@@ -6,30 +6,27 @@
 #include "pcs/lts/parsers/string_string.h"
 #include "pcs/lts/writers.h"
 #include "pcs/machine/machine.h"
+#include "pcs/machine/writers.h"
 #include "pcs/product/recipe.h"
 #include "pcs/controller/controller.h"
 #include "pcs/controller/highlighter.h"
 #include "pcs/common/log.h"
+
+using namespace pcs;
 
 void PadExample() {
 	pcs::Recipe recipe = LoadPadRecipe();
 	pcs::ExportToFile(recipe.lts(), "../../exports/pad/recipe.txt");
 
 	pcs::Machine machine = LoadPadMachine();
-	const std::vector<pcs::LTS<std::string>>& resources =  machine.resources();
-	for (size_t i = 0; i < machine.NumOfResources(); i++) {
-		std::string path = "../../exports/pad/Resource" + std::to_string(i + 1) + ".txt";
-		pcs::ExportToFile(resources[i], path);
-	}
-
 	ComputePadTopology(machine);
-	const pcs::LTS<std::string>& topology = machine.topology();
-	pcs::ExportToFile(topology, "../../exports/pad/topology.txt");
+	pcs::ExportMachine(machine, "../../exports/pad");
 	
-	std::optional<pcs::LTS<std::string>> controller = pcs::GenerateController(machine, recipe);
+	ControllerGenerator cg(machine, recipe);
+	std::optional<const LTS<std::string, std::string>*> controller = cg.Generate();
 	if (controller.has_value()) {
-		pcs::ExportToFile(*controller, "../../exports/pad/controller.txt");
-		pcs::HighlightTopology(topology, *controller, "../../exports/pad/highlighted_topology.txt");
+		pcs::ExportToFile(**controller, "../../exports/pad/controller.txt");
+		pcs::HighlightTopology(machine.topology(), **controller, "../../exports/pad/highlighted_topology.txt");
 	} else {
 		PCS_INFO("[PAD] No controller generated");
 	}

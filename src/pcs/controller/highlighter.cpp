@@ -67,5 +67,5 @@ namespace pcs {
 
 /*
 	@Note: `  c -> d [color="blue"]`
-	@Cleanup: should probably be a functional option
+	@Cleanup: should probably use a callback when dealing with a particular transition & particular state
 */
