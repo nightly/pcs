@@ -24,11 +24,3 @@ add_subdirectory(app)
 if (PCS_COMPILE_BENCHMARKS) 
     add_subdirectory(benchmarks)
 endif()
-
-# Output directories
-set_target_properties(pcs pcs_cli 
-    PROPERTIES
-    ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib/${CMAKE_BUILD_TYPE}"
-    LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib/${CMAKE_BUILD_TYPE}"
-    RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE}"
-)

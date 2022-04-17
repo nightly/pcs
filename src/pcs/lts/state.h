@@ -35,12 +35,18 @@ namespace pcs::internal {
 			return transitions_;
 		}
 
+		/*
+		 * @brief Adds a given transition to the State object, first checking whether or not that exact transition exists or not
+		 */
 		void AddTransition(const TransitionT& label, const KeyT& end_state) {
-			std::pair<TransitionT, KeyT> transistion = std::make_pair(label, end_state);
-			transitions_.emplace_back(transistion);
+			// @Performance: could be a redundant check, or an alternative function could be written
+			if (!TransitionExists(label, end_state)) {
+				std::pair<TransitionT, KeyT> transistion = std::make_pair(label, end_state);
+				transitions_.emplace_back(transistion);
+			}
 		}
 
-		bool TransistionExists(const TransitionT& label, const KeyT& end_state) const {
+		bool TransitionExists(const TransitionT& label, const KeyT& end_state) const {
 			for (const auto& t : transitions_) {
 				if ((t.first == label) && (t.second == end_state)) {
 					return true;

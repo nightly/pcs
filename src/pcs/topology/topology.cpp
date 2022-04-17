@@ -49,6 +49,7 @@ namespace pcs {
 		for (size_t i = 0; i < ltss.size(); ++i) {
 			for (const auto& transition : ltss[i].states().at(states_vec[i]).transitions_) {
 				if (transition.first.find("in:") != std::string::npos || transition.first.find("out:") != std::string::npos) {
+				// @Bug: should consider the resulting state from both operations, not the singular one depicted here
 					bool found = MatchingTransfer(ltss, states_vec, i, transition);
 					if (!found) {
 						continue;

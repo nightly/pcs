@@ -3,6 +3,7 @@
 #include <string>
 #include <span>
 #include <vector>
+#include <optional>
 
 #include "pcs/lts/state.h"
 #include "pcs/lts/lts.h"
