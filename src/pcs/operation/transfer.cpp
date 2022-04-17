@@ -18,11 +18,27 @@ namespace pcs {
 		return name_;
 	}
 
+	size_t TransferOperation::n() const {
+		return n_;
+	}
+
+	bool TransferOperation::In() const {
+		return type_ == Transfer::in;
+	}
+	
+	bool TransferOperation::Out() const {
+		return !In();
+	}
+
 	/*
 	 * @brief Returns the inverse of the TransferOperation, useful for checking matching operations. 
 	 */
 	TransferOperation TransferOperation::Inverse() const {
 		return TransferOperation(type_ == Transfer::in ? Transfer::out : Transfer::in, n_);
+	}
+	
+	bool TransferOperation::operator<(const TransferOperation& other) const {
+		return (type_ < other.type_) && (n_ < other.n_);
 	}
 
 	bool TransferOperation::operator==(const TransferOperation& other) const {

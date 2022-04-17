@@ -6,8 +6,6 @@
 #include <fstream>
 #include <utility>
 
-#include "pcs/common/vec_comma_ostream.h"
-
 namespace pcs::internal {
 
 	template <typename KeyT, typename TransitionT = std::string>
@@ -33,6 +31,10 @@ namespace pcs::internal {
 			return name_;
 		}
 
+		std::vector<std::pair<TransitionT, KeyT>>& transitions() {
+			return transitions_;
+		}
+
 		void AddTransition(const TransitionT& label, const KeyT& end_state) {
 			std::pair<TransitionT, KeyT> transistion = std::make_pair(label, end_state);
 			transitions_.emplace_back(transistion);
@@ -55,29 +57,11 @@ namespace pcs::internal {
 			return (name_ == other.name_) && (transitions_ == other.transitions_);
 		}
 
-		friend std::ostream& operator<<(std::ostream& os, const State& state) {
-			os << "State name: " << state.name_ << '\n';
-			if (state.transitions_.empty()) {
-				os << "  With 0 transitions" << '\n';
-				return os;
-			}
-			os << "  Transitions: " << '\n';
-			for (const auto& pair : state.transitions_) {
-				os << "    Label: " << pair.first << " " << "End State: " << pair.second << '\n';
-			}
-			return os;
-		}
+		template <typename _KeyT, typename _TransitionT>
+		friend std::ostream& operator<<(std::ostream& os, const State& state);
 
-		friend std::ofstream& operator<<(std::ofstream& os, const State& state) {
-			if (state.IsEmpty()) {
-				os << "	" << "\"" << state.name_ << "\"" << "\n";
-			}
-			for (const auto& t : state.transitions_) {
-				os << "	" << "\"" << state.name_ << "\"" << " -> " << "\"" << t.second << "\"" << " [label = " << "\"";
-				os << t.first << "\"];\n";
-			}
-			return os;
-		}
+		template <typename _KeyT, typename _TransitionT>
+		friend std::ofstream& operator<<(std::ofstream& os, const State& state);
 	};
 
 }

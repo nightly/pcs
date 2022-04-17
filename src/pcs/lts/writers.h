@@ -2,31 +2,68 @@
 
 #include <string>
 #include <ostream>
+#include <iostream>
+#include <fstream>
 #include <filesystem>
 
 #include "pcs/lts/lts.h"
 #include "pcs/lts/state.h"
-#include "pcs/common/directory.h"
 
 namespace pcs {
 
-	/*
-	 * @brief Exports a given LTS to the provided path, which can be visualised via GraphViz. Uses ofstream overloads.
-	 * @param lts: labelled transition system in question to write to file
-	 * @param path: export filepath, missing directories will be created. Filepath should include file extension.
-	 * @exception Propagates std::ofstream::failure
-	 */
-	template <typename KeyT = std::string, typename TransitionT = std::string>
-	void ExportToFile(const LTS<KeyT, TransitionT>& lts, const std::filesystem::path& path) {
-		std::ofstream stream;
-		stream.exceptions(std::ofstream::badbit);
-		CreateDirectoryForPath(path);
-		try {
-			stream.open(path, std::ios::out | std::ios::trunc);
-			stream << lts;
-		} catch (const std::ofstream::failure& e) {
-			throw;
+	template <typename KeyT, typename TransitionT>
+	std::ofstream& operator<<(std::ofstream& os, const internal::State<KeyT, TransitionT>& state) {
+		if (state.IsEmpty()) {
+			os << "	" << "\"" << state.name() << "\"" << "\n";
 		}
+		for (const auto& t : state.transitions_) {
+			os << "	" << "\"" << state.name() << "\"" << " -> " << "\"" << t.second << "\"" << " [label = " << "\"";
+			os << t.first << "\"];\n";
+		}
+		return os;
 	}
 
+	template <typename KeyT, typename TransitionT>
+	std::ofstream& operator<<(std::ofstream& os, const LTS<KeyT, TransitionT>& lts) {
+		os << "digraph finite_state_machine {\n";
+		os << "	fontname=\"Helvetica, Arial, sans - serif\"\n";
+		os << "	node [fontname=\"Helvetica, Arial, sans - serif\"]\n";
+		os << "	edge [fontname=\"Helvetica, Arial, sans - serif\"]\n";
+		os << "	rankdir=LR;\n";
+		os << "	node [shape = doublecircle];\n";
+		os << "	" << "\"" << lts.initial_state() << "\"" << ";\n";
+		os << "	node [shape = circle];\n";
+		for (const auto& pair : lts.states()) {
+			os << pair.second;
+		}
+		os << "}";
+		return os;
+	}
+
+	template <typename KeyT, typename TransitionT>
+	std::ostream& operator<<(std::ostream& os, const internal::State<KeyT, TransitionT>& state) {
+		os << "State name: " << state.name() << '\n';
+		if (state.transitions_.empty()) {
+			os << "  With 0 transitions" << '\n';
+			return os;
+		}
+		os << "  Transitions: " << '\n';
+		for (const auto& pair : state.transitions_) {
+			os << "    Label: " << pair.first << " " << "End State: " << pair.second << '\n';
+		}
+		return os;
+	}
+
+	template <typename KeyT, typename TransitionT>
+	std::ostream& operator<<(std::ostream& os, const LTS<KeyT, TransitionT>& lts) {
+		if (lts.initial_state_.empty() && lts.states_.empty()) {
+			os << "Empty Labelled Transition System\n";
+			return os;
+		}
+		os << "Initial state: " << lts.initial_state_ << '\n';
+		for (const auto& pair : lts.states_) {
+			os << pair.second;
+		}
+		return os;
+	}
 }

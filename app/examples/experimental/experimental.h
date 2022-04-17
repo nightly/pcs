@@ -5,7 +5,7 @@
 #include <iostream>
 
 #include "pcs/lts/parsers/string_string.h"
-#include "pcs/lts/writers.h"
+#include "pcs/lts/export.h"
 #include "pcs/machine/machine.h"
 #include "pcs/machine/writers.h"
 #include "pcs/product/recipe.h"
@@ -48,8 +48,8 @@ inline void Experimental() {
 	ComputeExpTopology(machine);
 	pcs::ExportMachine(machine, "../../exports/experimental");
 
-	pcs::ControllerGenerator cg(machine, recipe);
-	std::optional<const pcs::LTS<std::string, std::string>*> controller = cg.Generate();
+	pcs::Controller con(&machine, &recipe);
+	std::optional<const pcs::LTS<std::string, std::string>*> controller = con.Generate();
 	if (controller.has_value()) {
 		pcs::ExportToFile(**controller, "../../exports/experimental/controller.txt");
 		// Highlight

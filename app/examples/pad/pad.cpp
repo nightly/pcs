@@ -5,6 +5,7 @@
 
 #include "pcs/lts/parsers/string_string.h"
 #include "pcs/lts/writers.h"
+#include "pcs/lts/export.h"
 #include "pcs/machine/machine.h"
 #include "pcs/machine/writers.h"
 #include "pcs/product/recipe.h"
@@ -22,11 +23,11 @@ void PadExample() {
 	ComputePadTopology(machine);
 	pcs::ExportMachine(machine, "../../exports/pad");
 	
-	ControllerGenerator cg(machine, recipe);
-	std::optional<const LTS<std::string, std::string>*> controller = cg.Generate();
-	if (controller.has_value()) {
-		pcs::ExportToFile(**controller, "../../exports/pad/controller.txt");
-		pcs::HighlightTopology(machine.topology(), **controller, "../../exports/pad/highlighted_topology.txt");
+	Controller con(&machine, &recipe);
+	std::optional<const LTS<std::string, std::string>*> controller_lts = con.Generate();
+	if (controller_lts.has_value()) {
+		pcs::ExportToFile(**controller_lts, "../../exports/pad/controller.txt");
+		pcs::HighlightTopology(machine.topology(), **controller_lts, "../../exports/pad/highlighted_topology.txt");
 	} else {
 		PCS_INFO("[PAD] No controller generated");
 	}

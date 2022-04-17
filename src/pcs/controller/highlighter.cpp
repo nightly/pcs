@@ -6,6 +6,7 @@
 
 #include "pcs/common/directory.h"
 #include "pcs/common/log.h"
+#include "pcs/common/strings.h"
 
 namespace pcs {
 
@@ -41,10 +42,13 @@ namespace pcs {
 					os << "	" << "\"" << state.name() << "\"" << "\n";
 				}
 				for (const auto& t : state.transitions_) {
-					if ((target_state == state.name()) && (target_transition == t)) {
-						os << "	" << "\"" << state.name() << "\"" << " -> " << "\"" << t.second << "\"" << " [color=\"blue\" label = " << "\"";
+					// @Cleanup: LTS types
+					std::vector<std::string> vec = StringToVector(target_transition.first);
+
+					if ((target_state == state.name()) && std::find(vec.begin(), vec.end(), t.first) != vec.end()) {
+						os << "	" << "\"" << state.name() << "\"" << " -> " << "\"" << t.second << "\"" << " [color=\"royalblue4\" penwidth=2.25 label = " << "\"";
 						os << t.first << "\"];\n";
-						os << "	" << "\"" << state.name() << "\"" << " [shape=circle, style=filled, fillcolor=dodgerblue3]" << "\n";
+						os << "	" << "\"" << state.name() << "\"" << " [shape=circle, style=filled, fillcolor=grey]" << "\n";
 						target_state = t.second;
 						if (!controller[target_state].transitions_.empty()) {
 							target_transition = controller.states().at(target_state).transitions_[0];

@@ -7,7 +7,6 @@
 #include <vector>
 
 #include "pcs/lts/state.h"
-#include "pcs/common/vec_comma_ostream.h"
 
 namespace pcs {
 
@@ -112,33 +111,11 @@ namespace pcs {
 			return states_.at(key);
 		}
 
-		friend std::ostream& operator<<(std::ostream& os, const LTS& lts) {
-			if (lts.initial_state_.empty() && lts.states_.empty()) {
-				os << "Empty Labelled Transition System\n";
-				return os;
-			}
-			os << "Initial state: " << lts.initial_state_ << '\n';
-			for (const auto& pair : lts.states_) {
-				os << pair.second;
-			}
-			return os;
-		}
+		template <typename _KeyT, typename _TransitionT>
+		friend std::ostream& operator<<(std::ostream& os, const LTS<_KeyT, _TransitionT>& lts);
 
-		friend std::ofstream& operator<<(std::ofstream& os, const LTS& lts) {
-			os << "digraph finite_state_machine {\n";
-			os << "	fontname=\"Helvetica, Arial, sans - serif\"\n";
-			os << "	node [fontname=\"Helvetica, Arial, sans - serif\"]\n";
-			os << "	edge [fontname=\"Helvetica, Arial, sans - serif\"]\n";
-			os << "	rankdir=LR;\n";
-			os << "	node [shape = doublecircle];\n";
-			os << "	" << "\"" << lts.initial_state_ << "\"" << ";\n";
-			os << "	node [shape = circle];\n";
-			for (const auto& pair : lts.states_) {
-				os << pair.second;
-			}
-			os << "}";
-			return os;
-		}
+		template <typename _KeyT, typename _TransitionT>
+		friend std::ofstream& operator<<(std::ofstream& os, const LTS& lts);
 	private:
 		bool AddState(State&& state) {
 			if (!HasState(state.name())) {

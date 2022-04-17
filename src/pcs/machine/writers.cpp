@@ -4,7 +4,7 @@
 #include <fstream>
 #include <string>
 
-#include "pcs/lts/writers.h"
+#include "pcs/lts/export.h"
 #include "pcs/common/directory.h"
 
 namespace pcs {
