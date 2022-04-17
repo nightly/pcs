@@ -5,6 +5,8 @@
 #include <filesystem>
 
 #include "pcs/lts/lts.h"
+#include "pcs/lts/writers.h"
+#include "pcs/common/directory.h"
 
 TEST(ParseLTS, LTS1) {
 	pcs::LTS got;
@@ -18,7 +20,7 @@ TEST(ParseLTS, LTS1) {
 	ASSERT_EQ(got, expected);
 }
 
-TEST(ParseJsonLTS, LTS1) {
+TEST(ParseLTS, LTS1_JSON) {
 	pcs::LTS got;
 	pcs::ReadFromJsonFile(got, "../../tests/lts/testdata/lts1.json");
 

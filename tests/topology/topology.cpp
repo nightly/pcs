@@ -7,6 +7,7 @@
 #include "pcs/lts/lts.h"
 #include "pcs/lts/state.h"
 #include "pcs/lts/parsers/string_string.h"
+#include "pcs/lts/writers.h"
 
 TEST(LTSMerge, SelfMerge) {
 	pcs::LTS<std::string> expected, got;

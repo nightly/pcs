@@ -2,6 +2,7 @@
 #include "pcs/lts/lts.h"
 
 #include "pcs/lts/state.h"
+#include "pcs/lts/writers.h"
 
 TEST(LTS, Equality) {
 	pcs::LTS got;

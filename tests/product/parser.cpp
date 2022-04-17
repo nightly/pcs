@@ -7,6 +7,7 @@
 #include "pcs/lts/lts.h"
 #include "pcs/operation/composite.h"
 #include "pcs/operation/guard.h"
+#include "pcs/lts/writers.h"
 
 using namespace pcs;
 
