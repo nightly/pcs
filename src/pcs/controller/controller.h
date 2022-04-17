@@ -33,7 +33,5 @@ namespace pcs {
 
 		void ApplyTransition(const std::pair<std::vector<std::string>, std::string>& transition);
 		bool TransferParts(const std::pair<std::string, std::string>& transition, size_t current_resource);
-		
-		size_t CurrentResource(const std::string& old_state, const std::string& new_state);
 	};
 }

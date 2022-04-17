@@ -13,6 +13,7 @@
 #include "pcs/common/log.h"
 #include "pcs/common/strings.h"
 #include "pcs/operation/label.h"
+#include "pcs/topology/resource.h"
 
 namespace pcs {
 
@@ -80,7 +81,7 @@ namespace pcs {
 		std::map<TransferOperation, std::tuple<std::string, TransferOperation, std::string>> transfers; // out, out_state, in, in_state
 		for (const auto& transition : (*topology_)[topology_state].transitions_) {
 			if (op.name() == transition.first) { // Found operation, as long as parts match, the plan for the current seq op passes
-				size_t current_resource = CurrentResource(topology_state_, transition.second);
+				size_t current_resource = ActingOnResource(topology_state_, transition.second);
 
 				bool transfer = TransferParts(transition, current_resource);
 				if (!transfer) {
@@ -116,11 +117,11 @@ namespace pcs {
 
 			std::vector<std::string> label_vec(num_of_resources_, "-");
 			size_t transfer_resource_1, transfer_resource_2; 
-			transfer_resource_1 = CurrentResource(topology_state, std::get<0>(v));
+			transfer_resource_1 = ActingOnResource(topology_state, std::get<0>(v));
 			state_vec[transfer_resource_1] = StringToVector(std::get<0>(v))[transfer_resource_1];
 			label_vec[transfer_resource_1] = k.name();
 
-			transfer_resource_2 = CurrentResource(topology_state, std::get<2>(v));
+			transfer_resource_2 = ActingOnResource(topology_state, std::get<2>(v));
 			state_vec[transfer_resource_2] = StringToVector(std::get<2>(v))[transfer_resource_2];
 			label_vec[transfer_resource_2] = std::get<1>(v).name();
 
@@ -154,17 +155,6 @@ namespace pcs {
 		topology_state_ = transition.second;
 		PCS_INFO(fmt::format(fmt::fg(fmt::color::royal_blue) | fmt::emphasis::bold,
 			"Adding controller transition ({}) to {}.", VectorToString(transition.first), transition.second));
-	}
-
-
-	// Identifies current resource being reviewed based on old topology string state and new string state
-	size_t Controller::CurrentResource(const std::string& old_state, const std::string& new_state) {
-		std::vector<std::string> old_ve = StringToVector(old_state);
-		std::vector<std::string> new_ve = StringToVector(new_state);
-		for (size_t i = 0; i < new_ve.size(); ++i) {
-			if (old_ve[i] != new_ve[i])
-				return i;
-		}
 	}
 
 	bool Controller::TransferParts(const std::pair<std::string, std::string>& transition, size_t current_resource) {

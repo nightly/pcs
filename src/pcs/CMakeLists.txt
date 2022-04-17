@@ -3,7 +3,7 @@ cmake_minimum_required (VERSION 3.8)
 set(PCS_SOURCES "lts/lts.h" "lts/state.h" "lts/writers.h"
 "lts/parsers/string_string.cpp" "lts/parsers/string_operation.cpp"
 
-"topology/topology.cpp" "topology/stitch.cpp"
+"topology/topology.cpp" "topology/stitch.cpp" "topology/resource.cpp"
 
 "controller/controller.cpp" "controller/highlighter.cpp"
 
