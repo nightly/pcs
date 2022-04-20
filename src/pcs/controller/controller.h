@@ -27,8 +27,8 @@ namespace pcs {
 		std::optional<const LTS<std::string, std::string>*> Generate();
 	private:
 		bool HandleComposite(const CompositeOperation& co);
-		bool HandleSequentialOperation(std::string topology_state,
-			std::vector<std::pair<std::vector<std::string>, std::string>> plan_transitions, std::vector<std::vector<std::string>> plan_parts);
+		bool HandleSequentialOperation(std::string topology_state, std::vector<std::pair<std::vector<std::string>, 
+			                          std::string>> plan_transitions, std::vector<std::vector<std::string>> plan_parts);
 		bool ProcessRecipe(const std::string& state);
 
 		void ApplyTransition(const std::pair<std::vector<std::string>, std::string>& transition);

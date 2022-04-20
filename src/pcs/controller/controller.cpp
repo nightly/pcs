@@ -74,14 +74,14 @@ namespace pcs {
 
 	}
 
-	bool Controller::HandleSequentialOperation(std::string topology_state,
-	std::vector<std::pair<std::vector<std::string>, std::string>> plan_transitions, std::vector<std::vector<std::string>> plan_parts) {
+	bool Controller::HandleSequentialOperation(std::string topology_state,  std::vector<std::pair<std::vector<std::string>, 
+		                                       std::string>> plan_transitions, std::vector<std::vector<std::string>> plan_parts) {
 		const auto& [op, input, output] = *seq_tuple_;
 
 		std::map<TransferOperation, std::tuple<std::string, TransferOperation, std::string>> transfers; // out, out_state, in, in_state
 		for (const auto& transition : (*topology_)[topology_state].transitions_) {
 			if (op.name() == transition.first) { // Found operation, as long as parts match, the plan for the current seq op passes
-				size_t current_resource = ActingOnResource(topology_state_, transition.second);
+				size_t current_resource = ActingOnResource(topology_state, transition.second);
 
 				bool transfer = TransferParts(transition, current_resource);
 				if (!transfer) {
@@ -113,12 +113,11 @@ namespace pcs {
 		// Move between resources - try build a plan for each transfer
 		for (auto& [k, v] : transfers) {
 			std::string state;
-			std::vector<std::string> state_vec = StringToVector(topology_state);
+			std::vector<std::string> state_vec = StringToVector(std::get<0>(v));
 
 			std::vector<std::string> label_vec(num_of_resources_, "-");
 			size_t transfer_resource_1, transfer_resource_2; 
 			transfer_resource_1 = ActingOnResource(topology_state, std::get<0>(v));
-			state_vec[transfer_resource_1] = StringToVector(std::get<0>(v))[transfer_resource_1];
 			label_vec[transfer_resource_1] = k.name();
 
 			transfer_resource_2 = ActingOnResource(topology_state, std::get<2>(v));
@@ -127,17 +126,9 @@ namespace pcs {
 
 			state = VectorToString(state_vec);
 			plan_transitions.emplace_back(std::make_pair(label_vec, state));
-			PCS_INFO("{} {}", transfer_resource_1, transfer_resource_2);
 
-
-			// 
-			for (const auto& transition : plan_transitions) {
-				ApplyTransition(transition);
-			}
-			//
-
-			bool found = false;
-			// bool found = HandleSequentialOperation(state, plan_transitions, plan_parts); // recurse
+			// bool found = false;
+			bool found = HandleSequentialOperation(state, plan_transitions, plan_parts); // recurse
 			if (found) {
 				return true;
 			}
