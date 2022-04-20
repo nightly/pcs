@@ -22,12 +22,12 @@ namespace pcs {
 		return n_;
 	}
 
-	bool TransferOperation::In() const {
+	bool TransferOperation::IsIn() const {
 		return type_ == Transfer::in;
 	}
 	
-	bool TransferOperation::Out() const {
-		return !In();
+	bool TransferOperation::IsOut() const {
+		return !IsIn();
 	}
 
 	/*

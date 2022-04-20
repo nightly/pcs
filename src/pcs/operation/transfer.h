@@ -21,8 +21,8 @@ namespace pcs {
 		const std::string& name() const override;
 		TransferOperation Inverse() const;
 		size_t n() const;
-		bool In() const;
-		bool Out() const;
+		bool IsIn() const;
+		bool IsOut() const;
 		
 		bool operator==(const TransferOperation& other) const;
 		bool operator <(const TransferOperation& other) const;

@@ -35,6 +35,10 @@ namespace pcs::internal {
 			return transitions_;
 		}
 
+		const std::vector<std::pair<TransitionT, KeyT>>& transitions() const {
+			return transitions_;
+		}
+
 		/*
 		 * @brief Adds a given transition to the State object, first checking whether or not that exact transition exists or not
 		 */

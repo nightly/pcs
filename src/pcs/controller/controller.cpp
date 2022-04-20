@@ -30,6 +30,7 @@ namespace pcs {
 		PCS_INFO(fmt::format(fmt::fg(fmt::color::light_green), "Recipe initial state: {}", recipe_state_));
 
 		bool generated = ProcessRecipe(recipe_state_);
+		return &controller_; // @Hack: to still be able to visualise controllers that didn't fully generate
 		PCS_INFO(fmt::format(fmt::fg(fmt::color::light_green), "Controller generation completed: realisability = {}", generated));
 		if (!generated) {
 			return {};
@@ -99,19 +100,20 @@ namespace pcs {
 				// @Cleanup: types for LTS require a conversion
 				std::optional<TransferOperation> opt = StringToTransfer(transition.first);
 				if (opt.has_value()) {
-					if (opt->Out()) {
+					if (opt->IsOut()) { // Out case
 						std::get<0>(transfers[*opt]) = transition.second;
-					} else {
+					} else { // In case
 						TransferOperation inverse = opt->Inverse();
-						std::get<1>(transfers[*opt]) = *opt;
-						std::get<2>(transfers[*opt]) = transition.second;
+						std::get<1>(transfers[inverse]) = *opt;
+						std::get<2>(transfers[inverse]) = transition.second;
 					}
 				}
 			}
 		}
 
+
 		// Move between resources - try build a plan for each transfer
-		for (auto& [k, v] : transfers) {
+		for (const auto& [k, v] : transfers) {
 			std::string state;
 			std::vector<std::string> state_vec = StringToVector(std::get<0>(v));
 
@@ -127,7 +129,6 @@ namespace pcs {
 			state = VectorToString(state_vec);
 			plan_transitions.emplace_back(std::make_pair(label_vec, state));
 
-			// bool found = false;
 			bool found = HandleSequentialOperation(state, plan_transitions, plan_parts); // recurse
 			if (found) {
 				return true;

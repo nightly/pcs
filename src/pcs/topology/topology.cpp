@@ -58,6 +58,8 @@ namespace pcs {
 					next_states[i] = transition.second;
 					combined_lts.AddTransition(states_str, transition.first, VectorToString(next_states));
 					// @Note: we are evaluating a different state than the one we've applied the transition to.
+					// This allows figuring out which of the two LTS' moved exactly where, although this can be 
+					// cleaned up by adding some additional information to transitions.
 					CombineRecursive(ltss, *transfer_state, visited, combined_lts); 
 				} else {
 					std::vector<std::string> next_states = states_vec;

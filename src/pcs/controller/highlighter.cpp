@@ -3,18 +3,35 @@
 #include <filesystem>
 #include <ostream>
 #include <fstream>
+#include <unordered_map>
+#include <unordered_set>
 
 #include "pcs/common/directory.h"
 #include "pcs/common/log.h"
 #include "pcs/common/strings.h"
 
+
 namespace pcs {
+
+	/*
+	 * @brief Builds the target map, where KeyT = a target state, and ValueT = set of target transitions. 
+	 */
+	static void BuildTargetMap(const LTS<std::string, std::string>& controller,
+							  std::unordered_map<std::string, std::unordered_set<std::string>>& target_map) {
+		for (const auto& state : controller.states()) {
+			target_map[state.first] = std::unordered_set<std::string>();
+			for (const auto& t : state.second.transitions()) {
+				target_map[state.first].insert(t.first);
+			}
+		}
+
+	}
 
 	/*
 	 * @brief Returns a highlighted topology showing the path the controller took
 	 */
 	void HighlightTopology(const LTS<std::string, std::string>& topology,
-	const LTS<std::string, std::string>& controller, const std::filesystem::path& out_path) {
+						  const LTS<std::string, std::string>& controller, const std::filesystem::path& out_path) {
 		std::ofstream os;
 		os.exceptions(std::ofstream::badbit);
 		CreateDirectoryForPath(out_path);
@@ -30,29 +47,22 @@ namespace pcs {
 			os << "	" << "\"" << topology.initial_state() << "\"" << ";\n";
 			os << "	node [shape = circle];\n";
 
-			std::string target_state = controller.initial_state();
-			std::pair<std::string, std::string> target_transition;
-			if (!controller[target_state].transitions_.empty()) {
-				target_transition = controller.states().at(target_state).transitions_[0];
-			}
+			std::unordered_map<std::string, std::unordered_set<std::string>> target_map;
+			BuildTargetMap(controller, target_map);
+
 
 			for (const auto& pair : topology.states()) {
 				auto& state = pair.second;
 				if (state.IsEmpty()) {
 					os << "	" << "\"" << state.name() << "\"" << "\n";
 				}
-				for (const auto& t : state.transitions_) {
+				for (const auto& t: state.transitions_) {
 					// @Cleanup: LTS types
-					std::vector<std::string> vec = StringToVector(target_transition.first);
 
-					if ((target_state == state.name()) && std::find(vec.begin(), vec.end(), t.first) != vec.end()) {
+					if ((target_map.count(state.name()) == 1) && (target_map[state.name()].contains(t.first))) {
 						os << "	" << "\"" << state.name() << "\"" << " -> " << "\"" << t.second << "\"" << " [color=\"royalblue4\" penwidth=2.25 label = " << "\"";
 						os << t.first << "\"];\n";
 						os << "	" << "\"" << state.name() << "\"" << " [shape=circle, style=filled, fillcolor=grey]" << "\n";
-						target_state = t.second;
-						if (!controller[target_state].transitions_.empty()) {
-							target_transition = controller.states().at(target_state).transitions_[0];
-						}
 					} else {
 						os << "	" << "\"" << state.name() << "\"" << " -> " << "\"" << t.second << "\"" << " [label = " << "\"";
 						os << t.first << "\"];\n";
