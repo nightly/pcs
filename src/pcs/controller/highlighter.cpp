@@ -21,7 +21,16 @@ namespace pcs {
 		for (const auto& state : controller.states()) {
 			target_map[state.first] = std::unordered_set<std::string>();
 			for (const auto& t : state.second.transitions()) {
-				target_map[state.first].insert(t.first);
+				// in the form (_, load, _, _, _) whereas we just want load
+				std::vector<std::string> vec = StringToVector(t.first);
+				for (auto& s : vec) {
+					if (s == "" || s == "-") {
+						continue;
+					}
+					// @Note: topology currently preserves the end points of in/out individually rather than combining them, as it isn't stored part of the
+					// transitions itself yet, so this will probably not visualise correctly
+					target_map[state.first].insert(s);
+				}
 			}
 		}
 
