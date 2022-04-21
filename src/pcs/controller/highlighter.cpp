@@ -69,7 +69,7 @@ namespace pcs {
 					if ((target_map.count(state.name()) == 1) && (target_map[state.name()].contains(t.first.second))) {
 						os << "	" << "\"" << state.name() << "\"" << " -> " << "\"" << t.second << "\"" << " [color=\"royalblue4\" penwidth=2.25 label = " << "\"";
 						os << t.first << "\"];\n";
-						os << "	" << "\"" << state.name() << "\"" << " [shape=circle, style=filled, fillcolor=grey]" << "\n";
+						os << "	" << "\"" << state.name() << "\"" << " [shape=circle, style=filled, fillcolor=dodgerblue2]" << "\n";
 					} else {
 						os << "	" << "\"" << state.name() << "\"" << " -> " << "\"" << t.second << "\"" << " [label = " << "\"";
 						os << t.first << "\"];\n";

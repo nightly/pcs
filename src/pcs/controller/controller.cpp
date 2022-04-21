@@ -167,6 +167,7 @@ namespace pcs {
 
  /*
 	 @Cleanup: better types of LTS', e.g. topology KeyT is actually std::vector<std::string> not just a string - etc docs/overview.md
+	 @Cleanup: pair inception should probably be eliminated with dedicated types
 
 	 @Todo: use LTS template parameters, i.e. vec<std::string> instead of std::string only
 	 @Todo: separate logic for handling each operation

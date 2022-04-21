@@ -12,10 +12,14 @@ static void BM_TopologyWithTwoResources(benchmark::State& state) {
     }
 
     for (auto _ : state) {
-        pcs::LTS<std::string, std::string> topology = pcs::Combine(ltss);
+        pcs::LTS<std::string, std::pair<size_t, std::string>> topology = pcs::Combine(ltss);
         benchmark::DoNotOptimize(topology);
+        benchmark::ClobberMemory();
     }
 }
+
+BENCHMARK(BM_TopologyWithTwoResources); // 1600ns - 400,000 iterations
+
 
 static void BM_TopoologyWithFiveResources(benchmark::State& state) {
     std::array<pcs::LTS<std::string, std::string>, 5> ltss;
@@ -24,11 +28,10 @@ static void BM_TopoologyWithFiveResources(benchmark::State& state) {
     }
     
     for (auto _ : state) {
-        pcs::LTS<std::string, std::string> topology = pcs::Combine(ltss);
+        pcs::LTS<std::string, std::pair<size_t, std::string>> topology = pcs::Combine(ltss);
         benchmark::DoNotOptimize(topology);
+        benchmark::ClobberMemory();
     }
 }
-
-BENCHMARK(BM_TopologyWithTwoResources); // 1600ns - 400,000 iterations
 
 BENCHMARK(BM_TopoologyWithFiveResources); // 414915 ns - 1659 iterations
