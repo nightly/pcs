@@ -17,6 +17,8 @@
 
 namespace pcs {
 
+	using TopologyTransition = std::pair<size_t, std::string>;
+
 	Controller::Controller(const Machine* machine, const Recipe* recipe) 
 		: machine_(machine), recipe_(recipe), topology_(&machine->topology()), num_of_resources_(machine_->NumOfResources()) {}
 	
@@ -78,19 +80,17 @@ namespace pcs {
 	bool Controller::HandleSequentialOperation(std::string topology_state,  std::vector<std::pair<std::vector<std::string>, 
 		                                       std::string>> plan_transitions, std::vector<std::vector<std::string>> plan_parts) {
 		const auto& [op, input, output] = *seq_tuple_;
-
-		std::map<TransferOperation, std::tuple<std::string, TransferOperation, std::string>> transfers; // out, out_state, in, in_state
+		// map - TransferOperation key, tuple<end_state, transition, inverse op, inverse transition>
+		std::map<TransferOperation, std::tuple<std::string, TopologyTransition, TransferOperation, TopologyTransition>> transfers;
 		for (const auto& transition : (*topology_)[topology_state].transitions_) {
-			if (op.name() == transition.first) { // Found operation, as long as parts match, the plan for the current seq op passes
-				size_t current_resource = ActingOnResource(topology_state, transition.second);
-
-				bool transfer = TransferParts(transition, current_resource);
+			if (op.name() == transition.first.second) { // Found operation, as long as parts match, the plan for the current seq op passes
+				bool transfer = TransferParts(transition.first);
 				if (!transfer) {
 					return false;
 				}
 				std::vector<std::string> vec(num_of_resources_, "-");
-				vec[current_resource] = transition.first;
-
+				vec[transition.first.first] = transition.first.second;
+				
 				plan_transitions.emplace_back(std::make_pair(vec, transition.second));
 				for (const auto& transition : plan_transitions) {
 					ApplyTransition(transition);
@@ -98,14 +98,15 @@ namespace pcs {
 				return true;
 			} else {
 				// @Cleanup: types for LTS require a conversion
-				std::optional<TransferOperation> opt = StringToTransfer(transition.first);
+				std::optional<TransferOperation> opt = StringToTransfer(transition.first.second);
 				if (opt.has_value()) {
 					if (opt->IsOut()) { // Out case
 						std::get<0>(transfers[*opt]) = transition.second;
+						std::get<1>(transfers[*opt]) = transition.first;
 					} else { // In case
 						TransferOperation inverse = opt->Inverse();
-						std::get<1>(transfers[inverse]) = *opt;
-						std::get<2>(transfers[inverse]) = transition.second;
+						std::get<2>(transfers[inverse]) = *opt;
+						std::get<3>(transfers[inverse]) = transition.first;
 					}
 				}
 			}
@@ -118,13 +119,8 @@ namespace pcs {
 			std::vector<std::string> state_vec = StringToVector(std::get<0>(v));
 
 			std::vector<std::string> label_vec(num_of_resources_, "-");
-			size_t transfer_resource_1, transfer_resource_2; 
-			transfer_resource_1 = ActingOnResource(topology_state, std::get<0>(v));
-			label_vec[transfer_resource_1] = k.name();
-
-			transfer_resource_2 = ActingOnResource(topology_state, std::get<2>(v));
-			state_vec[transfer_resource_2] = StringToVector(std::get<2>(v))[transfer_resource_2];
-			label_vec[transfer_resource_2] = std::get<1>(v).name();
+			label_vec[std::get<1>(v).first] = k.name();
+			label_vec[std::get<3>(v).first] = std::get<2>(v).name();
 
 			state = VectorToString(state_vec);
 			plan_transitions.emplace_back(std::make_pair(label_vec, state));
@@ -141,6 +137,7 @@ namespace pcs {
 
 	/*
 	 * @brief ApplyTransition will add a transition to the controller and update the current topology state
+	 * pair.first = label, pair.second = end_state 
 	 */
 	void Controller::ApplyTransition(const std::pair<std::vector<std::string>, std::string>& transition) {
 		controller_.AddTransition(topology_state_, VectorToString(transition.first), transition.second);
@@ -149,8 +146,7 @@ namespace pcs {
 			"Adding controller transition ({}) to {}.", VectorToString(transition.first), transition.second));
 	}
 
-	bool Controller::TransferParts(const std::pair<std::string, std::string>& transition, size_t current_resource) {
-		/*
+	bool Controller::TransferParts(const std::pair<size_t, std::string>& transition) {		/*
 		if (!input.empty()) { // Check the input parts are present at the resource
 			for (const auto& required_part : input) {
 				if (std::find(parts_[current_resource].begin(), parts_[current_resource].end(), required_part) == parts_[current_resource].end()) {

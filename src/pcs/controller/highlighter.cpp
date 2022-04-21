@@ -27,8 +27,6 @@ namespace pcs {
 					if (s == "" || s == "-") {
 						continue;
 					}
-					// @Note: topology currently preserves the end points of in/out individually rather than combining them, as it isn't stored part of the
-					// transitions itself yet, so this will probably not visualise correctly
 					target_map[state.first].insert(s);
 				}
 			}
@@ -39,7 +37,7 @@ namespace pcs {
 	/*
 	 * @brief Returns a highlighted topology showing the path the controller took
 	 */
-	void HighlightTopology(const LTS<std::string, std::string>& topology,
+	void HighlightTopology(const LTS<std::string, std::pair<size_t, std::string>>& topology,
 						  const LTS<std::string, std::string>& controller, const std::filesystem::path& out_path) {
 		std::ofstream os;
 		os.exceptions(std::ofstream::badbit);
@@ -68,7 +66,7 @@ namespace pcs {
 				for (const auto& t: state.transitions_) {
 					// @Cleanup: LTS types
 
-					if ((target_map.count(state.name()) == 1) && (target_map[state.name()].contains(t.first))) {
+					if ((target_map.count(state.name()) == 1) && (target_map[state.name()].contains(t.first.second))) {
 						os << "	" << "\"" << state.name() << "\"" << " -> " << "\"" << t.second << "\"" << " [color=\"royalblue4\" penwidth=2.25 label = " << "\"";
 						os << t.first << "\"];\n";
 						os << "	" << "\"" << state.name() << "\"" << " [shape=circle, style=filled, fillcolor=grey]" << "\n";

@@ -30,7 +30,7 @@ namespace pcs {
 			}
 		}
 
-		const pcs::LTS<std::string, std::string>& topology = machine.topology();
+		const pcs::LTS<std::string, std::pair<size_t,std::string>>& topology = machine.topology();
 		std::string topology_path = directory.string() + '/' + "topology" + ".txt";
 		try {
 			pcs::ExportToFile(topology, topology_path);

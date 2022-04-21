@@ -8,7 +8,7 @@
 
 namespace pcs {
 
-	void HighlightTopology(const LTS<std::string, std::string>& topology,  
-		const LTS<std::string, std::string>& controller, const std::filesystem::path& out_path);
+	void HighlightTopology(const LTS<std::string, std::pair<size_t,std::string>>& topology,  
+						  const LTS<std::string, std::string>& controller, const std::filesystem::path& out_path);
 
 }

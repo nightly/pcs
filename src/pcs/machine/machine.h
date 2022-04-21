@@ -12,14 +12,14 @@ namespace pcs {
 	class Machine {
 	private:
 		std::vector<LTS<std::string, std::string>> resources_;
-		LTS<std::string, std::string> topology_;
+		LTS<std::string, std::pair<size_t, std::string>> topology_;
 	public:
 		Machine() = default;
 		Machine(const std::span<LTS<std::string, std::string>>& resources, bool compute_topology);
 		Machine(std::vector<LTS<std::string, std::string>>&& resources, bool compute_topology);
 
 		const std::vector<LTS<std::string, std::string>>& resources() const;
-		const LTS<std::string, std::string>& topology() const;
+		const LTS<std::string, std::pair<size_t, std::string>>& topology() const;
 
 		size_t NumOfResources() const;
 		size_t NumOfTopologyStates() const;

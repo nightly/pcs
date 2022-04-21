@@ -19,10 +19,10 @@ namespace pcs {
 	/*
 	 * @brief Combines multiple Labelled Transition Systems into one.
 	 * @param ltss: lts' to combine
-	 * @returns the combined LTS
+	 * @returns the combined LTS of form KeyT = string (combined state), TransitionT = pair<size_t, string> (acting on resource, action)
 	 */
-	LTS<std::string> Combine(const std::span<LTS<std::string, std::string>>& ltss) {
-		LTS combined_lts;
+	LTS<std::string, std::pair<size_t, std::string>> Combine(const std::span<LTS<std::string, std::string>>& ltss) {
+		LTS<std::string, std::pair<size_t, std::string>> combined_lts;
 		std::vector<std::string> states_vec;
 		for (const auto& lts : ltss) {
 			// Populate with initial states
@@ -40,7 +40,7 @@ namespace pcs {
 	 * All possible transitions will be considered from each given state (_, _, _, _)
 	 */
 	void CombineRecursive(const std::span<LTS<std::string, std::string>>& ltss, std::vector<std::string>& states_vec,
-				         std::unordered_set<std::string>& visited, LTS<std::string>& combined_lts) {
+				         std::unordered_set<std::string>& visited, LTS<std::string, std::pair<size_t, std::string>>& combined_lts) {
 		std::string states_str = VectorToString(states_vec);
 		if (visited.contains(states_str) == true) {
 			return;
@@ -54,17 +54,12 @@ namespace pcs {
 					if (!transfer_state.has_value()) {
 						continue;
 					}
-					std::vector<std::string> next_states = states_vec;
-					next_states[i] = transition.second;
-					combined_lts.AddTransition(states_str, transition.first, VectorToString(next_states));
-					// @Note: we are evaluating a different state than the one we've applied the transition to.
-					// This allows figuring out which of the two LTS' moved exactly where, although this can be 
-					// cleaned up by adding some additional information to transitions.
+					combined_lts.AddTransition(states_str, std::make_pair(i, transition.first), VectorToString(*transfer_state));
 					CombineRecursive(ltss, *transfer_state, visited, combined_lts); 
 				} else {
 					std::vector<std::string> next_states = states_vec;
 					next_states[i] = transition.second;
-					combined_lts.AddTransition(states_str, transition.first, VectorToString(next_states));
+					combined_lts.AddTransition(states_str, std::make_pair(i, transition.first), VectorToString(next_states));
 					CombineRecursive(ltss, next_states, visited, combined_lts);
 				}
 			}

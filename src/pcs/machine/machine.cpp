@@ -16,7 +16,7 @@ namespace pcs {
 		return resources_;
 	}
 
-	const LTS<std::string, std::string>& Machine::topology() const {
+	const LTS<std::string, std::pair<size_t, std::string>>& Machine::topology() const {
 		return topology_;
 	}
 

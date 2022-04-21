@@ -14,7 +14,7 @@ namespace pcs {
 		LTS<std::string, std::string> controller_;
 		const Machine* machine_;
 		const Recipe* recipe_;
-		const LTS<std::string, std::string>* topology_;
+		const LTS<std::string, std::pair<size_t, std::string>>* topology_;
 
 		std::vector<std::vector<std::string>> parts_;
 		std::string recipe_state_;
@@ -32,6 +32,6 @@ namespace pcs {
 		bool ProcessRecipe(const std::string& state);
 
 		void ApplyTransition(const std::pair<std::vector<std::string>, std::string>& transition);
-		bool TransferParts(const std::pair<std::string, std::string>& transition, size_t current_resource);
+		bool TransferParts(const std::pair<size_t, std::string>& transition);
 	};
 }
