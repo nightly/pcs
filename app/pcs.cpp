@@ -5,7 +5,7 @@
 
 int main() {
 
-	// MergeExample();
+	MergeExample();
 	PadExample();
 	Experimental2();
 }

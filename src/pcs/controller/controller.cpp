@@ -143,7 +143,7 @@ namespace pcs {
 		controller_.AddTransition(topology_state_, VectorToString(transition.first), transition.second);
 		topology_state_ = transition.second;
 		PCS_INFO(fmt::format(fmt::fg(fmt::color::royal_blue) | fmt::emphasis::bold,
-			"Adding controller transition ({}) to {}.", VectorToString(transition.first), transition.second));
+			"Adding controller transition ({}) to {}", VectorToString(transition.first), transition.second));
 	}
 
 	bool Controller::TransferParts(const std::pair<size_t, std::string>& transition) {		/*

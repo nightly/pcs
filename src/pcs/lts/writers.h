@@ -23,7 +23,7 @@ namespace pcs {
 	std::ostream& operator<<(std::ostream& os, const std::pair<T, U>& pair)
 	{
 		os << pair.first;
-		os << ":";
+		os << ": ";
 		os << pair.second;
 		return os;
 	}
