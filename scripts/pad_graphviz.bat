@@ -12,5 +12,6 @@ dot -Tpng Resource5.txt -o Resource5.png
 
 dot -Tpng highlighted_topology.txt -o highlighted_topology.png
 dot -Tpng topology.txt -o topology.png
+dot -Tpng controller.txt -o controller.png
 popd
 pause
