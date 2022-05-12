@@ -90,7 +90,7 @@
         "guard": {},
         "sequential": [
           {
-            "name": "rem",
+            "name": "remove",
             "input": [
               "h2"
             ],
@@ -102,25 +102,6 @@
         "parallel": []
       },
       "endState": "D"
-    },
-    {
-      "startState": "C",
-      "label": {
-        "guard": {},
-        "sequential": [
-          {
-            "name": "rem",
-            "input": [
-              "h2"
-            ],
-            "output": [
-              "h2"
-            ]
-          }
-        ],
-        "parallel": []
-      },
-      "endState": "F"
     },
     {
       "startState": "C",

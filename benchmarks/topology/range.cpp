@@ -19,5 +19,5 @@ static void BM_TopologyRange(benchmark::State& state) {
     }
 }
 
-BENCHMARK(BM_TopologyRange)->Arg(12)->Iterations(10);
+BENCHMARK(BM_TopologyRange)->Arg(3)->Iterations(10);
 // Can use ->Ranges() but requires a multiplier (?)
