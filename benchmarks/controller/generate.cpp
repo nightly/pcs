@@ -20,14 +20,14 @@ static void BM_PadController(benchmark::State& state) {
 	machine.ComputeTopology();
 	pcs::Recipe recipe;
 	try {
-		recipe.set_recipe("../../data/pad/recipe_s.json");
+		recipe.set_recipe("../../data/pad/recipe_full.json");
 	} catch (const std::ifstream::failure& e) {
 		throw;
 	}
 
     for (auto _ : state) {
-		pcs::Controller con(&machine, &recipe);
-		std::optional<const pcs::LTS<std::string, std::string>*> controller_lts = con.Generate();
+		//pcs::Controller con(&machine, &recipe);
+		//std::optional<const pcs::LTS<std::string, std::string>*> controller_lts = con.Generate();
     }
 }
 

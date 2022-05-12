@@ -1,5 +1,7 @@
 #pragma once 
 
+#include "pcs/lts/transition.h"
+
 #include <string>
 #include <vector>
 #include <ostream>
@@ -8,7 +10,7 @@
 
 namespace pcs::internal {
 
-	template <typename KeyT, typename TransitionT = std::string>
+	template <typename KeyT = std::string, typename TransitionT = std::string>
 	class State {
 	public:
 		std::vector<std::pair<TransitionT, KeyT>> transitions_;
@@ -27,7 +29,11 @@ namespace pcs::internal {
 
 		~State() = default;
 
-		KeyT name() const {
+		KeyT name() {
+			return name_;
+		}
+
+		const KeyT& name() const {
 			return name_;
 		}
 
@@ -43,11 +49,8 @@ namespace pcs::internal {
 		 * @brief Adds a given transition to the State object, first checking whether or not that exact transition exists or not
 		 */
 		void AddTransition(const TransitionT& label, const KeyT& end_state) {
-			// @Performance: could be a redundant check, or an alternative function could be written
-			if (!TransitionExists(label, end_state)) {
-				std::pair<TransitionT, KeyT> transistion = std::make_pair(label, end_state);
-				transitions_.emplace_back(transistion);
-			}
+			std::pair<TransitionT, KeyT> transistion = std::make_pair(label, end_state);
+			transitions_.emplace_back(transistion);
 		}
 
 		bool TransitionExists(const TransitionT& label, const KeyT& end_state) const {

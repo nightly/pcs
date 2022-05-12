@@ -26,9 +26,22 @@ macro(package_add_benchmark BENCHNAME)
 endmacro()
 
 # Benchmark Suite
+
+# ==================
+#   Topology
+# ==================
+
 package_add_benchmark("topology-generation" "topology/topology.cpp")
+package_add_benchmark("topology-range" "topology/range.cpp")
+
+# ==================
+#   Controller
+# ==================
 
 package_add_benchmark("controller-generation" "controller/generate.cpp")
 
+# ==================
+#   Experimental
+# ==================
 
 package_add_benchmark("experimental" "experimental/experimental.cpp")

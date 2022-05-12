@@ -10,3 +10,45 @@
 [submodule "external/spdlog"]
 	path = external/spdlog
 	url = https://github.com/gabime/spdlog
+[submodule "external/boost/assert"]
+	path = external/boost/assert
+	url = https://github.com/boostorg/assert
+[submodule "external/boost/core"]
+	path = external/boost/core
+	url = https://github.com/boostorg/core
+[submodule "external/boost/config"]
+	path = external/boost/config
+	url = https://github.com/boostorg/config
+[submodule "external/boost/detail"]
+	path = external/boost/detail
+	url = https://github.com/boostorg/detail
+[submodule "external/boost/integer"]
+	path = external/boost/integer
+	url = https://github.com/boostorg/integer
+[submodule "external/boost/static_assert"]
+	path = external/boost/static_assert
+	url = https://github.com/boostorg/static_assert
+[submodule "external/boost/type_traits"]
+	path = external/boost/type_traits
+	url = https://github.com/boostorg/type_traits
+[submodule "external/boost/container_hash"]
+	path = external/boost/container_hash
+	url = https://github.com/boostorg/container_hash
+[submodule "external/boost/preprocessor"]
+	path = external/boost/preprocessor
+	url = https://github.com/boostorg/preprocessor
+[submodule "external/boost/exception"]
+	path = external/boost/exception
+	url = https://github.com/boostorg/exception
+[submodule "external/boost/throw_exception"]
+	path = external/boost/throw_exception
+	url = https://github.com/boostorg/throw_exception
+[submodule "external/boost/tuple"]
+	path = external/boost/tuple
+	url = https://github.com/boostorg/tuple
+[submodule "external/boost/smart_ptr"]
+	path = external/boost/smart_ptr
+	url = https://github.com/boostorg/smart_ptr
+[submodule "external/boost/move"]
+	path = external/boost/move
+	url = https://github.com/boostorg/move

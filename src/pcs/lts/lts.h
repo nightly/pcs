@@ -14,24 +14,25 @@ namespace pcs {
 	 * @brief Labelled Transition System: comprised of states and transitions to other states 
 	 * @tparam KeyT: the data type used to defined keys/state names. E.g std::string, std::vector<std::string>
 	 * @tparam TransitionT : defines the data type used to represent transitions. E.g. std::string, CompositeOperation
+	 * @tparam HashF: the Hash functor for keys. Defaults to std::hash<KeyT>>.
 	 */
-	template <typename KeyT = std::string, typename TransitionT = std::string>
+	template <typename KeyT = std::string, typename TransitionT = std::string, typename HashF = std::hash<KeyT>>
 	class LTS {
 	public:
 		using State = internal::State<KeyT, TransitionT>;
 	private:
-		std::unordered_map<KeyT, State> states_;
+		std::unordered_map<KeyT, State, HashF> states_;
 		KeyT initial_state_;
 	public:
 		LTS() = default;
 
-		LTS(const KeyT& initial_state, bool create_initial) {
+		LTS(const KeyT& initial_state, bool create_initial=true) {
 			SetInitialState(initial_state, create_initial);
 		}
 
 		~LTS() = default;
 
-		const std::unordered_map<KeyT, State>& states() const {
+		const std::unordered_map<KeyT, State, HashF>& states() const {
 			return states_;
 		}
 
@@ -55,7 +56,7 @@ namespace pcs {
 		}
 
 		/*
-		 * @brief Removes a given state but allows dangling transitions to exist from other states to the deleted state 
+		 * @brief Removes a given state but allows dangling transitions to exist from other states to the now deleted state 
 		 */
 		bool RemoveStateSoft(const KeyT& key) {
 			if (HasState(key)) {
@@ -111,11 +112,11 @@ namespace pcs {
 			return states_.at(key);
 		}
 
-		template <typename _KeyT, typename _TransitionT>
-		friend std::ostream& operator<<(std::ostream& os, const LTS<_KeyT, _TransitionT>& lts);
+		template <typename _KeyT, typename _TransitionT, typename _HashF>
+		friend std::ostream& operator<<(std::ostream& os, const LTS<_KeyT, _TransitionT, _HashF>& lts);
 
-		template <typename _KeyT, typename _TransitionT>
-		friend std::ofstream& operator<<(std::ofstream& os, const LTS& lts);
+		template <typename _KeyT, typename _TransitionT, typename _HashF>
+		friend std::ofstream& operator<<(std::ofstream& os, const LTS<_KeyT, _TransitionT, _HashF>& lts);
 	private:
 		bool AddState(State&& state) {
 			if (!HasState(state.name())) {

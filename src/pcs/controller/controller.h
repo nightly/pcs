@@ -5,33 +5,35 @@
 #include "pcs/lts/lts.h"
 #include "pcs/operation/transfer.h"
 
+#include <boost/container_hash/hash.hpp>
+
 #include <optional>
 
 namespace pcs {
 
 	class Controller {
 	private:
-		LTS<std::string, std::string> controller_;
+		LTS<std::vector<std::string>, std::string, boost::hash<std::vector<std::string>>> controller_;
 		const Machine* machine_;
 		const Recipe* recipe_;
-		const LTS<std::string, std::pair<size_t, std::string>>* topology_;
+		const LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>>* topology_;
 
 		std::vector<std::vector<std::string>> parts_;
 		std::string recipe_state_;
-		std::string topology_state_;
+		std::vector<std::string> topology_state_;
 		size_t num_of_resources_;
 
 		const std::tuple<Operation, std::vector<std::string>, std::vector<std::string>>* seq_tuple_;
 	public:
 		Controller(const Machine* machine, const Recipe* recipe);
-		std::optional<const LTS<std::string, std::string>*> Generate();
+		std::optional<const LTS<std::vector<std::string>, std::string, boost::hash<std::vector<std::string>>>*> Generate();
 	private:
 		bool HandleComposite(const CompositeOperation& co);
-		bool HandleSequentialOperation(std::string topology_state, std::vector<std::pair<std::vector<std::string>, 
-			                          std::string>> plan_transitions, std::vector<std::vector<std::string>> plan_parts);
+		bool HandleSequentialOperation(std::vector<std::string> topology_state, std::vector<std::pair<std::vector<std::string>, 
+			                          std::vector<std::string>>> plan_transitions, std::vector<std::vector<std::string>> plan_parts);
 		bool ProcessRecipe(const std::string& state);
 
-		void ApplyTransition(const std::pair<std::vector<std::string>, std::string>& transition);
+		void ApplyTransition(const std::pair <std::vector<std::string>, std::vector<std::string>>& transition);
 		bool TransferParts(const std::pair<size_t, std::string>& transition);
 	};
 }

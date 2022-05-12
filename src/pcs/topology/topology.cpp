@@ -7,12 +7,12 @@
 #include <utility>
 #include <unordered_set>
 
-#include <iostream>
+#include <boost/container_hash/hash.hpp>
 
 #include "pcs/lts/lts.h"
 #include "pcs/lts/state.h"
-#include "pcs/common/strings.h"
 #include "pcs/operation/label.h"
+#include "pcs/common/log.h"
 
 namespace pcs {
 
@@ -21,17 +21,16 @@ namespace pcs {
 	 * @param ltss: lts' to combine
 	 * @returns the combined LTS of form KeyT = string (combined state), TransitionT = pair<size_t, string> (acting on resource, action)
 	 */
-	LTS<std::string, std::pair<size_t, std::string>> Combine(const std::span<LTS<std::string, std::string>>& ltss) {
-		LTS<std::string, std::pair<size_t, std::string>> combined_lts;
-		std::vector<std::string> states_vec;
+	LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>> Combine(const std::span<LTS<std::string, std::string>>& ltss) {
+		LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>> combined_lts;
+		std::vector<std::string> initial_key;
 		for (const auto& lts : ltss) {
 			// Populate with initial states
-			states_vec.emplace_back(lts.initial_state());
+			initial_key.emplace_back(lts.initial_state());
 		}
-		std::string initial_key = VectorToString(states_vec);
 		combined_lts.set_initial_state(initial_key, true);
-		std::unordered_set<std::string> visited;
-		CombineRecursive(ltss, states_vec, visited, combined_lts);
+		std::unordered_set<std::vector<std::string>, boost::hash<std::vector<std::string>>> visited;
+		CombineRecursive(ltss, initial_key, visited, combined_lts);
 		return combined_lts;
 	}
 
@@ -40,12 +39,12 @@ namespace pcs {
 	 * All possible transitions will be considered from each given state (_, _, _, _)
 	 */
 	void CombineRecursive(const std::span<LTS<std::string, std::string>>& ltss, std::vector<std::string>& states_vec,
-				         std::unordered_set<std::string>& visited, LTS<std::string, std::pair<size_t, std::string>>& combined_lts) {
-		std::string states_str = VectorToString(states_vec);
-		if (visited.contains(states_str) == true) {
+		                  std::unordered_set<std::vector<std::string>, boost::hash<std::vector<std::string>>>& visited,
+		                 LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>>& combined_lts) {
+		if (visited.contains(states_vec) == true) {
 			return;
 		}
-		visited.insert(states_str);
+		visited.insert(states_vec);
 		
 		for (size_t i = 0; i < ltss.size(); ++i) {
 			for (const auto& transition : ltss[i].states().at(states_vec[i]).transitions_) {
@@ -54,12 +53,12 @@ namespace pcs {
 					if (!transfer_state.has_value()) {
 						continue;
 					}
-					combined_lts.AddTransition(states_str, std::make_pair(i, transition.first), VectorToString(*transfer_state));
+					combined_lts.AddTransition(states_vec, std::make_pair(i, transition.first), *transfer_state);
 					CombineRecursive(ltss, *transfer_state, visited, combined_lts); 
 				} else {
 					std::vector<std::string> next_states = states_vec;
 					next_states[i] = transition.second;
-					combined_lts.AddTransition(states_str, std::make_pair(i, transition.first), VectorToString(next_states));
+					combined_lts.AddTransition(states_vec, std::make_pair(i, transition.first), next_states);
 					CombineRecursive(ltss, next_states, visited, combined_lts);
 				}
 			}

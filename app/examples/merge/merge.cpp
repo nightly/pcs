@@ -23,13 +23,14 @@ void MergeExample() {
 		std::cerr << "Unable to read the file at specified path\n";
 		return std::exit(1);
 	}
-	pcs::LTS<std::string, std::pair<size_t, std::string>> lts_combined = pcs::Combine(ltss);
+	pcs::LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>> lts_combined = pcs::Combine(ltss);
 
 	// Console output
 	for (size_t i = 0; i < ltss.size(); i++) {
 		std::cout << "Labelled Transition System " << (i + 1) << ":\n" << ltss[i] << std::endl;
 	}
 	std::cout << "Combined LTS: \n" << lts_combined << '\n';
+
 
 	// File output
 	try {

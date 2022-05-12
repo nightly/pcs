@@ -17,8 +17,8 @@ namespace pcs {
 	 * @param path: export filepath, missing directories will be created. Filepath should include file extension.
 	 * @exception Propagates std::ofstream::failure
 	 */
-	template <typename KeyT = std::string, typename TransitionT = std::string>
-	void ExportToFile(const LTS<KeyT, TransitionT>& lts, const std::filesystem::path& path) {
+	template <typename KeyT = std::string, typename TransitionT = std::string, typename HashF = std::hash<KeyT>>
+	void ExportToFile(const LTS<KeyT, TransitionT, HashF>& lts, const std::filesystem::path& path) {
 		std::ofstream stream;
 		stream.exceptions(std::ofstream::badbit);
 		CreateDirectoryForPath(path);

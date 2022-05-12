@@ -9,7 +9,7 @@
 #include "pcs/machine/machine.h"
 #include "pcs/machine/writers.h"
 #include "pcs/product/recipe.h"
-#include "pcs/controller/controller.h"
+ #include "pcs/controller/controller.h"
 #include "pcs/controller/highlighter.h"
 #include "pcs/common/log.h"
 
@@ -24,19 +24,19 @@ void PadExample() {
 	pcs::ExportMachine(machine, "../../exports/pad");
 	
 	Controller con(&machine, &recipe);
-	std::optional<const LTS<std::string, std::string>*> controller_lts = con.Generate();
+	std::optional<const LTS<std::vector<std::string>, std::string, boost::hash<std::vector<std::string>>>*> controller_lts = con.Generate();
 	if (controller_lts.has_value()) {
 		pcs::ExportToFile(**controller_lts, "../../exports/pad/controller.txt");
 		pcs::HighlightTopology(machine.topology(), **controller_lts, "../../exports/pad/highlighted_topology.txt");
 	} else {
-		PCS_INFO("[PAD] No controller generated");
+		PCS_WARN("[PAD] No controller generated");
 	}
 }
 
 pcs::Recipe LoadPadRecipe() {
 	pcs::Recipe recipe;
 	try {
-		recipe.set_recipe("../../data/pad/recipe_s.json");
+		recipe.set_recipe("../../data/pad/recipe_full.json");
 	} catch (const std::ifstream::failure& e) {
 		throw;
 	}

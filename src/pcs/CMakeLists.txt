@@ -1,18 +1,19 @@
 cmake_minimum_required (VERSION 3.8)
 
-set(PCS_SOURCES "lts/lts.h" "lts/state.h" "lts/writers.h"
+set(PCS_SOURCES "lts/lts.h" "lts/state.h" "lts/writers.h" "lts/transition.h"
 "lts/parsers/string_string.cpp" "lts/parsers/string_operation.cpp"
 
-"topology/topology.cpp" "topology/stitch.cpp" "topology/resource.cpp"
+"topology/topology.cpp" "topology/topology.h" "topology/stitch.cpp" "topology/partial.cpp"
 
-"controller/controller.cpp" "controller/highlighter.cpp"
+"controller/controller.cpp" 
+"controller/highlighter.cpp"
 
 "product/recipe.cpp"  "product/parser.cpp"
 
 "operation/composite.cpp" "operation/guard.cpp" "operation/operation.cpp" "operation/transfer.cpp" "operation/nop.cpp"
 "operation/label.cpp"
 
-"machine/machine.cpp" "machine/writers.cpp"
+"machine/machine.h" "machine/machine.cpp" "machine/writers.cpp"
 
 "common/directory.cpp" "common/strings.cpp")
 
@@ -25,13 +26,37 @@ target_include_directories(pcs
         ${PROJECT_SOURCE_DIR}/src
 )
 
-# Dependencies 
+# ==================
+#   Dependencies
+# ==================
+
 add_subdirectory("${PROJECT_SOURCE_DIR}/external/json" "external/json")
 add_subdirectory("${PROJECT_SOURCE_DIR}/external/spdlog" "external/spdlog")
+
+# =========
+#   Boost
+# =========
+add_subdirectory("${PROJECT_SOURCE_DIR}/external/boost/core" "external/boost/core")
+add_subdirectory("${PROJECT_SOURCE_DIR}/external/boost/container_hash" "external/boost/container_hash")
+add_subdirectory("${PROJECT_SOURCE_DIR}/external/boost/assert" "external/boost/assert")
+add_subdirectory("${PROJECT_SOURCE_DIR}/external/boost/config" "external/boost/config")
+add_subdirectory("${PROJECT_SOURCE_DIR}/external/boost/detail" "external/boost/detail")
+add_subdirectory("${PROJECT_SOURCE_DIR}/external/boost/integer" "external/boost/integer")
+add_subdirectory("${PROJECT_SOURCE_DIR}/external/boost/static_assert" "external/boost/static_assert")
+add_subdirectory("${PROJECT_SOURCE_DIR}/external/boost/type_traits" "external/boost/type_traits")
+add_subdirectory("${PROJECT_SOURCE_DIR}/external/boost/preprocessor" "external/boost/preprocessor")
+add_subdirectory("${PROJECT_SOURCE_DIR}/external/boost/exception" "external/boost/exception")
+add_subdirectory("${PROJECT_SOURCE_DIR}/external/boost/throw_exception" "external/boost/throw_exception")
+add_subdirectory("${PROJECT_SOURCE_DIR}/external/boost/smart_ptr" "external/boost/smart_ptr")
+add_subdirectory("${PROJECT_SOURCE_DIR}/external/boost/tuple" "external/boost/tuple")
+add_subdirectory("${PROJECT_SOURCE_DIR}/external/boost/move" "external/boost/move")
+
+
 target_link_libraries(pcs 
     PUBLIC 
         nlohmann_json
         spdlog::spdlog
+        Boost::container_hash
 )
 
 set_target_properties(pcs

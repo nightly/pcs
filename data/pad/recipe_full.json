@@ -140,6 +140,25 @@
         "parallel": []
       },
       "endState": "E"
+    },
+    {
+      "startState": "C",
+      "label": {
+        "guard": {},
+        "sequential": [
+          {
+            "name": "remove",
+            "input": [
+              "h2"
+            ],
+            "output": [
+              "h2"
+            ]
+          }
+        ],
+        "parallel": []
+      },
+      "endState": "F"
     }
   ]
 }

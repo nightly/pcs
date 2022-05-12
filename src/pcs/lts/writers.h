@@ -60,8 +60,8 @@ namespace pcs {
 		return os;
 	}
 
-	template <typename KeyT, typename TransitionT>
-	std::ofstream& operator<<(std::ofstream& os, const LTS<KeyT, TransitionT>& lts) {
+	template <typename KeyT, typename TransitionT, typename HashF>
+	std::ofstream& operator<<(std::ofstream& os, const LTS<KeyT, TransitionT, HashF>& lts) {
 		os << "digraph finite_state_machine {\n";
 		os << "	fontname=\"Helvetica, Arial, sans - serif\"\n";
 		os << "	node [fontname=\"Helvetica, Arial, sans - serif\"]\n";
@@ -91,14 +91,14 @@ namespace pcs {
 		return os;
 	}
 
-	template <typename KeyT, typename TransitionT>
-	std::ostream& operator<<(std::ostream& os, const LTS<KeyT, TransitionT>& lts) {
-		if (lts.initial_state_.empty() && lts.states_.empty()) {
+	template <typename KeyT, typename TransitionT, typename HashF>
+	std::ostream& operator<<(std::ostream& os, const LTS<KeyT, TransitionT, HashF>& lts) {
+		if (lts.initial_state().empty() && lts.states_.empty()) {
 			os << "Empty Labelled Transition System\n";
 			return os;
 		}
-		os << "Initial state: " << lts.initial_state_ << '\n';
-		for (const auto& pair : lts.states_) {
+		os << "Initial state: " << lts.initial_state() << '\n';
+		for (const auto& pair : lts.states()) {
 			os << pair.second;
 		}
 		return os;
