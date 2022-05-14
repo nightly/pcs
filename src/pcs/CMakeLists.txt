@@ -8,10 +8,11 @@ set(PCS_SOURCES "lts/lts.h" "lts/state.h" "lts/writers.h" "lts/transition.h"
 "controller/controller.cpp" 
 "controller/highlighter.cpp"
 
-"product/recipe.cpp"  "product/parser.cpp"
+"product/recipe.cpp"  "product/parsers/recipe.cpp"
 
-"operation/composite.cpp" "operation/guard.cpp" "operation/operation.cpp" "operation/transfer.cpp" "operation/nop.cpp"
-"operation/label.cpp"
+"operation/operation.h"  "operation/composite.cpp" "operation/guard.cpp"
+"operation/observable.cpp" "operation/transfer.cpp" "operation/nop.cpp"
+"operation/parsers/label.cpp"
 
 "system/system.cpp" "system/writers.cpp"
 

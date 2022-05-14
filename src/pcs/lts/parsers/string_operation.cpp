@@ -10,7 +10,7 @@
 #include "pcs/operation/transfer.h"
 #include "pcs/operation/nop.h"
 #include "pcs/common/strings.h"
-#include "pcs/operation/label.h"
+#include "pcs/operation/parsers/label.h"
 
 namespace pcs {
 

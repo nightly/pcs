@@ -23,7 +23,7 @@ namespace pcs {
 		std::vector<std::string> topology_state_;
 		size_t num_of_resources_;
 
-		const std::tuple<Operation, std::vector<std::string>, std::vector<std::string>>* seq_tuple_;
+		const std::tuple<Observable, std::vector<std::string>, std::vector<std::string>>* seq_tuple_;
 	public:
 		Controller(const System* machine, const Recipe* recipe);
 		std::optional<const LTS<std::vector<std::string>, std::string, boost::hash<std::vector<std::string>>>*> Generate();

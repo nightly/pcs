@@ -1,4 +1,4 @@
-#include "pcs/product/parser.h"
+#include "pcs/product/parsers/recipe.h"
 
 #include "pcs/product/recipe.h"
 #include "pcs/operation/guard.h"
@@ -6,7 +6,7 @@
 
 namespace pcs {
 
-	/*
+	/**
 	 * @brief ReadFromFile will parse a JSON input file into an instance of the LTS<Transition = CompositeOperation> class.
 	 *
 	 * The expected form consists of: `initialState` as a string, and an array of `transitions`
@@ -30,8 +30,8 @@ namespace pcs {
 		ParseJson(lts, j);
 	}
 
-	/*
-	 * @brief ParseJson will read data into a LTS<Transition = CompositeOperation> instance from a JSON object instance.
+	/**
+	 * @brief ParseJson will read data into a LTS<KeyType = String, TransitionType = CompositeOperation> instance from a JSON object instance.
 	 * @param lts: Labelled Transition System to parse into
 	 * @param j: json object containing the correct object layout as previously defined
 	 */
@@ -46,7 +46,7 @@ namespace pcs {
 				}
 			}
 			for (const auto& seq_op : t["label"]["sequential"]) {
-				Operation o;
+				Observable o;
 				o.name_ = seq_op["name"];
 				std::vector<std::string> input;
 				std::vector<std::string> output;
@@ -59,7 +59,7 @@ namespace pcs {
 				co.sequential.emplace_back(std::move(o), input, output);
 			}
 			for (const auto& par_op : t["label"]["parallel"]) {
-				Operation o;
+				Observable o;
 				o.name_ = par_op["name"];
 				std::vector<std::string> input;
 				std::vector<std::string> output;

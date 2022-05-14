@@ -1,6 +1,6 @@
 #include "pcs/product/recipe.h"
 
-#include "pcs/product/parser.h"
+#include "pcs/product/parsers/recipe.h"
 
 namespace pcs {
 

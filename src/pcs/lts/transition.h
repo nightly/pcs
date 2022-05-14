@@ -13,9 +13,11 @@ namespace pcs {
 		TransitionT label_;
 		KeyT to_;
 	public:
+
 		// ====================================================================
 		// Constructors & destructor
 		// ====================================================================
+
 		Transition() = default;
 
 		Transition(const TransitionT& label, const KeyT& to)
@@ -53,7 +55,6 @@ namespace pcs {
 		void set_to(KeyT&& to) {
 			to_ = std::move(to);
 		}
-
 
 	};
 }

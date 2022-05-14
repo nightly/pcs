@@ -12,7 +12,7 @@
 #include "pcs/lts/lts.h"
 #include "pcs/common/log.h"
 #include "pcs/common/strings.h"
-#include "pcs/operation/label.h"
+#include "pcs/operation/parsers/label.h"
 
 namespace pcs {
 

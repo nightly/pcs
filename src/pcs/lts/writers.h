@@ -12,14 +12,14 @@
 namespace pcs {
 
 
-	// ================
-	// Generic output
-	// ================
+	// =========================
+	// Generic structure output
+	// =========================
 
-	/*
+	/**
 	 * @brief std::pair operator<<
 	 */
-	template<typename T, typename U>
+	template <typename T, typename U>
 	static std::ostream& operator<<(std::ostream& os, const std::pair<T, U>& pair) {
 		os << pair.first;
 		os << ": ";
@@ -27,10 +27,10 @@ namespace pcs {
 		return os;
 	}
 
-	/*
+	/**
 	* @brief std::vector operator<< overload delimited by commas
 	*/
-	template<typename T>
+	template <typename T>
 	static std::ostream& operator<<(std::ostream& os, const std::vector<T>& vec) {
 		for (std::size_t i = 0; i < vec.size(); ++i) {
 			os << vec[i];

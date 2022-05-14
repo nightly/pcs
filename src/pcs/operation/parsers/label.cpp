@@ -1,10 +1,10 @@
-#include "pcs/operation/label.h"
+#include "pcs/operation/parsers/label.h"
 
 #include <string>
 #include <memory>
 #include <optional>
 
-#include "pcs/operation/operation.h"
+#include "pcs/operation/observable.h"
 #include "pcs/operation/transfer.h"
 #include "pcs/operation/nop.h"
 
@@ -20,7 +20,7 @@ namespace pcs {
 		else if (label == "nop") {
 			return std::make_unique<Nop>();
 		}
-		return std::make_unique<Operation>(label);
+		return std::make_unique<Observable>(label);
 	}
 
 	std::optional<TransferOperation> StringToTransfer(const std::string& label) {

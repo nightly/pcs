@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "pcs/product/parser.h"
+#include "pcs/product/parsers/recipe.h"
 
 #include <array>
 #include <vector>
@@ -18,7 +18,7 @@ TEST(ProductParser, Recipe1) {
 	expected.set_initial_state("A", false);
 
 	CompositeOperation co1;
-	Operation co1_seq1, co1_seq2, co1_seq3;
+	Observable co1_seq1, co1_seq2, co1_seq3;
 	co1.guard.first.name_ = "check";
 	co1.guard.second = std::vector<std::string>({"c"});
 
@@ -34,7 +34,7 @@ TEST(ProductParser, Recipe1) {
 	expected.AddTransition("A", co1, "B", true);
 
 	CompositeOperation co2;
-	Operation co2_seq1, co2_par1;
+	Observable co2_seq1, co2_par1;
 	co2_seq1.name_ = "rem";
 	co2.sequential.emplace_back(co2_seq1, std::vector<std::string>({ "h2" }), std::vector<std::string>({ "h2" }));
 	

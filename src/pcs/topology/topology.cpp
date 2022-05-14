@@ -11,7 +11,7 @@
 
 #include "pcs/lts/lts.h"
 #include "pcs/lts/state.h"
-#include "pcs/operation/label.h"
+#include "pcs/operation/parsers/label.h"
 #include "pcs/common/log.h"
 
 namespace pcs {
