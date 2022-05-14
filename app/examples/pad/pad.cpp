@@ -6,8 +6,8 @@
 #include "pcs/lts/parsers/string_string.h"
 #include "pcs/lts/writers.h"
 #include "pcs/lts/export.h"
-#include "pcs/machine/machine.h"
-#include "pcs/machine/writers.h"
+#include "pcs/system/system.h"
+#include "pcs/system/writers.h"
 #include "pcs/product/recipe.h"
  #include "pcs/controller/controller.h"
 #include "pcs/controller/highlighter.h"
@@ -19,7 +19,7 @@ void PadExample() {
 	pcs::Recipe recipe = LoadPadRecipe();
 	pcs::ExportToFile(recipe.lts(), "../../exports/pad/recipe.txt");
 
-	pcs::Machine machine = LoadPadMachine();
+	pcs::System machine = LoadPadMachine();
 	ComputePadTopology(machine);
 	pcs::ExportMachine(machine, "../../exports/pad");
 
@@ -45,8 +45,8 @@ pcs::Recipe LoadPadRecipe() {
 	return recipe;
 }
 
-pcs::Machine LoadPadMachine() {
-	pcs::Machine machine;
+pcs::System LoadPadMachine() {
+	pcs::System machine;
 	try {
 		machine.AddResource("../../data/pad/Resource1.txt", false);
 		machine.AddResource("../../data/pad/Resource2.txt", false);
@@ -59,6 +59,6 @@ pcs::Machine LoadPadMachine() {
 	return machine;
 }
 
-void ComputePadTopology(pcs::Machine& machine) {
+void ComputePadTopology(pcs::System& machine) {
 	machine.ComputeTopology();
 }

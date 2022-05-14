@@ -13,7 +13,7 @@ set(PCS_SOURCES "lts/lts.h" "lts/state.h" "lts/writers.h" "lts/transition.h"
 "operation/composite.cpp" "operation/guard.cpp" "operation/operation.cpp" "operation/transfer.cpp" "operation/nop.cpp"
 "operation/label.cpp"
 
-"machine/machine.h" "machine/machine.cpp" "machine/writers.cpp"
+"system/system.cpp" "system/writers.cpp"
 
 "common/directory.cpp" "common/strings.cpp")
 

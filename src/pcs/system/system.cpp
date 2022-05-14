@@ -1,41 +1,41 @@
-#include "pcs/machine/machine.h"
+#include "pcs/system/system.h"
 
 #include "pcs/topology/topology.h"
 #include "pcs/lts/parsers/string_string.h"
 
 namespace pcs {
 
-	Machine::Machine(std::vector<LTS<std::string, std::string>>&& resources, bool compute_topology) {
+	System::System(std::vector<LTS<std::string, std::string>>&& resources, bool compute_topology) {
 		resources_ = std::move(resources);
 		if (compute_topology) {
 			ComputeTopology();
 		}
 	}
 
-	const std::vector<LTS<std::string, std::string>>& Machine::resources() const {
+	const std::vector<LTS<std::string, std::string>>& System::resources() const {
 		return resources_;
 	}
 
-	const LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>>& Machine::topology() const {
+	const LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>>& System::topology() const {
 		return topology_;
 	}
 
-	size_t Machine::NumOfResources() const {
+	size_t System::NumOfResources() const {
 		return resources_.size();
 	}
 
-	size_t Machine::NumOfTopologyStates() const {
+	size_t System::NumOfTopologyStates() const {
 		return topology_.NumOfStates();
 	}
 
-	Machine::Machine(const std::span<LTS<std::string, std::string>>& resources, bool compute_topology)  {
+	System::System(const std::span<LTS<std::string, std::string>>& resources, bool compute_topology)  {
 		resources_.assign(resources.begin(), resources.end());
 		if (compute_topology) {
 			ComputeTopology();
 		}
 	}
 
-	void Machine::ComputeTopology() {
+	void System::ComputeTopology() {
 		topology_ = pcs::Combine(resources_);
 	}
 
@@ -45,7 +45,7 @@ namespace pcs {
 	 * @param is_json: specifies whether the LTS is in .txt or .json format
 	 * @exception Propagates std::ifstream::failure
 	 */
-	void Machine::AddResource(const std::filesystem::path& filepath, bool is_json) {
+	void System::AddResource(const std::filesystem::path& filepath, bool is_json) {
 		LTS<std::string> lts;
 		try {
 			if (is_json) {
@@ -62,7 +62,7 @@ namespace pcs {
 	/*
 	 * @brief Adds a LTS<std::string> resource to the machine & handles the implications on the topology 
 	 */
-	void Machine::AddResource(const LTS<std::string, std::string>& resource) {
+	void System::AddResource(const LTS<std::string, std::string>& resource) {
 		if (topology_.NumOfStates() == 0) {
 			resources_.emplace_back(resource);
 		} else {
@@ -73,7 +73,7 @@ namespace pcs {
 	/* 
 	 * @brief Adds a resource with move semantics
 	 */
-	void Machine::AddResource(LTS<std::string, std::string>&& resource) {
+	void System::AddResource(LTS<std::string, std::string>&& resource) {
 		if (topology_.NumOfStates() == 0) {
 			resources_.emplace_back(std::move(resource));
 		} else {

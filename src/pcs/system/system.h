@@ -11,14 +11,14 @@
 
 namespace pcs {
 
-	class Machine {
+	class System {
 	private:
 		std::vector<LTS<std::string, std::string>> resources_;
 		LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>> topology_;
 	public:
-		Machine() = default;
-		Machine(const std::span<LTS<std::string, std::string>>& resources, bool compute_topology);
-		Machine(std::vector<LTS<std::string, std::string>>&& resources, bool compute_topology);
+		System() = default;
+		System(const std::span<LTS<std::string, std::string>>& resources, bool compute_topology);
+		System(std::vector<LTS<std::string, std::string>>&& resources, bool compute_topology);
 
 		const std::vector<LTS<std::string, std::string>>& resources() const;
 		const LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>>& topology() const;

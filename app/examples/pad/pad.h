@@ -4,9 +4,12 @@
 
 #include "pcs/lts/lts.h"
 #include "pcs/product/recipe.h"
-#include "pcs/machine/machine.h"
+#include "pcs/system/system.h"
 
 void PadExample();
-pcs::Machine LoadPadMachine();
+
+pcs::System LoadPadMachine();
+
 pcs::Recipe LoadPadRecipe();
-void ComputePadTopology(pcs::Machine& machine);
+
+void ComputePadTopology(pcs::System& machine);

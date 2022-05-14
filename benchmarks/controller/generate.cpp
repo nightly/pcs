@@ -7,7 +7,7 @@
 #include "pcs/lts/parsers/string_string.h"
 
 static void BM_PadController(benchmark::State& state) {
-	pcs::Machine machine;
+	pcs::System machine;
 	try {
 		machine.AddResource("../../data/pad/Resource1.txt", false);
 		machine.AddResource("../../data/pad/Resource2.txt", false);

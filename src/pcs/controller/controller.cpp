@@ -18,7 +18,7 @@ namespace pcs {
 
 	using TopologyTransition = std::pair<size_t, std::string>;
 
-	Controller::Controller(const Machine* machine, const Recipe* recipe) 
+	Controller::Controller(const System* machine, const Recipe* recipe) 
 		: machine_(machine), recipe_(recipe), topology_(&machine->topology()), num_of_resources_(machine_->NumOfResources()) {}
 	
 	std::optional<const LTS<std::vector<std::string>, std::string, boost::hash<std::vector<std::string>>>*> Controller::Generate() {

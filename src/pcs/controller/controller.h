@@ -1,6 +1,6 @@
 #pragma once
 
-#include "pcs/machine/machine.h"
+#include "pcs/system/system.h"
 #include "pcs/product/recipe.h"
 #include "pcs/lts/lts.h"
 #include "pcs/operation/transfer.h"
@@ -14,7 +14,7 @@ namespace pcs {
 	class Controller {
 	private:
 		LTS<std::vector<std::string>, std::string, boost::hash<std::vector<std::string>>> controller_;
-		const Machine* machine_;
+		const System* machine_;
 		const Recipe* recipe_;
 		const LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>>* topology_;
 
@@ -25,7 +25,7 @@ namespace pcs {
 
 		const std::tuple<Operation, std::vector<std::string>, std::vector<std::string>>* seq_tuple_;
 	public:
-		Controller(const Machine* machine, const Recipe* recipe);
+		Controller(const System* machine, const Recipe* recipe);
 		std::optional<const LTS<std::vector<std::string>, std::string, boost::hash<std::vector<std::string>>>*> Generate();
 	private:
 		bool HandleComposite(const CompositeOperation& co);
