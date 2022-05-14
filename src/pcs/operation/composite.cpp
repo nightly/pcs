@@ -45,14 +45,14 @@ namespace pcs {
 
 	std::ofstream& operator<<(std::ofstream& os, const CompositeOperation& co) {
 		if (co.HasGuard()) {
-			os << co.guard.first.name_ << "(" << VectorToString(co.guard.second) << ") ; ";
+			os << co.guard.first.name_ << "(" << VectorToString(co.guard.second) << "); ";
 		}
 		for (size_t i = 0; i < co.sequential.size(); i++) {
 			auto& [op, input, output] = co.sequential[i];
 			os << op.name_ << "(" << VectorToString(input) << ")" <<
 				"(" << VectorToString(output) << ")";
 			if (i != co.sequential.size() - 1) {
-				os << " ;";
+				os << "; ";
 			}
 		}
 		if (co.parallel.size() >= 1) {
@@ -62,7 +62,7 @@ namespace pcs {
 				os << op.name_ << "(" << VectorToString(input) << ")" <<
 					"(" << VectorToString(output) << ")";
 				if (i != co.parallel.size() - 1) {
-					os << " ;";
+					os << "; ";
 				}
 			}
 		}

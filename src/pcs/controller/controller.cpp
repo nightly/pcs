@@ -6,8 +6,8 @@
 #include <algorithm>
 #include <map>
 
-#include <spdlog/fmt/ranges.h>
 #include <spdlog/fmt/bundled/color.h>
+#include <spdlog/fmt/ranges.h>
 
 #include "pcs/lts/lts.h"
 #include "pcs/common/log.h"
@@ -27,7 +27,7 @@ namespace pcs {
 		topology_state_ = topology_->initial_state();
 		controller_.set_initial_state(topology_state_, true);
 
-		PCS_INFO(fmt::format(fmt::fg(fmt::color::light_green), "Controller initial state {}", controller_.initial_state()));
+		PCS_INFO(fmt::format(fmt::fg(fmt::color::light_green), "Controller initial state {}", fmt::join(controller_.initial_state(), ",")));
 		PCS_INFO(fmt::format(fmt::fg(fmt::color::light_green), "Recipe initial state: {}", recipe_state_));
 
 		bool generated = ProcessRecipe(recipe_state_);
@@ -62,7 +62,7 @@ namespace pcs {
 			seq_tuple_ = &tuple;
 			const auto& [op, input, output] = *seq_tuple_;
 			PCS_INFO(fmt::format(fmt::fg(fmt::color::lavender), "Handling operation: {} with input parts {} and output parts {}",
-				op.name(), input, output));
+				op.name(), fmt::join(input, ","), fmt::join(output, ",")));
 
 			std::vector<std::pair<std::vector<std::string>, std::vector<std::string>>> plan_transitions;
 			std::vector<std::vector<std::string>> plan_parts;
@@ -132,7 +132,7 @@ namespace pcs {
 		controller_.AddTransition(topology_state_, VectorToString(transition.first), transition.second);
 		topology_state_ = transition.second;
 		PCS_INFO(fmt::format(fmt::fg(fmt::color::royal_blue) | fmt::emphasis::bold,
-			"Adding controller transition ({}) to {}", VectorToString(transition.first), transition.second));
+			"Adding controller transition ({}) to {}", fmt::join(transition.first, ","), fmt::join(transition.second, ",")));
 	}
 
 	bool Controller::TransferParts(const std::pair<size_t, std::string>& transition) {		/*

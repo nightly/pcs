@@ -10,7 +10,7 @@
 
 namespace pcs {
 
-	/*
+	/**
 	 * @brief Labelled Transition System: comprised of states and transitions to other states 
 	 * @tparam KeyT: the data type used to defined keys/state names. E.g std::string, std::vector<std::string>
 	 * @tparam TransitionT : defines the data type used to represent transitions. E.g. std::string, CompositeOperation
@@ -55,6 +55,14 @@ namespace pcs {
 			return states_.size();
 		}
 
+		size_t NumOfTransitions() const {
+			size_t total = 0;
+			for (const auto& [k, v] : states_) {
+				total += v.transitions_.size();
+			}
+			return total;
+		}
+
 		/*
 		 * @brief Removes a given state but allows dangling transitions to exist from other states to the now deleted state 
 		 */
@@ -88,7 +96,7 @@ namespace pcs {
 		}
 
 		void AddTransition(const KeyT& start_state, const TransitionT& label, const KeyT& end_state, 
-		bool create_missing_states = true) {
+		                   bool create_missing_states = true) {
 			if (!HasState(start_state) && create_missing_states) {
 				AddState(State(start_state));
 			}
@@ -117,18 +125,19 @@ namespace pcs {
 
 		template <typename _KeyT, typename _TransitionT, typename _HashF>
 		friend std::ofstream& operator<<(std::ofstream& os, const LTS<_KeyT, _TransitionT, _HashF>& lts);
+
 	private:
 		bool AddState(State&& state) {
 			if (!HasState(state.name())) {
-				states_.emplace(std::make_pair(state.name(), std::move(state)));
+				states_.emplace(state.name(), std::move(state));
 				return true;
 			}
 			return false;
 		}
 
-		bool AddState(const State&& state) {
+		bool AddState(const State& state) {
 			if (!HasState(state.name())) {
-				states_.emplace(std::make_pair(state.name(), state));
+				states_.emplace(state.name(), state);
 				return true;
 			}
 			return false;

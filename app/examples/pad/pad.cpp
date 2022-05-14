@@ -22,6 +22,8 @@ void PadExample() {
 	pcs::Machine machine = LoadPadMachine();
 	ComputePadTopology(machine);
 	pcs::ExportMachine(machine, "../../exports/pad");
+
+	PCS_INFO("Topology Number Of States {}", machine.topology().NumOfStates());
 	
 	Controller con(&machine, &recipe);
 	std::optional<const LTS<std::vector<std::string>, std::string, boost::hash<std::vector<std::string>>>*> controller_lts = con.Generate();

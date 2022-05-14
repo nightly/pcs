@@ -25,8 +25,8 @@ static void BM_PadController(benchmark::State& state) {
 		throw;
 	}
 
+	pcs::Controller con(&machine, &recipe);
     for (auto _ : state) {
-		//pcs::Controller con(&machine, &recipe);
 		//std::optional<const pcs::LTS<std::string, std::string>*> controller_lts = con.Generate();
     }
 }
