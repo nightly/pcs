@@ -1,0 +1,6 @@
+s0
+s1 nop s1
+s0 nop s0
+s0 in:4 s1
+s1 getimages s2
+s2 out:4 s0

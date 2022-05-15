@@ -1,0 +1,130 @@
+{
+  "initialState": "A",
+  "transitions": [
+    {
+      "startState": "A",
+      "label": {
+        "guard": {},
+        "sequential": [
+          {
+            "name": "load",
+            "input": [],
+            "output": [
+              "d",
+              "s"
+            ]
+          },
+          {
+            "name": "join",
+            "input": [
+              "d",
+              "s"
+            ],
+            "output": [
+              "h"
+            ]
+          },
+          {
+            "name": "separate",
+            "input": [
+              "h"
+            ],
+            "output": [
+              "d",
+              "s"
+            ]
+          }
+        ],
+        "parallel": []
+      },
+      "endState": "B"
+    },
+    {
+      "startState": "B",
+      "label": {
+        "guard": {},
+        "sequential": [
+          {
+            "name": "press",
+            "input": [
+              "h1",
+              "t"
+            ],
+            "output": [
+              "h2"
+            ]
+          },
+          {
+            "name": "attach",
+            "input": [
+              "h1",
+              "t"
+            ],
+            "output": [
+              "h2"
+            ]
+          }
+        ],
+        "parallel": []
+      },
+      "endState": "C"
+    },
+    {
+      "startState": "B",
+      "label": {
+        "guard": {},
+        "sequential": [
+          {
+            "name": "remove",
+            "input": [
+              "h1"
+            ],
+            "output": [
+              "h1"
+            ]
+          }
+        ],
+        "parallel": []
+      },
+      "endState": "E"
+    },
+    {
+      "startState": "C",
+      "label": {
+        "guard": {},
+        "sequential": [
+          {
+            "name": "remove",
+            "input": [
+              "h2"
+            ],
+            "output": [
+              "h2"
+            ]
+          }
+        ],
+        "parallel": []
+      },
+      "endState": "D"
+    },
+    {
+      "startState": "C",
+      "label": {
+        "guard": {},
+        "sequential": [
+          {
+            "name": "store",
+            "input": [
+              "h1"
+            ],
+            "output": [
+              "h1"
+            ]
+          }
+        ],
+        "parallel": []
+      },
+      "endState": "F"
+    }
+  ]
+}
