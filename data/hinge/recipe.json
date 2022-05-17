@@ -23,16 +23,6 @@
             "output": [
               "h"
             ]
-          },
-          {
-            "name": "separate",
-            "input": [
-              "h"
-            ],
-            "output": [
-              "d",
-              "s"
-            ]
           }
         ],
         "parallel": []
@@ -110,7 +100,16 @@
     {
       "startState": "C",
       "label": {
-        "guard": {},
+        "guard": {
+          "name": "validation",
+          "input": [
+            "h1",
+            "t"
+          ],
+          "output": [
+            "h2"
+          ]
+        },
         "sequential": [
           {
             "name": "store",

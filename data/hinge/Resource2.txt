@@ -7,4 +7,3 @@ s2 out:2 s1
 s1 nop s1
 s2 nop s2
 s1 join s2
-s1 separate s2
