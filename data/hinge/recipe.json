@@ -100,16 +100,7 @@
     {
       "startState": "C",
       "label": {
-        "guard": {
-          "name": "validation",
-          "input": [
-            "h1",
-            "t"
-          ],
-          "output": [
-            "h2"
-          ]
-        },
+        "guard": {},
         "sequential": [
           {
             "name": "store",
