@@ -14,11 +14,11 @@
 namespace pcs {
 
 	/*
-	 * @brief Builds the target map, where KeyT = a target state, and ValueT = set of target transitions. 
+	 * @brief Builds the target map, where KeyT = a target state, and ValueT = set of target transitions.
 	 * target_map = state_name to desired transitions
 	 */
-	static void BuildTargetMap(const LTS<std::vector<std::string>, std::string, boost::hash<std::vector<std::string>>>& controller, 
-		                      std::unordered_map<std::vector<std::string>, std::unordered_set<std::string>, boost::hash<std::vector<std::string>>>& target_map) {
+	static void BuildTargetMap(const LTS<std::vector<std::string>, std::string, boost::hash<std::vector<std::string>>>& controller,
+		std::unordered_map<std::vector<std::string>, std::unordered_set<std::string>, boost::hash<std::vector<std::string>>>& target_map) {
 		for (const auto& state : controller.states()) {
 			target_map[state.first] = std::unordered_set<std::string>();
 			for (const auto& t : state.second.transitions()) {
@@ -39,7 +39,7 @@ namespace pcs {
 	 * @brief Returns a highlighted topology showing the path the controller took
 	 */
 	void HighlightTopology(const LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>>& topology,
-						  const LTS<std::vector<std::string>, std::string, boost::hash<std::vector<std::string>>>& controller, const std::filesystem::path& out_path) {
+		const LTS<std::vector<std::string>, std::string, boost::hash<std::vector<std::string>>>& controller, const std::filesystem::path& out_path) {
 		std::ofstream os;
 		os.exceptions(std::ofstream::badbit);
 		CreateDirectoryForPath(out_path);
@@ -64,30 +64,33 @@ namespace pcs {
 				if (state.IsEmpty()) {
 					os << "	" << "\"" << state.name() << "\"" << "\n";
 				}
-				for (const auto& t: state.transitions_) {
+				for (const auto& t : state.transitions_) {
 					// @Cleanup: LTS types
 
 					if ((target_map.count(state.name()) == 1) && (target_map[state.name()].contains(t.first.second))) {
 						os << "	" << "\"" << state.name() << "\"" << " -> " << "\"" << t.second << "\"" << " [color=\"royalblue4\" penwidth=2.25 label = " << "\"";
 						os << t.first << "\"];\n";
 						os << "	" << "\"" << state.name() << "\"" << " [shape=circle, style=filled, fillcolor=dodgerblue2]" << "\n";
-					} else {
+					}
+					else {
 						os << "	" << "\"" << state.name() << "\"" << " -> " << "\"" << t.second << "\"" << " [label = " << "\"";
 						os << t.first << "\"];\n";
 					}
 				}
 			}
-			os << "}";	
-		} catch (const std::ofstream::failure& e) {
+			os << "}";
+		}
+		catch (const std::ofstream::failure& e) {
 			throw;
 		}
 	}
 
-	
+
 }
 
 
 /*
 	@Note: `  c -> d [color="blue"]`
-	@Cleanup: should probably use a functor as this duplicates some export code, but it's just for GraphViz visualisation
+	@Cleanup: should probably use a functor
+	@Cleanup: should use ITopology
 */

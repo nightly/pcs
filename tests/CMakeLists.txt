@@ -31,4 +31,4 @@ package_add_test("lts-parsers" "lts/parsers.cpp")
 
 package_add_test("product-lts-parser" "product/parser.cpp")
 
-package_add_test("topology" "topology/topology.cpp")
+package_add_test("topology-complete" "topology/complete.cpp")

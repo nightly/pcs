@@ -4,6 +4,7 @@ project ("pcs" VERSION 0 LANGUAGES CXX)
 
 option(PCS_RUN_TESTS "Run tests" ON)
 option(PCS_COMPILE_BENCHMARKS "Compile benchmarks" ON)
+option(PCS_VERBOSE_OUTPUT "Verbose output" OFF)
 
 # Library
 add_subdirectory(src/pcs)
@@ -23,4 +24,10 @@ add_subdirectory(app)
 # Benchmarks
 if (PCS_COMPILE_BENCHMARKS) 
     add_subdirectory(benchmarks)
+endif()
+
+
+# Preprocessor definitions
+if (PCS_VERBOSE_OUTPUT)
+    target_compile_definitions(pcs_cli PRIVATE PCS_VERBOSE=1)
 endif()

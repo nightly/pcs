@@ -47,7 +47,7 @@ namespace pcs {
 	// ==============================
 
 	template <typename KeyT, typename TransitionT>
-	std::ofstream& operator<<(std::ofstream& os, const internal::State<KeyT, TransitionT>& state) {
+	std::ofstream& operator<<(std::ofstream& os, const pcs::State<KeyT, TransitionT>& state) {
 		if (state.IsEmpty()) {
 			os << "	" << "\"" << state.name() << "\"" << "\n";
 		}
@@ -76,7 +76,7 @@ namespace pcs {
 	}
 
 	template <typename KeyT, typename TransitionT>
-	std::ostream& operator<<(std::ostream& os, const internal::State<KeyT, TransitionT>& state) {
+	std::ostream& operator<<(std::ostream& os, const pcs::State<KeyT, TransitionT>& state) {
 		os << "State name: " << state.name() << '\n';
 		if (state.transitions_.empty()) {
 			os << "  With 0 transitions" << '\n';

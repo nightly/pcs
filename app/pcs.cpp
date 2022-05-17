@@ -2,9 +2,12 @@
 #include "examples/pad/pad.h"
 #include "examples/experimental/experimental.h"
 #include "examples/experimental/experimental2.h"
+#include "examples/hinge/hinge.h"
 
 int main() {
 	// MergeExample();
-    PadExample();
 	// Experimental2();
+
+	// PadExample(false); 
+	HingeExample(false);
 }

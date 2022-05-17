@@ -16,8 +16,8 @@ namespace pcs {
 		LTS<std::vector<std::string>, std::string, boost::hash<std::vector<std::string>>> controller_;
 		const System* machine_;
 		const Recipe* recipe_;
-		const LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>>* topology_;
-
+		ITopology* topology_;
+	
 		std::vector<std::vector<std::string>> parts_;
 		std::string recipe_state_;
 		std::vector<std::string> topology_state_;
@@ -25,15 +25,15 @@ namespace pcs {
 
 		const std::tuple<Observable, std::vector<std::string>, std::vector<std::string>>* seq_tuple_;
 	public:
-		Controller(const System* machine, const Recipe* recipe);
+		Controller(const System* machine, ITopology* topology, const Recipe* recipe);
 		std::optional<const LTS<std::vector<std::string>, std::string, boost::hash<std::vector<std::string>>>*> Generate();
 	private:
 		bool HandleComposite(const CompositeOperation& co);
-		bool HandleSequentialOperation(std::vector<std::string> topology_state, std::vector<std::pair<std::vector<std::string>, 
-			                          std::vector<std::string>>> plan_transitions, std::vector<std::vector<std::string>> plan_parts);
+		bool HandleSequentialOperation(const std::vector<std::string>& topology_state, std::vector<std::pair<std::vector<std::string>,
+			std::vector<std::string>>> plan_transitions, std::vector<std::vector<std::string>> plan_parts);
 		bool ProcessRecipe(const std::string& state);
 
 		void ApplyTransition(const std::pair <std::vector<std::string>, std::vector<std::string>>& transition);
-		bool TransferParts(const std::pair<size_t, std::string>& transition);
+		bool TransferParts(size_t resource, std::vector<std::vector<std::string>>& parts);
 	};
 }

@@ -11,6 +11,7 @@
 #include "pcs/product/recipe.h"
 #include "pcs/controller/controller.h"
 #include "pcs/common/log.h"
+#include <pcs/topology/complete.h>
 
 inline static pcs::Recipe LoadExpRecipe() {
 	pcs::Recipe recipe;
@@ -37,7 +38,7 @@ inline static pcs::System LoadExpMachine() {
 }
 
 inline static void ComputeExpTopology(pcs::System& machine) {
-	machine.ComputeTopology();
+	machine.Complete();
 }
 
 inline void Experimental() {
@@ -48,7 +49,7 @@ inline void Experimental() {
 	ComputeExpTopology(machine);
 	pcs::ExportMachine(machine, "../../exports/experimental");
 
-	pcs::Controller con(&machine, &recipe);
+	pcs::Controller con(&machine, machine.topology(), &recipe);
 	std::optional<const pcs::LTS<std::vector<std::string>, std::string, boost::hash<std::vector<std::string>>>*> controller = con.Generate();
 	if (controller.has_value()) {
 		pcs::ExportToFile(**controller, "../../exports/experimental/controller.txt");

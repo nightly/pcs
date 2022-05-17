@@ -15,27 +15,30 @@
 
 using namespace pcs;
 
-void PadExample() {
+void PadExample(bool incremental) {
 	pcs::Recipe recipe = LoadPadRecipe();
 	pcs::ExportToFile(recipe.lts(), "../../exports/pad/recipe.txt");
 
 	pcs::System machine = LoadPadMachine();
-	ComputePadTopology(machine);
+	if (incremental) {
+		IncrementalPadTopology(machine);
+	} else {
+		CompletePadTopology(machine);
+	}
 	pcs::ExportMachine(machine, "../../exports/pad");
-
-	PCS_INFO("Topology Number Of States {}", machine.topology().NumOfStates());
+		
+	Controller con(&machine, machine.topology(), &recipe);
 	
-	Controller con(&machine, &recipe);
 	std::optional<const LTS<std::vector<std::string>, std::string, boost::hash<std::vector<std::string>>>*> controller_lts = con.Generate();
 	if (controller_lts.has_value()) {
 		pcs::ExportToFile(**controller_lts, "../../exports/pad/controller.txt");
-		pcs::HighlightTopology(machine.topology(), **controller_lts, "../../exports/pad/highlighted_topology.txt");
+		pcs::HighlightTopology(machine.topology()->lts(), **controller_lts, "../../exports/pad/highlighted_topology.txt");
 	} else {
 		PCS_WARN("[PAD] No controller generated");
 	}
 }
 
-pcs::Recipe LoadPadRecipe() {
+static pcs::Recipe LoadPadRecipe() {
 	pcs::Recipe recipe;
 	try {
 		recipe.set_recipe("../../data/pad/recipe_full.json");
@@ -45,7 +48,7 @@ pcs::Recipe LoadPadRecipe() {
 	return recipe;
 }
 
-pcs::System LoadPadMachine() {
+static pcs::System LoadPadMachine() {
 	pcs::System machine;
 	try {
 		machine.AddResource("../../data/pad/Resource1.txt", false);
@@ -59,6 +62,12 @@ pcs::System LoadPadMachine() {
 	return machine;
 }
 
-void ComputePadTopology(pcs::System& machine) {
-	machine.ComputeTopology();
+static void CompletePadTopology(pcs::System& machine) {
+	machine.Complete();
+	PCS_INFO("[Topology] Number Of States = {}, Number of Transitions = {}", machine.topology()->lts().NumOfStates(), 
+		machine.topology()->lts().NumOfTransitions());
+}
+
+static void IncrementalPadTopology(pcs::System& machine) {
+	machine.Incremental();
 }

@@ -8,7 +8,7 @@
 #include <fstream>
 #include <utility>
 
-namespace pcs::internal {
+namespace pcs {
 
 	template <typename KeyT = std::string, typename TransitionT = std::string>
 	class State {

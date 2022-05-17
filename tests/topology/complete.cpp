@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "pcs/topology/topology.h"
+#include "pcs/topology/complete.h"
 
 #include <array>
 #include <string>
@@ -16,7 +16,8 @@ TEST(LTSMerge, DISABLED_SelfMerge) {
 	pcs::ReadFromFile(ltss[1], "../../tests/lts/testdata/lts1.txt");
 	// pcs::ReadFromFile(expected, "../../tests/topology/testdata/lts_1_self_merge.txt"); 
 
-	got = pcs::Combine(ltss);
+	pcs::CompleteTopology ct(ltss);
+	got = ct.lts();
 	ASSERT_EQ(expected, got);
 }
 
@@ -27,7 +28,8 @@ TEST(LTSMerge, DISABLED_Merge1And2) {
 	pcs::ReadFromFile(ltss[1], "../../tests/lts/testdata/lts2.txt");
 	//pcs::ReadFromFile(expected, "../../tests/topology/testdata/lts_1_2_merge.txt");
 
-	got = pcs::Combine(ltss);
+	pcs::CompleteTopology ct(ltss);
+	got = ct.lts();
 	ASSERT_EQ(expected, got);
 }
 
@@ -40,7 +42,8 @@ TEST(LTSMerge, DISABLED_MergeMany) {
 	pcs::ReadFromFile(ltss[3], "../../tests/lts/testdata/lts4.txt");
 	// pcs::ReadFromFile(expected, "../../tests/topology/testdata/lts_1_2_3_4_merge.txt");
 
-	got = pcs::Combine(ltss);
+	pcs::CompleteTopology ct(ltss);
+	got = ct.lts();
 	ASSERT_EQ(expected, got);
 }
 
@@ -51,6 +54,7 @@ TEST(LTSMerge, DISABLED_MergeWithTransferOps) {
 	pcs::ReadFromFile(ltss[1], "../../data/pad/Resource2.txt");
 	// pcs::ReadFromFile(expected, "../../tests/topology/testdata/r1_5_merge.txt");
 
-	got = pcs::Combine(ltss);
+	pcs::CompleteTopology ct(ltss);
+	got = ct.lts();
 	ASSERT_EQ(expected, got);
 }

@@ -30,7 +30,7 @@ namespace pcs {
 			}
 		}
 
-		const pcs::LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>>& topology = system.topology();
+		const pcs::LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>>& topology = system.topology()->lts();
 		std::string topology_path = directory.string() + '/' + "topology" + ".txt";
 		try {
 			pcs::ExportToFile(topology, topology_path);

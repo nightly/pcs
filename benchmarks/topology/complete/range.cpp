@@ -1,5 +1,5 @@
 #include <benchmark/benchmark.h>
-#include "pcs/topology/topology.h"
+#include "pcs/topology/complete.h"
 
 #include <array>
 
@@ -13,11 +13,11 @@ static void BM_TopologyRange(benchmark::State& state) {
     }
 
     for (auto _ : state) {
-        pcs::LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>> topology = pcs::Combine(ltss);
+        pcs::CompleteTopology topology(ltss);
         benchmark::DoNotOptimize(topology);
         benchmark::ClobberMemory();
     }
 }
 
-BENCHMARK(BM_TopologyRange)->Arg(3)->Iterations(10);
-// Can use ->Ranges() but requires a multiplier (?)
+BENCHMARK(BM_TopologyRange)->Arg(8)->Iterations(25);
+// Can use ->Ranges() instad of Arg() but requires a multiplier (?)

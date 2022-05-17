@@ -19,7 +19,7 @@ namespace pcs {
 	template <typename KeyT = std::string, typename TransitionT = std::string, typename HashF = std::hash<KeyT>>
 	class LTS {
 	public:
-		using State = internal::State<KeyT, TransitionT>;
+		using State = pcs::State<KeyT, TransitionT>;
 	private:
 		std::unordered_map<KeyT, State, HashF> states_;
 		KeyT initial_state_;
@@ -36,7 +36,7 @@ namespace pcs {
 			return states_;
 		}
 
-		KeyT initial_state() const {
+		const KeyT& initial_state() const {
 			return initial_state_;
 		}
 
@@ -106,6 +106,17 @@ namespace pcs {
 
 			State& s = states_.at(start_state);
 			s.AddTransition(label, end_state);
+		}
+
+		/**
+		 * @brief AddTransition should be preferred as the method for creating State objects by creating them as needed with transitions. 
+		 */
+		bool AddState(const KeyT& key) {
+			if (!HasState(key)) {
+				AddState(State(key));
+				return true;
+			}
+			return false;
 		}
 
 		bool operator==(const LTS& other) const {

@@ -1,14 +1,23 @@
 #include "pcs/system/system.h"
 
-#include "pcs/topology/topology.h"
+#include "pcs/topology/complete.h"
+#include "pcs/topology/incremental.h"
 #include "pcs/lts/parsers/string_string.h"
+#include "pcs/common/log.h"
 
 namespace pcs {
 
-	System::System(std::vector<LTS<std::string, std::string>>&& resources, bool compute_topology) {
+	System::System(std::vector<LTS<std::string, std::string>>&& resources, bool compute_complete) {
 		resources_ = std::move(resources);
-		if (compute_topology) {
-			ComputeTopology();
+		if (compute_complete) {
+			Complete();
+		}
+	}
+
+	System::System(const std::span<LTS<std::string, std::string>>& resources, bool compute_complete) {
+		resources_.assign(resources.begin(), resources.end());
+		if (compute_complete) {
+			Complete();
 		}
 	}
 
@@ -16,8 +25,12 @@ namespace pcs {
 		return resources_;
 	}
 
-	const LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>>& System::topology() const {
-		return topology_;
+	const ITopology* System::topology() const {
+		return topology_.get();
+	}
+
+	ITopology* System::topology() {
+		return topology_.get();
 	}
 
 	size_t System::NumOfResources() const {
@@ -25,18 +38,16 @@ namespace pcs {
 	}
 
 	size_t System::NumOfTopologyStates() const {
-		return topology_.NumOfStates();
+		return topology_->lts().NumOfStates();
 	}
 
-	System::System(const std::span<LTS<std::string, std::string>>& resources, bool compute_topology)  {
-		resources_.assign(resources.begin(), resources.end());
-		if (compute_topology) {
-			ComputeTopology();
-		}
+
+	void System::Complete() {
+		topology_ = std::make_unique<CompleteTopology>(resources_);
 	}
 
-	void System::ComputeTopology() {
-		topology_ = pcs::Combine(resources_);
+	void System::Incremental() {
+		topology_ = std::make_unique<IncrementalTopology>(resources_);
 	}
 
 	/*
@@ -63,22 +74,26 @@ namespace pcs {
 	 * @brief Adds a LTS<std::string> resource to the machine & handles the implications on the topology 
 	 */
 	void System::AddResource(const LTS<std::string, std::string>& resource) {
-		if (topology_.NumOfStates() == 0) {
-			resources_.emplace_back(resource);
-		} else {
-			// @Todo: Consider case where topology must be recomputed or modified/adapted
-		}
+		resources_.emplace_back(resource);
+
+		//if (topology_.NumOfStates() == 0) {
+		//	resources_.emplace_back(resource);
+		//} else {
+		//	// @Todo: Consider case where topology must be recomputed or modified/adapted
+		//}
 	}
 
 	/* 
 	 * @brief Adds a resource with move semantics
 	 */
 	void System::AddResource(LTS<std::string, std::string>&& resource) {
-		if (topology_.NumOfStates() == 0) {
-			resources_.emplace_back(std::move(resource));
-		} else {
-			// @Todo: Consider case where topology must be recomputed or modified/adapted
-		}
+		resources_.emplace_back(std::move(resource));
+
+		//if (topology_.NumOfStates() == 0) {
+		//	resources_.emplace_back(std::move(resource));
+		//} else {
+		//	// @Todo: Consider case where topology must be recomputed or modified/adapted
+		//}
 	}
 
 }

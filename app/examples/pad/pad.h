@@ -6,10 +6,12 @@
 #include "pcs/product/recipe.h"
 #include "pcs/system/system.h"
 
-void PadExample();
+void PadExample(bool incremental);
 
-pcs::System LoadPadMachine();
+static pcs::System LoadPadMachine();
 
-pcs::Recipe LoadPadRecipe();
+static pcs::Recipe LoadPadRecipe();
 
-void ComputePadTopology(pcs::System& machine);
+static void CompletePadTopology(pcs::System& machine);
+
+static void IncrementalPadTopology(pcs::System& machine);

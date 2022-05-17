@@ -31,14 +31,14 @@ endmacro()
 #   Topology
 # ==================
 
-package_add_benchmark("topology-generation" "topology/topology.cpp")
-package_add_benchmark("topology-range" "topology/range.cpp")
+package_add_benchmark("topology-complete-range" "topology/complete/range.cpp")
 
 # ==================
 #   Controller
 # ==================
 
-package_add_benchmark("controller-generation" "controller/generate.cpp")
+package_add_benchmark("controller-pad" "controller/pad.cpp")
+package_add_benchmark("controller-hinge" "controller/hinge.cpp")
 
 # ==================
 #   Experimental

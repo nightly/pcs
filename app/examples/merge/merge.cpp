@@ -7,11 +7,15 @@
 #include <string>
 
 #include "pcs/lts/lts.h"
+
+#include "pcs/topology/complete.h"
 #include "pcs/topology/topology.h"
+
 #include "pcs/lts/state.h"
-#include "pcs/lts/parsers/string_string.h"
+#include "pcs/lts/parsers/parsers.h"
 #include "pcs/lts/export.h"
 #include "pcs/lts/writers.h"
+#include "pcs/common/log.h"
 
 void MergeExample() {
 	// Read LTS' & combine
@@ -23,7 +27,9 @@ void MergeExample() {
 		std::cerr << "Unable to read the file at specified path\n";
 		return std::exit(1);
 	}
-	pcs::LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>> lts_combined = pcs::Combine(ltss);
+
+	pcs::CompleteTopology topology(ltss);
+	pcs::LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>> lts_combined = topology.lts();
 
 	// Console output
 	for (size_t i = 0; i < ltss.size(); i++) {
@@ -31,6 +37,7 @@ void MergeExample() {
 	}
 	std::cout << "Combined LTS: \n" << lts_combined << '\n';
 
+	std::cout << "[Merge Example] Number of States = " << lts_combined.NumOfStates() << ". Number of Transitions = " << lts_combined.NumOfTransitions() << '\n';
 
 	// File output
 	try {
