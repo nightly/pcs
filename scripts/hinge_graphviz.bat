@@ -1,7 +1,7 @@
 @echo off
 
 pushd ..
-cd exports/pad
+cd exports/hinge
 pwd
 dot -Tpng recipe.txt -o recipe.png
 dot -Tpng Resource1.txt -o Resource1.png

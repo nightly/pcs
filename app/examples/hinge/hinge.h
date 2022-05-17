@@ -6,7 +6,7 @@
 #include "pcs/product/recipe.h"
 #include "pcs/system/system.h"
 
-void HingeExample(bool incremental);
+void HingeExample(bool incremental, bool generate_images);
 
 static pcs::System LoadHingeMachine();
 

@@ -8,6 +8,6 @@ int main() {
 	// MergeExample();
 	// Experimental2();
 
-	// PadExample(false); 
-	HingeExample(false);
+	// PadExample(false, false); 
+	HingeExample(false, true);
 }

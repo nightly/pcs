@@ -199,4 +199,6 @@ namespace pcs {
 	 @Cleanup: pair inception should probably be eliminated with dedicated Transition type -- this is present in lts/transition.h but we don't use it for now since
 	 it is simply a readability matter for now.
 
+	 @Todo: guard operation in each recipe state being handled
+
  */

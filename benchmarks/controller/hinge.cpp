@@ -67,5 +67,5 @@ static void BM_HingeControllerIncrementalTopology(benchmark::State& state) {
 	}
 }
 
-BENCHMARK(BM_HingeControllerIncrementalTopology);
+// BENCHMARK(BM_HingeControllerIncrementalTopology);
 
