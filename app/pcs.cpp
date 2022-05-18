@@ -10,5 +10,5 @@ int main() {
 	// Experimental2();
 
 	// PadExample(false, false); 
-	HingeExample(false, false);
+	HingeExample(true, false);
 }

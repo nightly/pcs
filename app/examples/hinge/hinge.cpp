@@ -69,23 +69,20 @@ void HingeExample(bool incremental, bool generate_images) {
 	pcs::System machine = LoadHingeMachine();
 	if (incremental) {
 		IncrementalHingeTopology(machine);
-	}
-	else {
+	}else {
 		CompleteHingeTopology(machine);
 	}
 	pcs::ExportMachine(machine, "../../exports/hinge");
 
-
 	Controller con(&machine, machine.topology(), &recipe);
-
 	std::optional<const LTS<std::vector<std::string>, std::string, boost::hash<std::vector<std::string>>>*> controller_lts = con.Generate();
 	if (controller_lts.has_value()) {
 		pcs::ExportToFile(**controller_lts, "../../exports/hinge/controller.txt");
 		pcs::HighlightTopology(machine.topology()->lts(), **controller_lts, "../../exports/hinge/highlighted_topology.txt");
-	}
-	else {
+	} else {
 		PCS_WARN("[PAD] No controller generated");
 	}
+
 	if (generate_images) {
 		GraphVizHinge();
 	}

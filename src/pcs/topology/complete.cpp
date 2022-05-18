@@ -18,7 +18,7 @@
 
 namespace pcs {
 
-	CompleteTopology::CompleteTopology(const std::span<LTS<std::string, std::string>>& ltss)
+	CompleteTopology::CompleteTopology(const std::vector<LTS<std::string, std::string>>& ltss)
 	 :ltss_(ltss) {
 		std::vector<std::string> initial_key;
 		initial_key.reserve(ltss.size());

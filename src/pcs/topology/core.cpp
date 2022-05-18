@@ -19,7 +19,7 @@ namespace pcs {
 	 * @brief When coming across an "in:X" or "out:X" transition, a corresponding inverse is required.
 	 * @return The end-state of applying the two transitions if found.
 	 */
-	std::optional<std::vector<std::string>> MatchingTransfer(const std::span<LTS<std::string, std::string>>& ltss, const std::vector<std::string>& states_vec,
+	std::optional<std::vector<std::string>> MatchingTransfer(const std::vector<LTS<std::string, std::string>>& ltss, const std::vector<std::string>& states_vec,
 		                                    size_t current_ltss_idx, const std::pair<std::string, std::string>& current_transition) {
 		TransferOperation transfer = *(StringToTransfer(current_transition.first));
 		TransferOperation inverse = transfer.Inverse();

@@ -12,7 +12,7 @@
 
 namespace pcs {
 
-	std::optional<std::vector<std::string>> MatchingTransfer(const std::span<LTS<std::string, std::string>>& ltss, const std::vector<std::string>& states_vec,
+	std::optional<std::vector<std::string>> MatchingTransfer(const std::vector<LTS<std::string, std::string>>& ltss, const std::vector<std::string>& states_vec,
 		size_t current_ltss_idx, const std::pair<std::string, std::string>& current_transition);
 
 }

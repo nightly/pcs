@@ -19,7 +19,8 @@
 
 void MergeExample() {
 	// Read LTS' & combine
-	std::array<pcs::LTS<std::string>, 2> ltss;
+	std::vector<pcs::LTS<std::string, std::string>> ltss;
+	ltss.resize(2);
 	try {
 		pcs::ReadFromFile(ltss[0], "../../data/lts/lts1.txt");
 		pcs::ReadFromFile(ltss[1], "../../data/lts/lts2.txt");

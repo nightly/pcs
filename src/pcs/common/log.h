@@ -5,7 +5,7 @@
 #elif (defined PCS_VERBOSE == 1) 
 	#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_INFO
 #else 
-	#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_OFF
+	#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_CRITICAL
 #endif 
 
 // Log level must be defined prior to including spdlog.h

@@ -112,11 +112,7 @@ namespace pcs {
 		 * @brief AddTransition should be preferred as the method for creating State objects by creating them as needed with transitions. 
 		 */
 		bool AddState(const KeyT& key) {
-			if (!HasState(key)) {
-				AddState(State(key));
-				return true;
-			}
-			return false;
+			return AddState(key, State());
 		}
 
 		bool operator==(const LTS& other) const {

@@ -89,7 +89,7 @@ namespace pcs {
 		const auto& [op, input, output] = *seq_tuple_;
 
 		// map - TransferOperation key, tuple<end_state, transition, inverse transition>
-		std::map<TransferOperation, std::tuple<const std::vector<std::string>*, const TopologyTransition*, 
+		std::unordered_map<TransferOperation, std::tuple<const std::vector<std::string>*, const TopologyTransition*, 
 			const TopologyTransition*>> transfers;
 
 		for (const auto& transition : topology_->at(topology_state).transitions_) {

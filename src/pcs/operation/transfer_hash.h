@@ -10,7 +10,7 @@ namespace std {
 	template<>
 	struct hash<pcs::TransferOperation> {
 
-		size_t operator() (const pcs::TransferOperation& transfer_op) {
+		size_t operator() (const pcs::TransferOperation& transfer_op) const {
 			return 0;
 		}
 

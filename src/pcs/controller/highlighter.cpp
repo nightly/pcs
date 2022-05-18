@@ -67,7 +67,7 @@ namespace pcs {
 				for (const auto& t : state.transitions_) {
 					// @Cleanup: LTS types
 
-					if ((target_map.count(pair.first) == 1) && (target_map[pair.first].contains(t.first.second))) {
+					if ((target_map.contains(pair.first)) && (target_map[pair.first].contains(t.first.second))) {
 						os << "	" << "\"" << pair.first << "\"" << " -> " << "\"" << t.second << "\"" << " [color=\"royalblue4\" penwidth=2.25 label = " << "\"";
 						os << t.first << "\"];\n";
 						os << "	" << "\"" << pair.first << "\"" << " [shape=circle, style=filled, fillcolor=dodgerblue2]" << "\n";
