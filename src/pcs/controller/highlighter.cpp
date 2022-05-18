@@ -62,18 +62,18 @@ namespace pcs {
 			for (const auto& pair : topology.states()) {
 				auto& state = pair.second;
 				if (state.IsEmpty()) {
-					os << "	" << "\"" << state.name() << "\"" << "\n";
+					os << "	" << "\"" << pair.first << "\"" << "\n";
 				}
 				for (const auto& t : state.transitions_) {
 					// @Cleanup: LTS types
 
-					if ((target_map.count(state.name()) == 1) && (target_map[state.name()].contains(t.first.second))) {
-						os << "	" << "\"" << state.name() << "\"" << " -> " << "\"" << t.second << "\"" << " [color=\"royalblue4\" penwidth=2.25 label = " << "\"";
+					if ((target_map.count(pair.first) == 1) && (target_map[pair.first].contains(t.first.second))) {
+						os << "	" << "\"" << pair.first << "\"" << " -> " << "\"" << t.second << "\"" << " [color=\"royalblue4\" penwidth=2.25 label = " << "\"";
 						os << t.first << "\"];\n";
-						os << "	" << "\"" << state.name() << "\"" << " [shape=circle, style=filled, fillcolor=dodgerblue2]" << "\n";
+						os << "	" << "\"" << pair.first << "\"" << " [shape=circle, style=filled, fillcolor=dodgerblue2]" << "\n";
 					}
 					else {
-						os << "	" << "\"" << state.name() << "\"" << " -> " << "\"" << t.second << "\"" << " [label = " << "\"";
+						os << "	" << "\"" << pair.first << "\"" << " -> " << "\"" << t.second << "\"" << " [label = " << "\"";
 						os << t.first << "\"];\n";
 					}
 				}

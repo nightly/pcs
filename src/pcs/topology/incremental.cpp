@@ -36,7 +36,6 @@ namespace pcs {
 	}
 
 	const State<std::vector<std::string>, std::pair<size_t, std::string>>& IncrementalTopology::at(const std::vector<std::string>& key) {
-		return topology_.initial_state(); // @Testing
 
 		// @Performance: topology_.contains() and in ExpandState use false for create_missing_states, then manually add state here (?)
 		if (visited_.contains(key) == true) {

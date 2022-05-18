@@ -42,7 +42,7 @@ namespace pcs {
 
 		void set_initial_state(const KeyT& state, bool create_if_not_exists=true) {
 			if (!HasState(state) && create_if_not_exists) {
-				AddState(State(state));
+				AddState(state, State());
 			}
 			initial_state_ = state;
 		}
@@ -98,10 +98,10 @@ namespace pcs {
 		void AddTransition(const KeyT& start_state, const TransitionT& label, const KeyT& end_state, 
 		                   bool create_missing_states = true) {
 			if (!HasState(start_state) && create_missing_states) {
-				AddState(State(start_state));
+				AddState(start_state, State());
 			}
 			if (!HasState(end_state) && create_missing_states) {
-				AddState(State(end_state));
+				AddState(end_state, State());
 			}
 
 			State& s = states_.at(start_state);
@@ -138,17 +138,17 @@ namespace pcs {
 		friend std::ofstream& operator<<(std::ofstream& os, const LTS<_KeyT, _TransitionT, _HashF>& lts);
 
 	private:
-		bool AddState(State&& state) {
-			if (!HasState(state.name())) {
-				states_.emplace(state.name(), std::move(state));
+		bool AddState(const KeyT& name, State&& state) {
+			if (!HasState(name)) {
+				states_.emplace(name, std::move(state));
 				return true;
 			}
 			return false;
 		}
 
-		bool AddState(const State& state) {
-			if (!HasState(state.name())) {
-				states_.emplace(state.name(), state);
+		bool AddState(const KeyT& name, const State& state) {
+			if (!HasState(name)) {
+				states_.emplace(name, state);
 				return true;
 			}
 			return false;
@@ -157,8 +157,7 @@ namespace pcs {
 }
 
 /* 
-    @Todo: `#include vec_ostream` should be replaced with a template writer specialization of LTS/State themselves
-	@Todo: unordered map is an inefficent STL container
+	@Todo: unordered map STL container
 */
 
 #include "pcs/lts/writers.h"

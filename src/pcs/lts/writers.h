@@ -47,15 +47,15 @@ namespace pcs {
 	// ==============================
 
 	template <typename KeyT, typename TransitionT>
-	std::ofstream& operator<<(std::ofstream& os, const pcs::State<KeyT, TransitionT>& state) {
+	void PrintState(std::ofstream& os, const pcs::State<KeyT, TransitionT>& state, const KeyT& name) {
 		if (state.IsEmpty()) {
-			os << "	" << "\"" << state.name() << "\"" << "\n";
+			os << "	" << "\"" << name << "\"" << "\n";
+			return;
 		}
 		for (const auto& t : state.transitions_) {
-			os << "	" << "\"" << state.name() << "\"" << " -> " << "\"" << t.second << "\"" << " [label = " << "\"";
+			os << "	" << "\"" << name << "\"" << " -> " << "\"" << t.second << "\"" << " [label = " << "\"";
 			os << t.first << "\"];\n";
 		}
-		return os;
 	}
 
 	template <typename KeyT, typename TransitionT, typename HashF>
@@ -69,24 +69,23 @@ namespace pcs {
 		os << "	" << "\"" << lts.initial_state() << "\"" << ";\n";
 		os << "	node [shape = circle];\n";
 		for (const auto& pair : lts.states()) {
-			os << pair.second;
+			PrintState(os, pair.second, pair.first);
 		}
 		os << "}";
 		return os;
 	}
 
 	template <typename KeyT, typename TransitionT>
-	std::ostream& operator<<(std::ostream& os, const pcs::State<KeyT, TransitionT>& state) {
-		os << "State name: " << state.name() << '\n';
+	void PrintState(std::ostream& os, const pcs::State<KeyT, TransitionT>& state, const KeyT& name) {
+		os << "State name: " << name << '\n';
 		if (state.transitions_.empty()) {
 			os << "  With 0 transitions" << '\n';
-			return os;
+			return;
 		}
 		os << "  Transitions: " << '\n';
 		for (const auto& pair : state.transitions_) {
 			os << "    Label: " << pair.first << " " << "End State: " << pair.second << '\n';
 		}
-		return os;
 	}
 
 	template <typename KeyT, typename TransitionT, typename HashF>
@@ -97,7 +96,7 @@ namespace pcs {
 		}
 		os << "Initial state: " << lts.initial_state() << '\n';
 		for (const auto& pair : lts.states()) {
-			os << pair.second;
+			PrintState(os, pair.second, pair.first);
 		}
 		return os;
 	}

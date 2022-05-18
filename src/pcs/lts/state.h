@@ -14,28 +14,15 @@ namespace pcs {
 	class State {
 	public:
 		std::vector<std::pair<TransitionT, KeyT>> transitions_;
-	private:
-		KeyT name_;
 	public:
 
-		/* 
+		/** 
 		 * @tparam KeyT: the data type used to defined keys/state names. E.g std::string, std::vector<std::string>
 		 * @tparam TransitionT : defines the data type used to represent transitions. E.g. std::string, CompositeOperation 
 		 */
 		State() = default;
 
-		State(const KeyT& name) 
-			: name_(name) {}
-
 		~State() = default;
-
-		KeyT name() {
-			return name_;
-		}
-
-		const KeyT& name() const {
-			return name_;
-		}
 
 		std::vector<std::pair<TransitionT, KeyT>>& transitions() {
 			return transitions_;
@@ -67,7 +54,7 @@ namespace pcs {
 		}
 
 		bool operator==(const State& other) const {
-			return (name_ == other.name_) && (transitions_ == other.transitions_);
+			return (transitions_ == other.transitions_);
 		}
 
 		template <typename _KeyT, typename _TransitionT>

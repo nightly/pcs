@@ -64,7 +64,7 @@ static void GraphVizHinge() {
 
 void HingeExample(bool incremental, bool generate_images) {
 	pcs::Recipe recipe = LoadHingeRecipe();
-	pcs::ExportToFile(recipe.lts(), "../../exports/pad/hinge.txt");
+	pcs::ExportToFile(recipe.lts(), "../../exports/hinge/recipe.txt");
 
 	pcs::System machine = LoadHingeMachine();
 	if (incremental) {
