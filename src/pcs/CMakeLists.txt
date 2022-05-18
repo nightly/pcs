@@ -12,7 +12,7 @@ set(PCS_SOURCES "lts/lts.h" "lts/state.h" "lts/writers.h" "lts/transition.h"
 "product/recipe.cpp"  "product/parsers/recipe.cpp"
 
 "operation/operation.h"  "operation/composite.cpp" "operation/guard.cpp"
-"operation/observable.cpp" "operation/transfer.cpp" "operation/nop.cpp"
+"operation/observable.cpp" "operation/transfer.cpp" "operation/transfer_hash.h" "operation/nop.cpp"
 "operation/parsers/label.cpp"
 
 "system/system.cpp" "system/writers.cpp"

@@ -22,6 +22,10 @@ namespace pcs {
 		return n_;
 	}
 
+	Transfer TransferOperation::type() const {
+		return type_;
+	}
+
 	bool TransferOperation::IsIn() const {
 		return type_ == Transfer::in;
 	}
@@ -30,8 +34,9 @@ namespace pcs {
 		return !IsIn();
 	}
 
-	/*
+	/**
 	 * @brief Returns the inverse of the TransferOperation, useful for checking matching operations. 
+	 * @example in:2 has an inverse of out:2
 	 */
 	TransferOperation TransferOperation::Inverse() const {
 		return TransferOperation(type_ == Transfer::in ? Transfer::out : Transfer::in, n_);
@@ -44,7 +49,5 @@ namespace pcs {
 	bool TransferOperation::operator==(const TransferOperation& other) const {
 		return (name_ == other.name_) && (n_ == other.n_) && (type_ == other.type_);
 	}
-
-
 
 }

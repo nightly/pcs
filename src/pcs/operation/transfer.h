@@ -6,8 +6,15 @@
 
 namespace pcs {
 
+	/**
+	 * @brief: Enum type that represents Transfer/Sync operations in terms of In or Out transition labels
+	 */
 	enum class Transfer { in, out };
 
+
+	/**
+	 * @brief: TransferOperation is a resource synchronization operation in the form of `in:n` or `out:n`
+	 */
 	class TransferOperation : public IOperation {
 	private:
 		Transfer type_;
@@ -21,6 +28,7 @@ namespace pcs {
 		const std::string& name() const override;
 		TransferOperation Inverse() const;
 		size_t n() const;
+		Transfer type() const;
 		bool IsIn() const;
 		bool IsOut() const;
 		
@@ -29,3 +37,5 @@ namespace pcs {
 
 	};
 }
+
+#include "pcs/operation/transfer_hash.h"
