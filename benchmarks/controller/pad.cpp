@@ -17,7 +17,7 @@ static void BM_PADControllerCompleteTopology(benchmark::State& state) {
 	} catch (const std::ifstream::failure& e) {
 		throw;
 	}
-	machine.Complete();
+
 	pcs::Recipe recipe;
 	try {
 		recipe.set_recipe("../../data/pad/recipe_full.json");
@@ -25,8 +25,9 @@ static void BM_PADControllerCompleteTopology(benchmark::State& state) {
 		throw;
 	}
 
-	pcs::Controller con(&machine, machine.topology(), &recipe);
 	for (auto _ : state) {
+		machine.Complete();
+		pcs::Controller con(&machine, machine.topology(), &recipe);
 		std::optional<const pcs::LTS<std::vector<std::string>, std::vector<std::string>, boost::hash<std::vector<std::string>>>*> controller_lts = con.Generate();
 		benchmark::DoNotOptimize(controller_lts);
 		benchmark::ClobberMemory();
@@ -47,7 +48,7 @@ static void BM_PADControllerIncrementalTopology(benchmark::State& state) {
 	} catch (const std::ifstream::failure& e) {
 		throw;
 	}
-	machine.Incremental();
+
 	pcs::Recipe recipe;
 	try {
 		recipe.set_recipe("../../data/pad/recipe_full.json");
@@ -55,13 +56,14 @@ static void BM_PADControllerIncrementalTopology(benchmark::State& state) {
 		throw;
 	}
 
-	pcs::Controller con(&machine, machine.topology(), &recipe);
 	for (auto _ : state) {
+		machine.Incremental();
+		pcs::Controller con(&machine, machine.topology(), &recipe);
 		std::optional<const pcs::LTS<std::vector<std::string>, std::vector<std::string>, boost::hash<std::vector<std::string>>>*> controller_lts = con.Generate();
 		benchmark::DoNotOptimize(controller_lts);
 		benchmark::ClobberMemory();
 	}
 }
 
-// BENCHMARK(BM_PADControllerIncrementalTopology);
+BENCHMARK(BM_PADControllerIncrementalTopology);
 
