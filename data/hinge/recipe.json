@@ -23,6 +23,44 @@
             "output": [
               "h"
             ]
+          },
+          {
+            "name": "load",
+            "input": [],
+            "output": [
+              "balls",
+              "spring"
+            ]
+          },
+          {
+            "name": "attach",
+            "input": [
+              "h",
+              "balls",
+              "spring"
+            ],
+            "output": [
+              "h1"
+            ]
+          },
+          {
+            "name": "load",
+            "input": [],
+            "output": [
+              "tube",
+              "retainer"
+            ]
+          },
+          {
+            "name": "press",
+            "input": [
+              "h1",
+              "balls",
+              "retainer"
+            ],
+            "output": [
+              "h2"
+            ]
           }
         ],
         "parallel": []
@@ -35,20 +73,9 @@
         "guard": {},
         "sequential": [
           {
-            "name": "press",
+            "name": "getforce",
             "input": [
-              "h1",
-              "t"
-            ],
-            "output": [
               "h2"
-            ]
-          },
-          {
-            "name": "attach",
-            "input": [
-              "h1",
-              "t"
             ],
             "output": [
               "h2"
@@ -67,10 +94,10 @@
           {
             "name": "remove",
             "input": [
-              "h1"
+              "h2"
             ],
             "output": [
-              "h1"
+              "h2"
             ]
           }
         ],
@@ -105,10 +132,10 @@
           {
             "name": "store",
             "input": [
-              "h1"
+              "h2"
             ],
             "output": [
-              "h1"
+              "h2"
             ]
           }
         ],
