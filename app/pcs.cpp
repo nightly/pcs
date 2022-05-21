@@ -1,8 +1,7 @@
+#include "runner/runner.h"
 #include "examples/merge/merge.h"
-#include "examples/pad/pad.h"
 #include "examples/experimental/experimental.h"
 #include "examples/experimental/experimental2.h"
-#include "examples/hinge/hinge.h"
 
 
 int main() {
@@ -13,6 +12,7 @@ int main() {
 	// MergeExample(4);
 	// Experimental2();
 
-	// PadExample(false, false); 
-	HingeExample(true, true);
+	// Run("pad", 5, true, true);
+	Run("hinge", 5, true, true);
+
 }
