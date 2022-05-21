@@ -6,9 +6,13 @@
 
 
 int main() {
-	// MergeExample();
+	#if (defined _DEBUG == 1)
+		spdlog::set_level(spdlog::level::trace);
+	#endif
+
+	// MergeExample(4);
 	// Experimental2();
 
 	// PadExample(false, false); 
-	HingeExample(true, false);
+	HingeExample(false, true);
 }

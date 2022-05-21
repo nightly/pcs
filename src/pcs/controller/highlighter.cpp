@@ -17,13 +17,13 @@ namespace pcs {
 	 * @brief Builds the target map, where KeyT = a target state, and ValueT = set of target transitions.
 	 * target_map = state_name to desired transitions
 	 */
-	static void BuildTargetMap(const LTS<std::vector<std::string>, std::string, boost::hash<std::vector<std::string>>>& controller,
+	static void BuildTargetMap(const LTS<std::vector<std::string>, std::vector<std::string>, boost::hash<std::vector<std::string>>>& controller,
 		std::unordered_map<std::vector<std::string>, std::unordered_set<std::string>, boost::hash<std::vector<std::string>>>& target_map) {
 		for (const auto& state : controller.states()) {
 			target_map[state.first] = std::unordered_set<std::string>();
 			for (const auto& t : state.second.transitions()) {
 				// in the form (_, load, _, _, _) whereas we just want load
-				std::vector<std::string> vec = StringToVector(t.first);
+				std::vector<std::string> vec = t.first;
 				for (auto& s : vec) {
 					if (s == "" || s == "-") {
 						continue;
@@ -39,7 +39,7 @@ namespace pcs {
 	 * @brief Returns a highlighted topology showing the path the controller took
 	 */
 	void HighlightTopology(const LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>>& topology,
-		const LTS<std::vector<std::string>, std::string, boost::hash<std::vector<std::string>>>& controller, const std::filesystem::path& out_path) {
+		const LTS<std::vector<std::string>, std::vector<std::string>, boost::hash<std::vector<std::string>>>& controller, const std::filesystem::path& out_path) {
 		std::ofstream os;
 		os.exceptions(std::ofstream::badbit);
 		CreateDirectoryForPath(out_path);
@@ -79,8 +79,7 @@ namespace pcs {
 				}
 			}
 			os << "}";
-		}
-		catch (const std::ofstream::failure& e) {
+		} catch (const std::ofstream::failure& e) {
 			throw;
 		}
 	}
@@ -91,6 +90,8 @@ namespace pcs {
 
 /*
 	@Note: `  c -> d [color="blue"]`
-	@Cleanup: should probably use a functor
+
+	@Cleanup: should probably use a functor because this duplicates output/styling code although unimportant 
 	@Cleanup: should use ITopology
+	@Cleanup: pair inception can be eliminated as also stated in controller.h
 */

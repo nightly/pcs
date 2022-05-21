@@ -11,9 +11,9 @@ namespace std {
 	struct hash<pcs::TransferOperation> {
 
 		size_t operator() (const pcs::TransferOperation& transfer_op) const {
-			return 0;
+			return (transfer_op.n() + static_cast<size_t>(transfer_op.type()));
 		}
 
 	};
-
+	
 }

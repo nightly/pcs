@@ -50,7 +50,7 @@ inline void Experimental() {
 	pcs::ExportMachine(machine, "../../exports/experimental");
 
 	pcs::Controller con(&machine, machine.topology(), &recipe);
-	std::optional<const pcs::LTS<std::vector<std::string>, std::string, boost::hash<std::vector<std::string>>>*> controller = con.Generate();
+	std::optional<const pcs::LTS<std::vector<std::string>, std::vector<std::string>, boost::hash<std::vector<std::string>>>*> controller = con.Generate();
 	if (controller.has_value()) {
 		pcs::ExportToFile(**controller, "../../exports/experimental/controller.txt");
 		// Highlight

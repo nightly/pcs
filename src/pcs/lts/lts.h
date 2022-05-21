@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "pcs/lts/state.h"
+#include "pcs/common/log.h"
 
 namespace pcs {
 
@@ -150,6 +151,7 @@ namespace pcs {
 			return false;
 		}
 	};
+
 }
 
 /* 

@@ -29,7 +29,7 @@ static void BM_HingeControllerCompleteTopology(benchmark::State& state) {
 
 	pcs::Controller con(&machine, machine.topology(), &recipe);
 	for (auto _ : state) {
-		std::optional<const pcs::LTS<std::vector<std::string>, std::string, boost::hash<std::vector<std::string>>>*> controller_lts = con.Generate();
+		std::optional<const pcs::LTS<std::vector<std::string>, std::vector<std::string>, boost::hash<std::vector<std::string>>>*> controller_lts = con.Generate();
 		benchmark::DoNotOptimize(controller_lts);
 		benchmark::ClobberMemory();
 	}
@@ -61,7 +61,7 @@ static void BM_HingeControllerIncrementalTopology(benchmark::State& state) {
 
 	pcs::Controller con(&machine, machine.topology(), &recipe);
 	for (auto _ : state) {
-		std::optional<const pcs::LTS<std::vector<std::string>, std::string, boost::hash<std::vector<std::string>>>*> controller_lts = con.Generate();
+		std::optional<const pcs::LTS<std::vector<std::string>, std::vector<std::string>, boost::hash<std::vector<std::string>>>*> controller_lts = con.Generate();
 		benchmark::DoNotOptimize(controller_lts);
 		benchmark::ClobberMemory();
 	}

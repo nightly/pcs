@@ -46,7 +46,7 @@ namespace pcs {
 
 	/**
 	 * @brief ExpandState functions similar to CombineRecursive but it will not recursively expand itself.
-	 * We apply the transitions that are found from the given state key based on any of the current resources.
+	 * We apply the transitions that are found from the given state key based on the current individual resource states.
 	 */
 	void IncrementalTopology::ExpandState(const std::vector<std::string>& key) {
 		PCS_INFO(fmt::format(fmt::fg(fmt::color::plum),

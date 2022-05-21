@@ -43,7 +43,7 @@ namespace pcs {
 	}
 	
 	bool TransferOperation::operator<(const TransferOperation& other) const {
-		return (type_ < other.type_) && (n_ < other.n_);
+		return ((static_cast<size_t>(type_) + n_) < (static_cast<size_t>(other.type_) + other.n_));
 	}
 
 	bool TransferOperation::operator==(const TransferOperation& other) const {

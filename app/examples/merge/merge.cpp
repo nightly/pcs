@@ -17,16 +17,27 @@
 #include "pcs/lts/writers.h"
 #include "pcs/common/log.h"
 
-void MergeExample() {
+/*
+ * @param number: the amount of LTS' to merge
+ * @see: benchmarks/range/topology/complete/range.cpp for this with benchmarks using PAD R1
+ */
+void MergeExample(size_t number) {
 	// Read LTS' & combine
 	std::vector<pcs::LTS<std::string, std::string>> ltss;
-	ltss.resize(2);
-	try {
-		pcs::ReadFromFile(ltss[0], "../../data/lts/lts1.txt");
-		pcs::ReadFromFile(ltss[1], "../../data/lts/lts2.txt");
-	} catch (std::ifstream::failure) {
-		std::cerr << "Unable to read the file at specified path\n";
-		return std::exit(1);
+	ltss.reserve(number);
+	for (size_t i = 1; i <= number; ++i) {
+		try {
+			pcs::LTS<std::string, std::string> lts;
+			if (i % 2 == 0) {
+				pcs::ReadFromFile(lts, "../../data/lts/lts2.txt");
+			} else {
+				pcs::ReadFromFile(lts, "../../data/lts/lts1.txt");
+			}
+			ltss.emplace_back(lts);
+		} catch (std::ifstream::failure) {
+			std::cerr << "Unable to read the file at specified path\n";
+			return std::exit(1);
+		}
 	}
 
 	pcs::CompleteTopology topology(ltss);
@@ -38,7 +49,13 @@ void MergeExample() {
 	}
 	std::cout << "Combined LTS: \n" << lts_combined << '\n';
 
-	std::cout << "[Merge Example] Number of States = " << lts_combined.NumOfStates() << ". Number of Transitions = " << lts_combined.NumOfTransitions() << '\n';
+	std::cout << "[Merge Example] Number of Resources = " << ltss.size() << '\n';
+	std::cout << "[Merge Example: LTS-1] Number of States = " << ltss[0].NumOfStates() << ". Number of Transitions = "
+		<< ltss[0].NumOfTransitions() << '\n';
+	std::cout << "[Merge Example: LTS-2] Number of States = " << ltss[1].NumOfStates() << ". Number of Transitions = "
+		<< ltss[1].NumOfTransitions() << '\n';
+	std::cout << "[Merge Example: Topology] Number of States = " << lts_combined.NumOfStates() << ". Number of Transitions = " 
+		<< lts_combined.NumOfTransitions() << '\n';
 
 	// File output
 	try {

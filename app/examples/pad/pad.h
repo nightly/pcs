@@ -6,7 +6,7 @@
 #include "pcs/product/recipe.h"
 #include "pcs/system/system.h"
 
-void PadExample(bool incremental);
+void PadExample(bool incremental, bool generate_images);
 
 static pcs::System LoadPadMachine();
 

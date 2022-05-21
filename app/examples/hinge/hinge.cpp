@@ -41,8 +41,8 @@ static pcs::System LoadHingeMachine() {
 
 static void CompleteHingeTopology(pcs::System& machine) {
 	machine.Complete();
-	PCS_INFO("[Topology] Number Of States = {}, Number of Transitions = {}", machine.topology()->lts().NumOfStates(), 
-		machine.topology()->lts().NumOfTransitions());
+	PCS_INFO(fmt::format(fmt::fg(fmt::color::white_smoke), "[Topology] Number Of States = {}, Number of Transitions = {}", machine.topology()->lts().NumOfStates(),
+		machine.topology()->lts().NumOfTransitions()));
 }
 
 static void IncrementalHingeTopology(pcs::System& machine) {
@@ -63,6 +63,8 @@ static void GraphVizHinge() {
 }
 
 void HingeExample(bool incremental, bool generate_images) {
+	PCS_INFO(fmt::format(fmt::fg(fmt::color::white_smoke), "Using Hinge Example"));
+
 	pcs::Recipe recipe = LoadHingeRecipe();
 	pcs::ExportToFile(recipe.lts(), "../../exports/hinge/recipe.txt");
 
@@ -75,7 +77,7 @@ void HingeExample(bool incremental, bool generate_images) {
 	pcs::ExportMachine(machine, "../../exports/hinge");
 
 	Controller con(&machine, machine.topology(), &recipe);
-	std::optional<const LTS<std::vector<std::string>, std::string, boost::hash<std::vector<std::string>>>*> controller_lts = con.Generate();
+	std::optional<const LTS<std::vector<std::string>, std::vector<std::string>, boost::hash<std::vector<std::string>>>*> controller_lts = con.Generate();
 	if (controller_lts.has_value()) {
 		pcs::ExportToFile(**controller_lts, "../../exports/hinge/controller.txt");
 		pcs::HighlightTopology(machine.topology()->lts(), **controller_lts, "../../exports/hinge/highlighted_topology.txt");

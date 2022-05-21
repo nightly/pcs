@@ -1,3 +1,3 @@
 #pragma once
 
-void MergeExample();
+void MergeExample(size_t number = 2);

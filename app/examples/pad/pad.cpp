@@ -41,8 +41,8 @@ static pcs::System LoadPadMachine() {
 
 static void CompletePadTopology(pcs::System& machine) {
 	machine.Complete();
-	PCS_INFO("[Topology] Number Of States = {}, Number of Transitions = {}", machine.topology()->lts().NumOfStates(), 
-		machine.topology()->lts().NumOfTransitions());
+	PCS_INFO(fmt::format(fmt::fg(fmt::color::white_smoke), "[Topology] Number Of States = {}, Number of Transitions = {}", machine.topology()->lts().NumOfStates(),
+		machine.topology()->lts().NumOfTransitions()));
 }
 
 static void IncrementalPadTopology(pcs::System& machine) {
@@ -63,6 +63,7 @@ static void GraphVizPad() {
 }
 
 void PadExample(bool incremental, bool generate_images) {
+	PCS_INFO(fmt::format(fmt::fg(fmt::color::white_smoke), "Using PAD Example"));
 	pcs::Recipe recipe = LoadPadRecipe();
 	pcs::ExportToFile(recipe.lts(), "../../exports/pad/recipe.txt");
 
@@ -76,7 +77,7 @@ void PadExample(bool incremental, bool generate_images) {
 
 	Controller con(&machine, machine.topology(), &recipe);
 
-	std::optional<const LTS<std::vector<std::string>, std::string, boost::hash<std::vector<std::string>>>*> controller_lts = con.Generate();
+	std::optional<const LTS<std::vector<std::string>, std::vector<std::string>, boost::hash<std::vector<std::string>>>*> controller_lts = con.Generate();
 	if (controller_lts.has_value()) {
 		pcs::ExportToFile(**controller_lts, "../../exports/pad/controller.txt");
 		pcs::HighlightTopology(machine.topology()->lts(), **controller_lts, "../../exports/pad/highlighted_topology.txt");
