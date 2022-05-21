@@ -49,18 +49,18 @@ namespace pcs {
 
 		for (size_t i = 0; i < ltss_.size(); ++i) {
 			for (const auto& transition : ltss_[i].states().at(states_vec[i]).transitions_) {
-				if ((transition.first.find("in:") != std::string::npos) || (transition.first.find("out:") != std::string::npos)) {
+				if ((transition.label().find("in:") != std::string::npos) || (transition.label().find("out:") != std::string::npos)) {
 					std::optional<std::vector<std::string>> transfer_state = MatchingTransfer(ltss_, states_vec, i, transition);
 					if (!transfer_state.has_value()) {
 						continue;
 					}
-					topology_.AddTransition(states_vec, std::make_pair(i, transition.first), *transfer_state);
+					topology_.AddTransition(states_vec, std::make_pair(i, transition.label()), *transfer_state);
 					CombineRecursive(*transfer_state);
 				}
 				else {
 					std::vector<std::string> next_states = states_vec;
-					next_states[i] = transition.second;
-					topology_.AddTransition(states_vec, std::make_pair(i, transition.first), next_states);
+					next_states[i] = transition.to();
+					topology_.AddTransition(states_vec, std::make_pair(i, transition.label()), next_states);
 					CombineRecursive(next_states);
 				}
 			}

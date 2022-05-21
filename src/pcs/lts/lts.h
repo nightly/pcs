@@ -64,10 +64,11 @@ namespace pcs {
 			return total;
 		}
 
-		/*
-		 * @brief Removes a given state but allows dangling transitions to exist from other states to the now deleted state 
+		/**
+		 * @brief: Removes a given state but _allows_ dangling transitions to exist from other states to the now deleted state 
+		 * @note: the State which is the initial state may also be removed, but formally, a LTS does not need initial states
 		 */
-		bool RemoveStateSoft(const KeyT& key) {
+		bool EraseShallow(const KeyT& key) {
 			if (HasState(key)) {
 				states_.erase(key);
 				return true;
@@ -75,10 +76,10 @@ namespace pcs {
 			return false;
 		}
 
-		/*
-		 * @brief Removes a given state and then checks for dangling transitions with all other states
+		/**
+		 * @brief Removes a given state and then checks for dangling transitions with all other states and deletes such transitions
 		 */
-		bool RemoveStateFull(const KeyT& key) {
+		bool EraseDeep(const KeyT& key) {
 			if (HasState(key)) {
 				states_.erase(key);
 				for (auto& [k, v] : states_) {

@@ -48,15 +48,15 @@ namespace pcs {
 	 */
 	bool Controller::ProcessRecipe(const std::string& recipe_state, const std::vector<std::string>* topology_state) {
 		for (const auto& pair : recipe_->lts()[recipe_state].transitions_) {
-			const CompositeOperation& co = pair.first;
+			const CompositeOperation& co = pair.label();
 			PCS_INFO(fmt::format(fmt::fg(fmt::color::gold) | fmt::emphasis::bold, "Processing recipe transition to: {}",
-				recipe_->lts()[recipe_state].transitions_[0].second));
+				recipe_->lts()[recipe_state].transitions_[0].to()));
 
 			auto c_op = HandleComposite(co, *topology_state);
 			if (!c_op.has_value()) {
 				return {};
 			}
-			ProcessRecipe(pair.second, c_op.value());
+			ProcessRecipe(pair.to(), c_op.value());
 		}
 	}
 
@@ -96,32 +96,32 @@ namespace pcs {
 			const TopologyTransition*>> transfers;
 
 		for (const auto& transition : topology_->at(topology_state).transitions_) {
-			if (op.name() == transition.first.second) { // Found operation, as long as parts match, the plan for the current seq op passes
+			if (op.name() == transition.label().second) { // Found operation, as long as parts match, the plan for the current seq op passes
 				parts_ = plan_parts; // We use the parts that are from our current plan
-				bool transfer = TransferParts(transition.first.first, parts_);
+				bool transfer = TransferParts(transition.label().first, parts_);
 				if (!transfer) {
 					return {};
 				}
 				std::vector<std::string> vec(num_of_resources_, "-");
-				vec[transition.first.first] = transition.first.second;
+				vec[transition.label().first] = transition.label().second;
 
-				plan_transitions.emplace_back(std::make_pair(vec, transition.second));
+				plan_transitions.emplace_back(std::make_pair(vec, transition.to()));
 				for (const auto& transition : plan_transitions) { // We can now apply our correct transitions
 					ApplyTransition(topology_state, transition.first, transition.second);
 				}
-				return { &transition.second };
+				return { &transition.to()};
 			}
 			else {
 				// Not the desired operation — is it a transfer operation?
-				std::optional<TransferOperation> opt = StringToTransfer(transition.first.second); 
+				std::optional<TransferOperation> opt = StringToTransfer(transition.label().second);
 				if (opt.has_value()) {
 					if (opt->IsOut()) { // Out case
-						std::get<0>(transfers[*opt]) = &(transition.second);
-						std::get<1>(transfers[*opt]) = &(transition.first);
+						std::get<0>(transfers[*opt]) = &(transition.to());
+						std::get<1>(transfers[*opt]) = &(transition.label());
 					}
 					else { // In case
 						TransferOperation inverse = opt->Inverse(); // The associated map key is the inverse
-						std::get<2>(transfers[inverse]) = &(transition.first);
+						std::get<2>(transfers[inverse]) = &(transition.label());
 					}
 				}
 			}

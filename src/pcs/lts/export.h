@@ -11,7 +11,7 @@
 
 namespace pcs {
 
-	/*
+	/**
 	 * @brief Exports a given LTS to the provided path, which can be visualised via GraphViz. Uses ofstream overloads.
 	 * @param lts: labelled transition system in question to write to file
 	 * @param path: export filepath, missing directories will be created. Filepath should include file extension.

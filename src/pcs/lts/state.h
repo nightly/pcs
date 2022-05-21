@@ -8,12 +8,14 @@
 #include <fstream>
 #include <utility>
 
+#include "pcs/lts/transition.h"
+
 namespace pcs {
 
 	template <typename KeyT = std::string, typename TransitionT = std::string>
 	class State {
 	public:
-		std::vector<std::pair<TransitionT, KeyT>> transitions_;
+		std::vector<Transition<TransitionT, KeyT>> transitions_;
 	public:
 
 		/** 
@@ -24,20 +26,16 @@ namespace pcs {
 
 		~State() = default;
 
-		std::vector<std::pair<TransitionT, KeyT>>& transitions() {
+		std::vector<Transition<TransitionT, KeyT>>& transitions() {
 			return transitions_;
 		}
 
-		const std::vector<std::pair<TransitionT, KeyT>>& transitions() const {
+		const std::vector<Transition<TransitionT, KeyT>>& transitions() const {
 			return transitions_;
 		}
 
-		/*
-		 * @brief Adds a given transition to the State object, first checking whether or not that exact transition exists or not
-		 */
 		void AddTransition(const TransitionT& label, const KeyT& end_state) {
-			std::pair<TransitionT, KeyT> transistion = std::make_pair(label, end_state);
-			transitions_.emplace_back(transistion);
+			transitions_.emplace_back(label, end_state);
 		}
 
 		bool TransitionExists(const TransitionT& label, const KeyT& end_state) const {

@@ -54,16 +54,16 @@ namespace pcs {
 
 		for (size_t i = 0; i < ltss_.size(); ++i) {
 			for (const auto& transition : ltss_[i].states().at(key[i]).transitions_) {
-				if ((transition.first.find("in:") != std::string::npos) || (transition.first.find("out:") != std::string::npos)) {
+				if ((transition.label().find("in:") != std::string::npos) || (transition.label().find("out:") != std::string::npos)) {
 					std::optional<std::vector<std::string>> transfer_state = MatchingTransfer(ltss_, key, i, transition);
 					if (!transfer_state.has_value()) {
 						continue;
 					}
-					topology_.AddTransition(key, std::make_pair(i, transition.first), *transfer_state, false);
+					topology_.AddTransition(key, std::make_pair(i, transition.label()), *transfer_state, false);
 				} else {
 					std::vector<std::string> next_states = key;
-					next_states[i] = transition.second;
-					topology_.AddTransition(key, std::make_pair(i, transition.first), next_states, false);
+					next_states[i] = transition.to();
+					topology_.AddTransition(key, std::make_pair(i, transition.label()), next_states, false);
 				}
 			}
 		}

@@ -53,8 +53,8 @@ namespace pcs {
 			return;
 		}
 		for (const auto& t : state.transitions_) {
-			os << "	" << "\"" << name << "\"" << " -> " << "\"" << t.second << "\"" << " [label = " << "\"";
-			os << t.first << "\"];\n";
+			os << "	" << "\"" << name << "\"" << " -> " << "\"" << t.to() << "\"" << " [label = " << "\"";
+			os << t.label() << "\"];\n";
 		}
 	}
 
@@ -84,7 +84,7 @@ namespace pcs {
 		}
 		os << "  Transitions: " << '\n';
 		for (const auto& pair : state.transitions_) {
-			os << "    Label: " << pair.first << " " << "End State: " << pair.second << '\n';
+			os << "    Label: " << pair.label() << " " << "End State: " << pair.to() << '\n';
 		}
 	}
 

@@ -7,16 +7,16 @@ namespace pcs {
 	 * @tparam KeyT: the type of the State which the transition points to
 	 * @tparam TransitionT: the label of the given transition
 	 */
-	template <typename KeyT = std::string, typename TransitionT = std::string>
+	template <typename TransitionT = std::string, typename KeyT = std::string>
 	class Transition {
 	private:
 		TransitionT label_;
 		KeyT to_;
 	public:
 
-		// ====================================================================
+		// ===========================
 		// Constructors & destructor
-		// ====================================================================
+		// ===========================
 
 		Transition() = default;
 
@@ -26,11 +26,30 @@ namespace pcs {
 		Transition(TransitionT&& label, KeyT&& to)
 			: label_(std::move(label)), to_(std::move(to)) {}
 
+
+		Transition(const Transition& other)
+			: label_(other.label_), to_(other.to_) {}
+
+		Transition& operator=(const Transition& other) {
+			label_ = other.label_;
+			to_ = other.to_;
+			return *this;
+		}
+
+		Transition(Transition&& other) noexcept 
+		: label_(std::move(other.label_)), to_(std::move(other.to_)) {}
+
+		Transition& operator=(Transition&& other) noexcept {
+			label_ = std::move(other.label_);
+			to_ = std::move(other.to_);
+			return *this;
+		}
+
 		~Transition() = default;
 
-		// ====================================================================
+		// ===========================
 		// Getters/setters
-		// ====================================================================
+		// ===========================
 
 		const TransitionT& label() const {
 			return label_;
@@ -56,11 +75,13 @@ namespace pcs {
 			to_ = std::move(to);
 		}
 
+		// ===========================
+		// Operator overloads
+		// ===========================
+
+		bool operator==(const Transition& other) const {
+			return (label_ == other.label_) && (to_ == other.to_);
+		}
+
 	};
 }
-
-
-
-/*
- * @Todo: actually use this class in State.h -- it is equivalent to std::pair essentially, but more appropriately named 
- */

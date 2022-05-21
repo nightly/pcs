@@ -18,6 +18,7 @@ static void BM_HingeControllerCompleteTopology(benchmark::State& state) {
 	} catch (const std::ifstream::failure& e) {
 		throw;
 	}
+
 	pcs::Recipe recipe;
 	try {
 		recipe.set_recipe("../../data/hinge/recipe.json");
@@ -48,6 +49,7 @@ static void BM_HingeControllerIncrementalTopology(benchmark::State& state) {
 	} catch (const std::ifstream::failure& e) {
 		throw;
 	}
+
 	pcs::Recipe recipe;
 	try {
 		recipe.set_recipe("../../data/hinge/recipe.json");

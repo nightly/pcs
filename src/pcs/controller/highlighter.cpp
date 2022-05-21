@@ -23,7 +23,7 @@ namespace pcs {
 			target_map[state.first] = std::unordered_set<std::string>();
 			for (const auto& t : state.second.transitions()) {
 				// in the form (_, load, _, _, _) whereas we just want load
-				std::vector<std::string> vec = t.first;
+				std::vector<std::string> vec = t.label();
 				for (auto& s : vec) {
 					if (s == "" || s == "-") {
 						continue;
@@ -65,16 +65,14 @@ namespace pcs {
 					os << "	" << "\"" << pair.first << "\"" << "\n";
 				}
 				for (const auto& t : state.transitions_) {
-					// @Cleanup: LTS types
-
-					if ((target_map.contains(pair.first)) && (target_map[pair.first].contains(t.first.second))) {
-						os << "	" << "\"" << pair.first << "\"" << " -> " << "\"" << t.second << "\"" << " [color=\"royalblue4\" penwidth=2.25 label = " << "\"";
-						os << t.first << "\"];\n";
+					if ((target_map.contains(pair.first)) && (target_map[pair.first].contains(t.label().second))) {
+						os << "	" << "\"" << pair.first << "\"" << " -> " << "\"" << t.to() << "\"" << " [color=\"royalblue4\" penwidth=2.25 label = " << "\"";
+						os << t.label() << "\"];\n";
 						os << "	" << "\"" << pair.first << "\"" << " [shape=circle, style=filled, fillcolor=dodgerblue2]" << "\n";
 					}
 					else {
-						os << "	" << "\"" << pair.first << "\"" << " -> " << "\"" << t.second << "\"" << " [label = " << "\"";
-						os << t.first << "\"];\n";
+						os << "	" << "\"" << pair.first << "\"" << " -> " << "\"" << t.to() << "\"" << " [label = " << "\"";
+						os << t.label() << "\"];\n";
 					}
 				}
 			}
@@ -93,5 +91,4 @@ namespace pcs {
 
 	@Cleanup: should probably use a functor because this duplicates output/styling code although unimportant 
 	@Cleanup: should use ITopology
-	@Cleanup: pair inception can be eliminated as also stated in controller.h
 */
