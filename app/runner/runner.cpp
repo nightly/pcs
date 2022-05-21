@@ -60,7 +60,8 @@ static void GraphVizSave(const std::string& export_folder, size_t num_resources)
 
 
 /*
- * @param name: the name of the example folder to find from `data/` e.g. "hinge"
+ * @param name: the name of the example folder to find from `data/` e.g. "hinge" for data/hinge
+ * Expected forms within the folder: ResourceX.txt, recipe.json
  */
 void Run(const std::string& name, size_t num_resources, bool incremental, bool generate_images) {
 	PCS_INFO(fmt::format(fmt::fg(fmt::color::white_smoke), "Using {} Example", name));
