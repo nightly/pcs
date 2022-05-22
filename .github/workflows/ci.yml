@@ -29,4 +29,4 @@ jobs:
     - name: Run Tests 
       run: |
         cd build
-        ctest -j 8 --output-on-failure --verbose
+        ctest -j 16 --output-on-failure --verbose

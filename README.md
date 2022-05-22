@@ -10,13 +10,12 @@
 - C++20 compiler
 
 And *optionally*:
-- [GraphViz](https://graphviz.org/) (for visualisation purposes)
-- [C++ style guide](https://google.github.io/styleguide/cppguide.html)
+- [GraphViz](https://graphviz.org/) (for visualisation images, `dot` must be in system path)
 
 ### Cloning & updating
-Clone the repository alongside its submodules.
+Clone the repository alongside its submodules (shallow submodule cloning is optional).
 ```
-git clone --recurse-submodules https://github.com/nightly/pcs
+git clone --recurse-submodules --shallow-submodules https://github.com/nightly/pcs
 ```
 To correctly pull any newly added Git submodules to your local repository (`git pull` alone doesn't suffice):
 ```
@@ -33,8 +32,11 @@ cmake --build build
 The tests can also be run with the following:
 ```
 cd build
-ctest -j 8 --output-on-failure --verbose
+ctest --output-on-failure --verbose
 ```
+
+### Development
+This project adheres to the [Google C++ style guide](https://google.github.io/styleguide/cppguide.html) and the [C++ Core Guidelines](https://isocpp.github.io/CppCoreGuidelines/).
 
 ## Layout 
 - `app`: contains a CLI executable application. The `examples/` subdirectory has pre-made examples to run.

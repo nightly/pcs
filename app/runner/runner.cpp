@@ -2,6 +2,9 @@
 
 #include <vector>
 #include <optional>
+#include <filesystem>
+#include <algorithm>
+#include <cctype>
 
 #include "pcs/lts/parsers/parsers.h"
 #include "pcs/lts/export.h"
@@ -11,6 +14,19 @@
 #include "pcs/controller/controller.h"
 #include "pcs/controller/highlighter.h"
 #include "pcs/common/log.h"
+
+static size_t NumOfResources(const std::filesystem::path& data_folder) {
+	size_t count = 0;
+	for (const auto& file : std::filesystem::directory_iterator(data_folder)) {
+		std::string name = file.path().filename().string();
+		std::transform(name.begin(), name.end(), name.begin(),
+			[](unsigned char c) { return std::tolower(c); });
+		if (name.find("resource") != std::string::npos) {
+			count++;
+		}
+	}
+	return count;
+}
 
 static pcs::Recipe LoadRecipe(const std::string& data_folder) {
 	pcs::Recipe recipe;
@@ -45,7 +61,7 @@ static void IncrementalTopology(pcs::System& machine) {
 	machine.Incremental();
 }
 
-static void GraphVizSave(const std::string& export_folder, size_t num_resources) {
+static void GraphVizSave(const std::string& export_folder, size_t num_resources, bool only_highlighted_topology) {
 	std::filesystem::current_path(export_folder);
 	system("dot -Tpng recipe.txt -o recipe.png");
 	for (size_t i = 1; i <= num_resources; ++i) {
@@ -55,20 +71,29 @@ static void GraphVizSave(const std::string& export_folder, size_t num_resources)
 	}
 	system("dot -Tpng controller.txt -o controller.png");
 	system("dot -Tpng highlighted_topology.txt -o highlighted_topology.png");
-	system("dot -Tpng topology.txt -o topology.png");
+	if (!only_highlighted_topology) {
+		system("dot -Tpng topology.txt -o topology.png");
+	}
 }
 
 
 /*
  * @param name: the name of the example folder to find from `data/` e.g. "hinge" for data/hinge
- * Expected forms within the folder: ResourceX.txt, recipe.json
+ * @param only_highlighted_topology: if generate_images = true, the unhighlighted topology will
+ *	not have any image generated, as GraphViz takes a while.
+ * 
+ * Expected forms within the folder: ResourceX.txt, recipe.json. 
+ * All resources within directory will be used as long as they are sequentially named (Resource1, Resource2, Resource3...).
  */
-void Run(const std::string& name, size_t num_resources, bool incremental, bool generate_images) {
+void Run(const std::string& name, bool incremental, bool generate_images, bool only_highlighted_topology) {
+
+	/* Determine number of resources and set data/export folder paths */
 	PCS_INFO(fmt::format(fmt::fg(fmt::color::white_smoke), "Using {} Example", name));
-	
 	std::string data_folder = "../../data/" + name + '/';
 	std::string export_folder = "../../exports/" + name + (incremental ? "/incremental/" : "/complete/");
+	size_t num_resources = NumOfResources(data_folder);
 
+	/* Load everything */
 	pcs::Recipe recipe = LoadRecipe(data_folder);
 	pcs::ExportToFile(recipe.lts(), export_folder + "/recipe.txt");
 
@@ -79,9 +104,9 @@ void Run(const std::string& name, size_t num_resources, bool incremental, bool g
 		CompleteTopology(machine);
 	}
 
+	/* Generate controller and generate images */
 	pcs::Controller con(&machine, machine.topology(), &recipe);
 	auto controller_lts = con.Generate();
-
 	if (controller_lts.has_value()) {
 		pcs::ExportToFile(**controller_lts, export_folder + "/controller.txt");
 		pcs::HighlightTopology(machine.topology()->lts(), **controller_lts, export_folder + "/highlighted_topology.txt");
@@ -89,8 +114,7 @@ void Run(const std::string& name, size_t num_resources, bool incremental, bool g
 		PCS_WARN("[PAD] No controller generated");
 	}
 	pcs::ExportMachine(machine, export_folder);
-
 	if (generate_images) {
-		GraphVizSave(export_folder, num_resources);
+		GraphVizSave(export_folder, num_resources, only_highlighted_topology);
 	}
 }

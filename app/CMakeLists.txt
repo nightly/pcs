@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.8)
+cmake_minimum_required (VERSION 3.22)
 
 set(PCS_CLI_SOURCES "pcs.cpp" "examples/merge/merge.cpp" "runner/runner.cpp")
 

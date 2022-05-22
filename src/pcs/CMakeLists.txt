@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.8)
+cmake_minimum_required (VERSION 3.22)
 
 set(PCS_SOURCES "lts/lts.h" "lts/state.h" "lts/writers.h" "lts/transition.h"
 "lts/parsers/string_string.cpp" "lts/parsers/string_operation.cpp"
@@ -6,7 +6,7 @@ set(PCS_SOURCES "lts/lts.h" "lts/state.h" "lts/writers.h" "lts/transition.h"
 "topology/topology.h" "topology/core.cpp" "topology/complete.cpp" "topology/incremental.cpp" 
  "topology/stitch.cpp" 
 
-"controller/controller.cpp" 
+"controller/controller.cpp" "controller/plan_transition.cpp"
 "controller/highlighter.cpp"
 
 "product/recipe.cpp"  "product/parsers/recipe.cpp"

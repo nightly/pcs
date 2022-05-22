@@ -12,7 +12,7 @@ int main() {
 	// MergeExample(4);
 	// Experimental2();
 
-	// Run("pad", 5, true, true);
-	Run("hinge", 5, true, true);
+	Run("pad",  false, true, true);
+	// Run("hinge", true, true, true);
 
 }
