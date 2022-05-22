@@ -9,7 +9,7 @@ namespace pcs {
 	/**
 	 * @brief: Enum type that represents Transfer/Sync operations in terms of In or Out transition labels
 	 */
-	enum class Transfer { in, out };
+	enum class TransferType { in, out };
 
 
 	/**
@@ -17,18 +17,18 @@ namespace pcs {
 	 */
 	class TransferOperation : public IOperation {
 	private:
-		Transfer type_;
+		TransferType type_;
 		size_t n_;
 		std::string name_;
 	public:
 		TransferOperation() = default;
-		TransferOperation(Transfer type, size_t n);
+		TransferOperation(TransferType type, size_t n);
 		~TransferOperation() = default;
 		
 		const std::string& name() const override;
 		TransferOperation Inverse() const;
 		size_t n() const;
-		Transfer type() const;
+		TransferType type() const;
 		bool IsIn() const;
 		bool IsOut() const;
 		

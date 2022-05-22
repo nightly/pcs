@@ -4,11 +4,11 @@
 
 namespace pcs {
 
-	TransferOperation::TransferOperation(Transfer type, size_t n) 
+	TransferOperation::TransferOperation(TransferType type, size_t n) 
 		: type_(type), n_(n) {
-		if (type_ == Transfer::in) {
+		if (type_ == TransferType::in) {
 			name_ += "in:";
-		} else if (type_ == Transfer::out) {
+		} else if (type_ == TransferType::out) {
 			name_ += "out:";
 		}
 		name_ += std::to_string(n);
@@ -22,12 +22,12 @@ namespace pcs {
 		return n_;
 	}
 
-	Transfer TransferOperation::type() const {
+	TransferType TransferOperation::type() const {
 		return type_;
 	}
 
 	bool TransferOperation::IsIn() const {
-		return type_ == Transfer::in;
+		return type_ == TransferType::in;
 	}
 	
 	bool TransferOperation::IsOut() const {
@@ -39,7 +39,7 @@ namespace pcs {
 	 * @example in:2 has an inverse of out:2
 	 */
 	TransferOperation TransferOperation::Inverse() const {
-		return TransferOperation(type_ == Transfer::in ? Transfer::out : Transfer::in, n_);
+		return TransferOperation(type_ == TransferType::in ? TransferType::out : TransferType::in, n_);
 	}
 	
 	bool TransferOperation::operator<(const TransferOperation& other) const {

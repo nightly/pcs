@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 #include <algorithm>
-#include <map>
+#include <unordered_map>
 
 #include <spdlog/fmt/bundled/color.h>
 #include <spdlog/fmt/ranges.h>
@@ -20,12 +20,12 @@ namespace pcs {
 	using TopologyState = std::vector<std::string>;
 
 	Controller::Controller(const System* machine, ITopology* topology, const Recipe* recipe)
-		: machine_(machine), recipe_(recipe), topology_(topology), num_of_resources_(machine_->NumOfResources()) {}
+		: machine_(machine), recipe_(recipe), topology_(topology), num_of_resources_(machine_->NumOfResources()), 
+		  parts_(machine_->NumOfResources()) {}
 
 	std::optional<const LTS<std::vector<std::string>, std::vector<std::string>, boost::hash<std::vector<std::string>>>*> Controller::Generate() {
 		recipe_state_ = recipe_->lts().initial_state();
 		controller_.set_initial_state(topology_->initial_state(), true);
-		parts_.resize(machine_->NumOfResources(), std::vector<std::string>());
 
 		PCS_INFO(fmt::format(fmt::fg(fmt::color::light_green), "Controller initial state {}", fmt::join(controller_.initial_state(), ",")));
 		PCS_INFO(fmt::format(fmt::fg(fmt::color::light_green), "Recipe initial state: {}", recipe_state_));
@@ -74,13 +74,11 @@ namespace pcs {
 				op.name(), fmt::join(input, ","), fmt::join(output, ",")));
 
 			std::vector<PlanTransition> plan_transitions;
-			std::vector<std::vector<std::string>> plan_parts = parts_;
-			auto seq = HandleSequentialOperation(*res_state, plan_transitions, plan_parts);
+			auto seq = HandleSequentialOperation(*res_state, plan_transitions, parts_);
 			if (!seq.has_value()) {
 				return {};
 			}
 			res_state = seq.value();
-			
 		}
 		return {res_state};
 	}
@@ -88,19 +86,19 @@ namespace pcs {
 	/**
 	 * @brief Handles a single sequential operation. Returns the resulting end-state if reliasable, nullopt otherwise.
 	 */
-	std::optional<const TopologyState*> Controller::HandleSequentialOperation(const std::vector<std::string>& topology_state,
+	std::optional<const TopologyState*> Controller::HandleSequentialOperation(const TopologyState& topology_state,
 		                                                                     std::vector<PlanTransition> plan_transitions, 
-		                                                                     std::vector<std::vector<std::string>> plan_parts) {
+		                                                                     Parts plan_parts) {
 		const auto& [op, input, output] = *seq_tuple_;
-
-		// map - TransferOperation key, tuple<end_state, transition, inverse transition>
+		// map type - TransferOperation key, tuple<end_state, transition, inverse transition>
 		std::unordered_map<TransferOperation, std::tuple<const TopologyState*, const TopologyTransition*, 
 			const TopologyTransition*>> transfers;
 
 		for (const auto& transition : topology_->at(topology_state).transitions_) {
-			if (op.name() == transition.label().second) { // Found operation, as long as parts match, the plan for the current seq op passes
-				parts_ = plan_parts; // We use the parts that are from our current plan
-				bool transfer = TransferParts(transition.label().first, parts_);
+			if (op.name() == transition.label().second) {
+				parts_ = plan_parts; 
+				// bool transfer = TransferParts(transition.label().first, parts_);
+				bool transfer = true;
 				if (!transfer) {
 					return {};
 				}
@@ -108,13 +106,11 @@ namespace pcs {
 				vec[transition.label().first] = transition.label().second;
 
 				plan_transitions.emplace_back(&topology_state, vec, &transition.to());
-				for (const auto& plan_t : plan_transitions) { // We can now apply our correct transitions
+				for (const auto& plan_t : plan_transitions) { // Unpack the plan
 					ApplyTransition(plan_t);
 				}
 				return { &transition.to()};
-			}
-			else {
-				// Not the desired operation — is it a transfer operation?
+			} else {
 				std::optional<TransferOperation> opt = StringToTransfer(transition.label().second);
 				if (opt.has_value()) {
 					if (opt->IsOut()) { // Out case
@@ -130,32 +126,25 @@ namespace pcs {
 		}
 
 		std::optional<const std::vector<std::string>*> found = std::nullopt;
-	
-
-		// Move between resources - try build the first plan (DFS) that reaches the target operation
 		for (const auto& [k, v] : transfers) {
-			// map type =  [ TransferOperation key, tuple<end_state, transition, inverse transition> ]
-
+			// map type - [ TransferOperation key, tuple<end_state, transition, inverse transition> ]
 			const std::vector<std::string>& state_vec = *std::get<0>(v);
 			std::vector<std::string> label_vec(num_of_resources_, "-");
 			label_vec[std::get<1>(v)->first] = k.name();
 			label_vec[std::get<2>(v)->first] = std::get<2>(v)->second;
 
 			plan_transitions.emplace_back(&topology_state, label_vec, &state_vec);
-
-			found = HandleSequentialOperation(state_vec, plan_transitions, plan_parts); // recurse and try this new pathway
-			if (found.has_value()) {
-				return {&topology_state};
+			found = HandleSequentialOperation(state_vec, plan_transitions, plan_parts); // Recurse DFS
+			if (found) {
 				break;
 			}
 		}
-		return {};
+		return found;
 	}
 
 
 	/*
-	 * @brief ApplyTransition will add a transition to the controller and update the current topology state
-	 * pair.first = label, pair.second = end_state
+	 * @brief ApplyTransition will add a single transition to the controller
 	 */
 	void Controller::ApplyTransition(const PlanTransition& plan_t) {
 		controller_.AddTransition(*plan_t.from, plan_t.label, *plan_t.to);
@@ -164,36 +153,7 @@ namespace pcs {
 			fmt::join(plan_t.label, ","), fmt::join(*plan_t.to, ",")));
 	}
 
-	bool Controller::TransferParts(size_t resource, std::vector<std::vector<std::string>>& parts) {
-		auto& [op, input, output] = *seq_tuple_; // Our current SequentialOperation with op, input, output -- probably shouldn't be a class variable
-		std::vector<size_t> removals;
-
-		if (!input.empty() && !parts[resource].empty()) {
-			for (size_t i = 0; i < parts[resource].size(); ++i) {
-				// Does our current part in the resource coincide with any part in our input we're looking for?
-				if (std::find(input.begin(), input.end(), parts[resource][i]) != input.end()) {
-					removals.emplace_back(i);
-				}
-			}
-		}
-
-		if (removals.size() != input.size()) { // If the size of input parts doesn't match removals size, we haven't found everything, ret false
-			// PCS_WARN("Recipe is not reliasable, input parts cannot be found at resource index {}. Missing parts = {}", resource, fmt::join(input, ","));
-		}
-
-		for (const auto& i : removals) { // Now we can remove everything the recipe has consumed
-			// parts_[resource].erase(parts_[resource].begin() + i);
-		}
-
-
-		for (const auto& s : output) {
-			// parts_[resource].emplace_back(s);
-		}
-
-		return true;
-	}
-
-} // namespace end
+}
 
  /*
 	 @Todo: guard operation in each recipe state being handled

@@ -8,10 +8,21 @@
 
 namespace pcs {
 
-	static void BuildTargetMap(const LTS<std::vector<std::string>, std::vector<std::string>, boost::hash<std::vector<std::string>>>& controller,
-		std::unordered_map<std::vector<std::string>, std::unordered_set<std::string>, boost::hash<std::vector<std::string>>>& target_map);
+	class Highlighter {
+	public:
+		using SVecHash = boost::hash<std::vector<std::string>>;
+		using ControllerState = std::vector<std::string>;
+		using ControllerTransition = std::vector<std::string>;
 
-	void HighlightTopology(const LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>>& topology,
-		const LTS<std::vector<std::string>, std::vector<std::string>, boost::hash<std::vector<std::string>>>& controller, const std::filesystem::path& out_path);
+		using TopologyState = std::vector<std::string>;
+		using TopologyTransition = std::pair<size_t, std::string>;
+
+		using TargetMapT = std::unordered_map<ControllerState, std::unordered_set<std::string>, SVecHash>;
+	public:
+		static void HighlightTopology(const LTS<TopologyState, TopologyTransition, SVecHash>& topology,
+			const LTS<ControllerState, ControllerTransition, SVecHash>& controller, const std::filesystem::path& out_path);
+	private: 
+		static TargetMapT BuildTargetMap(const LTS<ControllerState, ControllerTransition, SVecHash>& controller);
+	};
 
 }

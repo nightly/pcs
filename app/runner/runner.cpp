@@ -79,18 +79,16 @@ static void GraphVizSave(const std::string& export_folder, size_t num_resources,
 
 /*
  * @param name: the name of the example folder to find from `data/` e.g. "hinge" for data/hinge
- * @param only_highlighted_topology: if generate_images = true, the unhighlighted topology will
- *	not have any image generated, as GraphViz takes a while.
  * 
  * Expected forms within the folder: ResourceX.txt, recipe.json. 
  * All resources within directory will be used as long as they are sequentially named (Resource1, Resource2, Resource3...).
  */
-void Run(const std::string& name, bool incremental, bool generate_images, bool only_highlighted_topology) {
+void Run(const std::string& name, const RunnerOpts& opts) {
 
 	/* Determine number of resources and set data/export folder paths */
 	PCS_INFO(fmt::format(fmt::fg(fmt::color::white_smoke), "Using {} Example", name));
 	std::string data_folder = "../../data/" + name + '/';
-	std::string export_folder = "../../exports/" + name + (incremental ? "/incremental/" : "/complete/");
+	std::string export_folder = "../../exports/" + name + (opts.incremental_topology ? "/incremental/" : "/complete/");
 	size_t num_resources = NumOfResources(data_folder);
 
 	/* Load everything */
@@ -98,7 +96,7 @@ void Run(const std::string& name, bool incremental, bool generate_images, bool o
 	pcs::ExportToFile(recipe.lts(), export_folder + "/recipe.txt");
 
 	pcs::System machine = LoadMachine(data_folder, num_resources);
-	if (incremental) {
+	if (opts.incremental_topology) {
 		IncrementalTopology(machine);
 	} else {
 		CompleteTopology(machine);
@@ -109,12 +107,12 @@ void Run(const std::string& name, bool incremental, bool generate_images, bool o
 	auto controller_lts = con.Generate();
 	if (controller_lts.has_value()) {
 		pcs::ExportToFile(**controller_lts, export_folder + "/controller.txt");
-		pcs::HighlightTopology(machine.topology()->lts(), **controller_lts, export_folder + "/highlighted_topology.txt");
+		pcs::Highlighter::HighlightTopology(machine.topology()->lts(), **controller_lts, export_folder + "/highlighted_topology.txt");
 	} else {
 		PCS_WARN("[PAD] No controller generated");
 	}
 	pcs::ExportMachine(machine, export_folder);
-	if (generate_images) {
-		GraphVizSave(export_folder, num_resources, only_highlighted_topology);
+	if (opts.generate_images) {
+		GraphVizSave(export_folder, num_resources, opts.only_highlighted_topology_image);
 	}
 }

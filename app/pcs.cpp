@@ -10,9 +10,8 @@ int main() {
 	#endif
 
 	//MergeExample(4);
-	//Experimental2();
 
-	//Run("pad",  false, true, true);
-	Run("hinge", false, true, true);
-
+	RunnerOpts opts{ .incremental_topology = true, .generate_images = true, .only_highlighted_topology_image = true };
+	//Run("hinge", opts);
+	Run("pad",  opts);
 }

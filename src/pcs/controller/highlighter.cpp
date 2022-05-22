@@ -13,12 +13,22 @@
 
 namespace pcs {
 
+	using SVecHash = boost::hash<std::vector<std::string>>;
+	using ControllerState = std::vector<std::string>;
+	using ControllerTransition = std::vector<std::string>;
+
+	using TopologyState = std::vector<std::string>;
+	using TopologyTransition = std::pair<size_t, std::string>;
+
+	using TargetMapT = std::unordered_map<ControllerState, std::unordered_set<std::string>, SVecHash>;
+
 	/*
 	 * @brief Builds the target map, where KeyT = a target state, and ValueT = set of target transitions.
-	 * target_map = state_name to desired transitions
+	 * 
+	 * target_map: KeyT = Controller/Topology State and UnorderedSet values are the individual transitions
 	 */
-	static void BuildTargetMap(const LTS<std::vector<std::string>, std::vector<std::string>, boost::hash<std::vector<std::string>>>& controller,
-		std::unordered_map<std::vector<std::string>, std::unordered_set<std::string>, boost::hash<std::vector<std::string>>>& target_map) {
+	 TargetMapT Highlighter::BuildTargetMap(const LTS<ControllerState, ControllerTransition, SVecHash>& controller) {
+		 TargetMapT target_map;
 		for (const auto& state : controller.states()) {
 			target_map[state.first] = std::unordered_set<std::string>();
 			for (const auto& t : state.second.transitions()) {
@@ -32,14 +42,14 @@ namespace pcs {
 				}
 			}
 		}
-
+		return target_map;
 	}
 
 	/*
 	 * @brief Returns a highlighted topology showing the path the controller took
 	 */
-	void HighlightTopology(const LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>>& topology,
-		const LTS<std::vector<std::string>, std::vector<std::string>, boost::hash<std::vector<std::string>>>& controller, const std::filesystem::path& out_path) {
+	void Highlighter::HighlightTopology(const LTS<TopologyState, TopologyTransition, SVecHash>& topology,
+		                  const LTS<ControllerState, ControllerTransition, SVecHash>& controller, const std::filesystem::path& out_path) {
 		std::ofstream os;
 		os.exceptions(std::ofstream::badbit);
 		CreateDirectoryForPath(out_path);
@@ -55,9 +65,7 @@ namespace pcs {
 			os << "	" << "\"" << topology.initial_state() << "\"" << ";\n";
 			os << "	node [shape = circle];\n";
 
-			std::unordered_map<std::vector<std::string>, std::unordered_set<std::string>, boost::hash<std::vector<std::string>>> target_map;
-			BuildTargetMap(controller, target_map);
-
+			TargetMapT target_map = BuildTargetMap(controller);
 
 			for (const auto& pair : topology.states()) {
 				auto& state = pair.second;
@@ -69,8 +77,7 @@ namespace pcs {
 						os << "	" << "\"" << pair.first << "\"" << " -> " << "\"" << t.to() << "\"" << " [color=\"royalblue4\" penwidth=2.25 label = " << "\"";
 						os << t.label() << "\"];\n";
 						os << "	" << "\"" << pair.first << "\"" << " [shape=circle, style=filled, fillcolor=dodgerblue2]" << "\n";
-					}
-					else {
+					} else {
 						os << "	" << "\"" << pair.first << "\"" << " -> " << "\"" << t.to() << "\"" << " [label = " << "\"";
 						os << t.label() << "\"];\n";
 					}

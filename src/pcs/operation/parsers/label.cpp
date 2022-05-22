@@ -12,10 +12,10 @@ namespace pcs {
 
 	std::unique_ptr<IOperation> StringToOperation(const std::string& label) {
 		if (label.find("in:") != std::string::npos) {
-			return std::make_unique<TransferOperation>(Transfer::in, stoull(label.substr(3)));
+			return std::make_unique<TransferOperation>(TransferType::in, stoull(label.substr(3)));
 		}
 		else if (label.find("out:") != std::string::npos) {
-			return std::make_unique<TransferOperation>(Transfer::out, stoull(label.substr(4)));
+			return std::make_unique<TransferOperation>(TransferType::out, stoull(label.substr(4)));
 		}
 		else if (label == "nop") {
 			return std::make_unique<Nop>();
@@ -25,9 +25,9 @@ namespace pcs {
 
 	std::optional<TransferOperation> StringToTransfer(const std::string& label) {
 		if (label.find("in:") != std::string::npos) {
-			return TransferOperation(Transfer::in, stoull(label.substr(3)));
+			return TransferOperation(TransferType::in, stoull(label.substr(3)));
 		} else if (label.find("out:") != std::string::npos) {
-			return TransferOperation(Transfer::out, stoull(label.substr(4)));
+			return TransferOperation(TransferType::out, stoull(label.substr(4)));
 		}
 		return {};
 	}

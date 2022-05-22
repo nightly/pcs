@@ -5,6 +5,7 @@
 #include "pcs/lts/lts.h"
 #include "pcs/operation/transfer.h"
 #include "pcs/controller/plan_transition.h"
+#include "pcs/controller/parts.h"
 
 #include <boost/container_hash/hash.hpp>
 
@@ -22,7 +23,7 @@ namespace pcs {
 		const Recipe* recipe_;
 		ITopology* topology_;
 	
-		std::vector<std::vector<std::string>> parts_;
+		Parts parts_;
 		std::string recipe_state_;
 		size_t num_of_resources_;
 
@@ -34,7 +35,7 @@ namespace pcs {
 		bool ProcessRecipe(const std::string& recipe_state, const TopologyState* topoloy_state);
 		std::optional<const TopologyState*> HandleComposite(const CompositeOperation& co, const std::vector<std::string>& topology_state);
 		std::optional<const TopologyState*> HandleSequentialOperation(const std::vector<std::string>& topology_state, 
-			std::vector<PlanTransition> plan_transitions, std::vector<std::vector<std::string>> plan_parts);
+			std::vector<PlanTransition> plan_transitions, Parts plan_parts);
 
 		void ApplyTransition(const PlanTransition& plan_t);
 		bool TransferParts(size_t resource, std::vector<std::vector<std::string>>& parts);

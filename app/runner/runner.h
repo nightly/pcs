@@ -7,7 +7,13 @@
 #include "pcs/product/recipe.h"
 #include "pcs/system/system.h"
 
-void Run(const std::string& name, bool incremental, bool generate_images, bool only_highlighted_topology=true);
+struct RunnerOpts {
+	bool incremental_topology;
+	bool generate_images;
+	bool only_highlighted_topology_image; // Exports the highlighted topology only, rather than topology & highlighted topology
+};
+
+void Run(const std::string& name, const RunnerOpts& opts);
 
 static size_t NumOfResources(const std::filesystem::path& data_folder);
 

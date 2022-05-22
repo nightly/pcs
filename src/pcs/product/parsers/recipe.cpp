@@ -1,5 +1,7 @@
 #include "pcs/product/parsers/recipe.h"
 
+#include "nlohmann/json.hpp"
+
 #include "pcs/product/recipe.h"
 #include "pcs/operation/guard.h"
 #include "pcs/operation/operation.h"

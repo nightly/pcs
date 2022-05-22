@@ -6,7 +6,7 @@ set(PCS_SOURCES "lts/lts.h" "lts/state.h" "lts/writers.h" "lts/transition.h"
 "topology/topology.h" "topology/core.cpp" "topology/complete.cpp" "topology/incremental.cpp" 
  "topology/stitch.cpp" 
 
-"controller/controller.cpp" "controller/plan_transition.cpp"
+"controller/controller.cpp" "controller/plan_transition.cpp" "controller/parts.cpp"
 "controller/highlighter.cpp"
 
 "product/recipe.cpp"  "product/parsers/recipe.cpp"
@@ -17,7 +17,7 @@ set(PCS_SOURCES "lts/lts.h" "lts/state.h" "lts/writers.h" "lts/transition.h"
 
 "system/system.cpp" "system/writers.cpp"
 
-"common/directory.cpp" "common/strings.cpp")
+"common/directory.cpp" "common/strings.cpp" "common/pch.h")
 
 add_library(pcs STATIC ${PCS_SOURCES})
 
@@ -26,6 +26,11 @@ target_compile_features(pcs PRIVATE cxx_std_20)
 target_include_directories(pcs
     PUBLIC
         ${PROJECT_SOURCE_DIR}/src
+)
+
+target_precompile_headers(pcs 
+    PUBLIC
+     "${CMAKE_CURRENT_SOURCE_DIR}/common/pch.h"
 )
 
 # ==================
@@ -61,9 +66,11 @@ target_link_libraries(pcs
         Boost::container_hash
 )
 
+
 set_target_properties(pcs
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib/${CMAKE_BUILD_TYPE}"
     LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib/${CMAKE_BUILD_TYPE}"
     RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE}"
 )
+
