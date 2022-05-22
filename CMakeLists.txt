@@ -1,10 +1,10 @@
-﻿cmake_minimum_required (VERSION 3.8)
+﻿cmake_minimum_required (VERSION 3.22)
 
 project ("pcs" VERSION 0 LANGUAGES CXX)
 
 option(PCS_RUN_TESTS "Run tests" ON)
 option(PCS_COMPILE_BENCHMARKS "Compile benchmarks" ON)
-option(PCS_VERBOSE_OUTPUT "Verbose output" OFF)
+option(PCS_VERBOSE_OUTPUT "Verbose output" ON)
 
 # Library
 add_subdirectory(src/pcs)
@@ -22,7 +22,7 @@ endif()
 add_subdirectory(app)
 
 # Benchmarks
-if (PCS_COMPILE_BENCHMARKS) 
+if ((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME) AND PCS_COMPILE_BENCHMARKS)
     add_subdirectory(benchmarks)
 endif()
 

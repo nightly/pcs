@@ -17,6 +17,7 @@
 namespace pcs {
 
 	using TopologyTransition = std::pair<size_t, std::string>;
+	using TopologyState = std::vector<std::string>;
 
 	Controller::Controller(const System* machine, ITopology* topology, const Recipe* recipe)
 		: machine_(machine), recipe_(recipe), topology_(topology), num_of_resources_(machine_->NumOfResources()) {}
@@ -64,7 +65,7 @@ namespace pcs {
 	/**
 	 * @brief Handles a Composite Operation type, the Transition type present within Recipe States/LTS 
 	 */
-	std::optional<const std::vector<std::string>*> Controller::HandleComposite(const CompositeOperation& co, const std::vector<std::string>& topology_state) {
+	std::optional<const TopologyState*> Controller::HandleComposite(const CompositeOperation& co, const TopologyState& topology_state) {
 		const std::vector<std::string>* res_state = &topology_state;
 		for (const auto& tuple : co.sequential) {
 			seq_tuple_ = &tuple;
@@ -72,7 +73,7 @@ namespace pcs {
 			PCS_INFO(fmt::format(fmt::fg(fmt::color::lavender), "Handling operation: \"{}\" with input parts [{}] and output parts [{}]",
 				op.name(), fmt::join(input, ","), fmt::join(output, ",")));
 
-			std::vector<std::pair<std::vector<std::string>, std::vector<std::string>>> plan_transitions;
+			std::vector<PlanTransition> plan_transitions;
 			std::vector<std::vector<std::string>> plan_parts = parts_;
 			auto seq = HandleSequentialOperation(*res_state, plan_transitions, plan_parts);
 			if (!seq.has_value()) {
@@ -87,12 +88,13 @@ namespace pcs {
 	/**
 	 * @brief Handles a single sequential operation. Returns the resulting end-state if reliasable, nullopt otherwise.
 	 */
-	std::optional<const std::vector<std::string>*> Controller::HandleSequentialOperation(const std::vector<std::string>& topology_state, std::vector<std::pair<std::vector<std::string>,
-		                                       std::vector<std::string>>> plan_transitions, std::vector<std::vector<std::string>> plan_parts) {
+	std::optional<const TopologyState*> Controller::HandleSequentialOperation(const std::vector<std::string>& topology_state,
+		                                                                     std::vector<PlanTransition> plan_transitions, 
+		                                                                     std::vector<std::vector<std::string>> plan_parts) {
 		const auto& [op, input, output] = *seq_tuple_;
 
 		// map - TransferOperation key, tuple<end_state, transition, inverse transition>
-		std::unordered_map<TransferOperation, std::tuple<const std::vector<std::string>*, const TopologyTransition*, 
+		std::unordered_map<TransferOperation, std::tuple<const TopologyState*, const TopologyTransition*, 
 			const TopologyTransition*>> transfers;
 
 		for (const auto& transition : topology_->at(topology_state).transitions_) {
@@ -105,9 +107,9 @@ namespace pcs {
 				std::vector<std::string> vec(num_of_resources_, "-");
 				vec[transition.label().first] = transition.label().second;
 
-				plan_transitions.emplace_back(std::make_pair(vec, transition.to()));
-				for (const auto& transition : plan_transitions) { // We can now apply our correct transitions
-					ApplyTransition(topology_state, transition.first, transition.second);
+				plan_transitions.emplace_back(&topology_state, vec, &transition.to());
+				for (const auto& plan_t : plan_transitions) { // We can now apply our correct transitions
+					ApplyTransition(plan_t);
 				}
 				return { &transition.to()};
 			}
@@ -139,7 +141,7 @@ namespace pcs {
 			label_vec[std::get<1>(v)->first] = k.name();
 			label_vec[std::get<2>(v)->first] = std::get<2>(v)->second;
 
-			plan_transitions.emplace_back(std::make_pair(label_vec, state_vec));
+			plan_transitions.emplace_back(&topology_state, label_vec, &state_vec);
 
 			found = HandleSequentialOperation(state_vec, plan_transitions, plan_parts); // recurse and try this new pathway
 			if (found.has_value()) {
@@ -155,12 +157,11 @@ namespace pcs {
 	 * @brief ApplyTransition will add a transition to the controller and update the current topology state
 	 * pair.first = label, pair.second = end_state
 	 */
-	void Controller::ApplyTransition(const std::vector<std::string>& from, const std::vector<std::string>& transition, const std::vector<std::string>& to) {
-		// @Cleanup: no need for VectorToString.
-		controller_.AddTransition(from, transition, to);
+	void Controller::ApplyTransition(const PlanTransition& plan_t) {
+		controller_.AddTransition(*plan_t.from, plan_t.label, *plan_t.to);
 		PCS_INFO(fmt::format(fmt::fg(fmt::color::royal_blue) | fmt::emphasis::bold,
-			"Adding controller transition from {} with label ({}) to {}", fmt::join(from, ","), 
-			fmt::join(transition, ","), fmt::join(to, ",")));
+			"Adding controller transition from {} with label ({}) to {}", fmt::join(*plan_t.from, ","), 
+			fmt::join(plan_t.label, ","), fmt::join(*plan_t.to, ",")));
 	}
 
 	bool Controller::TransferParts(size_t resource, std::vector<std::vector<std::string>>& parts) {
@@ -195,10 +196,5 @@ namespace pcs {
 } // namespace end
 
  /*
-	 @Cleanup: pair inception should probably be eliminated with dedicated Transition type -- this is present in lts/transition.h but we don't use it for now since
-	 it is simply a readability matter for now.
-	 @Cleanup: transition type of controller should be vector rather than a string
-
 	 @Todo: guard operation in each recipe state being handled
-
  */
