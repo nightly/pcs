@@ -9,10 +9,10 @@ int main() {
 		spdlog::set_level(spdlog::level::trace);
 	#endif
 
-	// MergeExample(4);
-	// Experimental2();
+	//MergeExample(4);
+	//Experimental2();
 
-	Run("pad",  false, true, true);
-	// Run("hinge", true, true, true);
+	//Run("pad",  false, true, true);
+	Run("hinge", false, true, true);
 
 }

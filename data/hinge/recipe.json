@@ -23,7 +23,72 @@
             "output": [
               "h"
             ]
-          },
+          }
+        ],
+        "parallel": []
+      },
+      "endState": "B"
+    },
+    {
+      "startState": "B",
+      "label": {
+        "guard": {
+          "name": "getforce",
+          "input": [
+            "h"
+          ],
+          "output": [
+            "h"
+          ]
+        },
+        "sequential": [],
+        "parallel": []
+      },
+      "endState": "C"
+    },
+    {
+      "startState": "B",
+      "label": {
+        "guard": {},
+        "sequential": [
+          {
+            "name": "remove",
+            "input": [
+              "h"
+            ],
+            "output": [
+              "h"
+            ]
+          }
+        ],
+        "parallel": []
+      },
+      "endState": "E"
+    },
+    {
+      "startState": "C",
+      "label": {
+        "guard": {},
+        "sequential": [
+          {
+            "name": "remove",
+            "input": [
+              "h"
+            ],
+            "output": [
+              "h"
+            ]
+          }
+        ],
+        "parallel": []
+      },
+      "endState": "D"
+    },
+    {
+      "startState": "C",
+      "label": {
+        "guard": {},
+        "sequential": [
           {
             "name": "load",
             "input": [],
@@ -42,7 +107,17 @@
             "output": [
               "h1"
             ]
-          },
+          }
+        ],
+        "parallel": []
+      },
+      "endState": "F"
+    },
+    {
+      "startState": "F",
+      "label": {
+        "guard": {},
+        "sequential": [
           {
             "name": "load",
             "input": [],
@@ -65,83 +140,77 @@
         ],
         "parallel": []
       },
-      "endState": "B"
+      "endState": "H"
     },
     {
-      "startState": "B",
-      "label": {
-        "guard": {},
-        "sequential": [
-          {
-            "name": "getforce",
-            "input": [
-              "h2"
-            ],
-            "output": [
-              "h2"
-            ]
-          }
-        ],
-        "parallel": []
-      },
-      "endState": "C"
-    },
-    {
-      "startState": "B",
+      "startState": "F",
       "label": {
         "guard": {},
         "sequential": [
           {
             "name": "remove",
             "input": [
-              "h2"
+              "h1"
             ],
             "output": [
-              "h2"
+              "h1"
             ]
           }
         ],
         "parallel": []
       },
-      "endState": "E"
+      "endState": "I"
     },
     {
-      "startState": "C",
+      "startState": "H",
       "label": {
-        "guard": {},
-        "sequential": [
-          {
-            "name": "remove",
-            "input": [
-              "h2"
-            ],
-            "output": [
-              "h2"
-            ]
-          }
-        ],
+        "guard": {
+          "name": "getforce",
+          "input": [
+            "h2"
+          ],
+          "output": [
+            "h2"
+          ]
+        },
+        "sequential": [],
         "parallel": []
       },
-      "endState": "D"
+      "endState": "J"
     },
     {
-      "startState": "C",
+      "startState": "J",
       "label": {
-        "guard": {},
-        "sequential": [
-          {
-            "name": "store",
-            "input": [
-              "h2"
-            ],
-            "output": [
-              "h2"
-            ]
-          }
-        ],
+        "guard": {
+          "name": "remove",
+          "input": [
+            "h2"
+          ],
+          "output": [
+            "h2"
+          ]
+        },
+        "sequential": [],
         "parallel": []
       },
-      "endState": "F"
+      "endState": "K"
+    },
+    {
+      "startState": "J",
+      "label": {
+        "guard": {
+          "name": "store",
+          "input": [
+            "h2"
+          ],
+          "output": [
+            "h2"
+          ]
+        },
+        "sequential": [],
+        "parallel": []
+      },
+      "endState": "G"
     }
   ]
 }
