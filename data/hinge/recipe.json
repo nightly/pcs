@@ -32,16 +32,28 @@
     {
       "startState": "B",
       "label": {
-        "guard": {
-          "name": "getforce",
-          "input": [
-            "h"
-          ],
-          "output": [
-            "h"
-          ]
-        },
-        "sequential": [],
+        "guard": {},
+        "sequential": [
+          {
+            "name": "load",
+            "input": [],
+            "output": [
+              "balls",
+              "spring"
+            ]
+          },
+          {
+            "name": "attach",
+            "input": [
+              "h",
+              "balls",
+              "spring"
+            ],
+            "output": [
+              "h1"
+            ]
+          }
+        ],
         "parallel": []
       },
       "endState": "C"
@@ -71,12 +83,22 @@
         "guard": {},
         "sequential": [
           {
-            "name": "remove",
+            "name": "load",
+            "input": [],
+            "output": [
+              "tube",
+              "retainer"
+            ]
+          },
+          {
+            "name": "press",
             "input": [
-              "h"
+              "h1",
+              "tube",
+              "retainer"
             ],
             "output": [
-              "h"
+              "h2"
             ]
           }
         ],
@@ -90,19 +112,9 @@
         "guard": {},
         "sequential": [
           {
-            "name": "load",
-            "input": [],
-            "output": [
-              "balls",
-              "spring"
-            ]
-          },
-          {
-            "name": "attach",
+            "name": "remove",
             "input": [
-              "h",
-              "balls",
-              "spring"
+              "h1"
             ],
             "output": [
               "h1"
@@ -119,19 +131,29 @@
         "guard": {},
         "sequential": [
           {
-            "name": "load",
-            "input": [],
-            "output": [
-              "tube",
-              "retainer"
-            ]
-          },
-          {
-            "name": "press",
+            "name": "store",
             "input": [
-              "h1",
-              "balls",
-              "retainer"
+              "h2"
+            ],
+            "output": [
+              "h2"
+            ]
+          }
+        ],
+        "parallel": []
+      },
+      "endState": "G"
+    },
+
+    {
+      "startState": "F",
+      "label": {
+        "guard": {},
+        "sequential": [
+          {
+            "name": "remove",
+            "input": [
+              "h2"
             ],
             "output": [
               "h2"
@@ -141,76 +163,6 @@
         "parallel": []
       },
       "endState": "H"
-    },
-    {
-      "startState": "F",
-      "label": {
-        "guard": {},
-        "sequential": [
-          {
-            "name": "remove",
-            "input": [
-              "h1"
-            ],
-            "output": [
-              "h1"
-            ]
-          }
-        ],
-        "parallel": []
-      },
-      "endState": "I"
-    },
-    {
-      "startState": "H",
-      "label": {
-        "guard": {
-          "name": "getforce",
-          "input": [
-            "h2"
-          ],
-          "output": [
-            "h2"
-          ]
-        },
-        "sequential": [],
-        "parallel": []
-      },
-      "endState": "J"
-    },
-    {
-      "startState": "J",
-      "label": {
-        "guard": {
-          "name": "remove",
-          "input": [
-            "h2"
-          ],
-          "output": [
-            "h2"
-          ]
-        },
-        "sequential": [],
-        "parallel": []
-      },
-      "endState": "K"
-    },
-    {
-      "startState": "J",
-      "label": {
-        "guard": {
-          "name": "store",
-          "input": [
-            "h2"
-          ],
-          "output": [
-            "h2"
-          ]
-        },
-        "sequential": [],
-        "parallel": []
-      },
-      "endState": "G"
     }
   ]
 }
