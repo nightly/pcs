@@ -17,6 +17,9 @@ namespace pcs {
 	public:
 		using TopologyTransition = std::pair<size_t, std::string>;
 		using TopologyState = std::vector<std::string>;
+
+		using ControllerTransition = std::vector<std::string>;
+		using ControllerState = std::vector<std::string>;
 	private:
 		LTS<std::vector<std::string>, std::vector<std::string>, boost::hash<std::vector<std::string>>> controller_;
 		const System* machine_;

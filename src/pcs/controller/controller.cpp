@@ -19,6 +19,9 @@ namespace pcs {
 	using TopologyTransition = std::pair<size_t, std::string>;
 	using TopologyState = std::vector<std::string>;
 
+	using ControllerTransition = std::vector<std::string>;
+	using ControllerState = std::vector<std::string>;
+
 	Controller::Controller(const System* machine, ITopology* topology, const Recipe* recipe)
 		: machine_(machine), recipe_(recipe), topology_(topology), num_of_resources_(machine_->NumOfResources()), 
 		  parts_(machine_->NumOfResources()) {}
@@ -109,15 +112,15 @@ namespace pcs {
 				for (const auto& plan_t : plan_transitions) { // Unpack the plan
 					ApplyTransition(plan_t);
 				}
+				parts_.Add(transition.label(), output);
 				return { &transition.to()};
 			} else {
 				std::optional<TransferOperation> opt = StringToTransfer(transition.label().second);
 				if (opt.has_value()) {
-					if (opt->IsOut()) { // Out case
+					if (opt->IsOut()) {
 						std::get<0>(transfers[*opt]) = &(transition.to());
 						std::get<1>(transfers[*opt]) = &(transition.label());
-					}
-					else { // In case
+					} else {
 						TransferOperation inverse = opt->Inverse(); // The associated map key is the inverse
 						std::get<2>(transfers[inverse]) = &(transition.label());
 					}
@@ -125,10 +128,10 @@ namespace pcs {
 			}
 		}
 
-		std::optional<const std::vector<std::string>*> found = std::nullopt;
+		std::optional<const TopologyState*> found = std::nullopt;
 		for (const auto& [k, v] : transfers) {
 			// map type - [ TransferOperation key, tuple<end_state, transition, inverse transition> ]
-			const std::vector<std::string>& state_vec = *std::get<0>(v);
+			const TopologyState& state_vec = *std::get<0>(v);
 			std::vector<std::string> label_vec(num_of_resources_, "-");
 			label_vec[std::get<1>(v)->first] = k.name();
 			label_vec[std::get<2>(v)->first] = std::get<2>(v)->second;

@@ -11,7 +11,7 @@ int main() {
 
 	//MergeExample(4);
 
-	RunnerOpts opts{ .incremental_topology = true, .generate_images = true, .only_highlighted_topology_image = true };
-	//Run("hinge", opts);
+	RunnerOpts opts{ .incremental_topology = false, .generate_images = false, .only_highlighted_topology_image = true };
+	// Run("hinge", opts);
 	Run("pad",  opts);
 }
