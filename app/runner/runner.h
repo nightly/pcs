@@ -14,6 +14,8 @@ struct RunnerOpts {
 };
 
 void Run(const std::string& name, const RunnerOpts& opts);
+pcs::System RunReturnMachine(const std::string&	name, const RunnerOpts& opts);
+void AddResourceAdaptive(const std::string& name, const std::string& recipefolder, const RunnerOpts& opts, pcs::System &machine);
 
 static size_t NumOfResources(const std::filesystem::path& data_folder);
 

@@ -55,7 +55,7 @@ namespace pcs {
 	 * @param filepath: relative path to the LTS file to parse and adds it
 	 * @param is_json: specifies whether the LTS is in .txt or .json format
 	 * @exception Propagates std::ifstream::failure
-	 */
+	 */	
 	void System::AddResource(const std::filesystem::path& filepath, bool is_json) {
 		LTS<std::string> lts;
 		try {
