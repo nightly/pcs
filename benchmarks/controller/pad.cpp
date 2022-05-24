@@ -20,7 +20,7 @@ static void BM_PADControllerCompleteTopology(benchmark::State& state) {
 
 	pcs::Recipe recipe;
 	try {
-		recipe.set_recipe("../../data/pad/recipe_full.json");
+		recipe.set_recipe("../../data/pad/recipe.json");
 	} catch (const std::ifstream::failure& e) {
 		throw;
 	}
@@ -51,7 +51,7 @@ static void BM_PADControllerIncrementalTopology(benchmark::State& state) {
 
 	pcs::Recipe recipe;
 	try {
-		recipe.set_recipe("../../data/pad/recipe_full.json");
+		recipe.set_recipe("../../data/pad/recipe.json");
 	} catch (const std::ifstream::failure& e) {
 		throw;
 	}
