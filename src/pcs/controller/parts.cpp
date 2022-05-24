@@ -4,9 +4,17 @@
 #include <string>
 #include <algorithm>
 
+#include "spdlog/fmt/ostr.h"
+
 #include "pcs/common/log.h"
 
 namespace pcs {
+
+	using TopologyTransition = std::pair<size_t, std::string>;
+	using TopologyState = std::vector<std::string>;
+
+	using ControllerTransition = std::vector<std::string>;
+	using ControllerState = std::vector<std::string>;
 
 	// ==========================
 	// Constructors & destructor
@@ -61,17 +69,17 @@ namespace pcs {
 	 *	      Note that input parts must follow a 1-1 string mapping of the parts in the resources to the recipe.
 	 * @returns Whether or not the parts could be synchronized. This will fail when parts to be synchronized don't exist.
 	 */
-	bool Parts::Synchronize(const TopologyTransition& in, const TopologyTransition& out, const std::vector<std::string>& input) {
+	bool Parts::Synchronize(size_t in, size_t out, const std::vector<std::string>& input) {
 		size_t count = 0;
 		size_t input_size = input.size();
-		size_t from_resource = out.first;
-		size_t sync_resource = in.first;
 
-		auto end = std::remove_if(parts_[from_resource].begin(), parts_[from_resource].end(),
+		// PCS_INFO("Sync Old Parts: {}", *this);
+
+		auto end = std::remove_if(parts_[out].begin(), parts_[out].end(),
 			[&](const auto& i) {
 				if (std::find(input.begin(), input.end(), i) != input.end()) {
 					count++;
-					parts_[sync_resource].emplace_back(i);
+					parts_[in].emplace_back(i);
 					return true;
 				}
 				else {
@@ -79,13 +87,18 @@ namespace pcs {
 				}
 			});
 
-		parts_[from_resource].erase(end, parts_[from_resource].end());
+		parts_[out].erase(end, parts_[out].end());
+
+
+		// PCS_INFO("Sync New Parts: {}", *this);
 
 		if (count != input_size) {
 			PCS_WARN(fmt::format(fmt::fg(fmt::color::light_yellow) | fmt::emphasis::underline, 
-				"[Parts Sync] Not all parts were found at resource {} from set: {}", from_resource, fmt::join(input, ",")));
+				"[Parts Sync] Not all parts were found at resource {} from set: {}", out, fmt::join(input, ",")));
 			return false;
 		}
+
+
 
 		return true;
 	}
@@ -101,10 +114,12 @@ namespace pcs {
 		size_t input_size = input.size();
 		size_t resource = transition.first;
 
+		// PCS_INFO("Allocate Parts: {} at resource {}", *this, resource);
+
 		auto end = std::remove_if(parts_[resource].begin(), parts_[resource].end(),
 			[&](const auto& i) {
 				if (std::find(input.begin(), input.end(), i) != input.end()) {
-					PCS_INFO(fmt::format(fmt::fg(fmt::color::coral), "[Parts] Removing part {} from resource {}", resource, i));
+					PCS_INFO(fmt::format(fmt::fg(fmt::color::coral), "[Parts] Consuming part {} at resource {}", resource, i));
 					count++;
 					return true;
 				} else {
@@ -123,6 +138,21 @@ namespace pcs {
 		return true;
 	}
 
+
+	std::ostream& operator<<(std::ostream& os, const Parts& parts) {
+		for (size_t i = 0; i < parts.parts_.size(); ++i) {
+			if (parts.parts_[i].empty()) {
+				continue;
+			}
+			os << "Parts at Resource " << (i) << ':';
+			os << "  ";
+			for (const auto& p : parts.parts_[i]) {
+				os << p << " ";
+			}
+			os << "\n";
+		}
+		return os;
+	}
 
 }
 
