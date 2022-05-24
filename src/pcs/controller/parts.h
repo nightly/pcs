@@ -15,6 +15,7 @@ namespace pcs {
 	private:
 		std::vector<std::vector<std::string>> parts_;
 	public:
+		Parts() = default;
 		Parts(size_t num_resources);
 		Parts(const Parts& other);
 		Parts& operator=(const Parts& other);
@@ -24,9 +25,10 @@ namespace pcs {
 		const std::vector<std::string>& AtResource(size_t resource) const;
 
 		void Add(const TopologyTransition& transition, const std::vector<std::string>& output);
-		bool Synchronize(const TopologyTransition& in, const TopologyTransition& out, const std::vector<std::string>& input);
+		bool Synchronize(size_t in, size_t out, const std::vector<std::string>& input);
 		bool Allocate(const TopologyTransition& transition, const std::vector<std::string>& input);
 
+		friend std::ostream& operator<<(std::ostream& os, const Parts& parts);
 	};
 
 }

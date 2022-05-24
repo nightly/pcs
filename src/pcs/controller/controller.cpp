@@ -23,17 +23,17 @@ namespace pcs {
 	using ControllerState = std::vector<std::string>;
 
 	Controller::Controller(const System* machine, ITopology* topology, const Recipe* recipe)
-		: machine_(machine), recipe_(recipe), topology_(topology), num_of_resources_(machine_->NumOfResources()), 
-		  parts_(machine_->NumOfResources()) {}
+		: machine_(machine), recipe_(recipe), topology_(topology), num_of_resources_(machine_->NumOfResources()) {}
 
 	std::optional<const LTS<std::vector<std::string>, std::vector<std::string>, boost::hash<std::vector<std::string>>>*> Controller::Generate() {
-		recipe_state_ = recipe_->lts().initial_state();
+		const std::string& recipe_state = recipe_->lts().initial_state();
 		controller_.set_initial_state(topology_->initial_state(), true);
+		Parts plan_parts(machine_->NumOfResources());
 
 		PCS_INFO(fmt::format(fmt::fg(fmt::color::light_green), "Controller initial state {}", fmt::join(controller_.initial_state(), ",")));
-		PCS_INFO(fmt::format(fmt::fg(fmt::color::light_green), "Recipe initial state: {}", recipe_state_));
+		PCS_INFO(fmt::format(fmt::fg(fmt::color::light_green), "Recipe initial state: {}", recipe_state));
 
-		bool generated = ProcessRecipe(recipe_state_, &controller_.initial_state());
+		bool generated = ProcessRecipe(recipe_state, &controller_.initial_state(), plan_parts);
 		PCS_INFO(fmt::format(fmt::fg(fmt::color::light_green), "Controller generation completed: realisability = {}", generated));
 
 		/*  @Hack: Visualises controller no matter what (wherever it reached) for testing purposes.
@@ -50,17 +50,17 @@ namespace pcs {
 	/**
 	 * @brief Recursively process all recipe states, accounting for transitions due to guards.  
 	 */
-	bool Controller::ProcessRecipe(const std::string& recipe_state, const std::vector<std::string>* topology_state) {
+	bool Controller::ProcessRecipe(const std::string& recipe_state, const std::vector<std::string>* topology_state, const Parts plan_parts) {
 		for (const auto& pair : recipe_->lts()[recipe_state].transitions_) {
 			const CompositeOperation& co = pair.label();
 			PCS_INFO(fmt::format(fmt::fg(fmt::color::gold) | fmt::emphasis::bold, "Processing recipe transition to: {}",
 				recipe_->lts()[recipe_state].transitions_[0].to()));
 
-			auto c_op = HandleComposite(co, *topology_state);
+			auto c_op = HandleComposite(co, *topology_state, plan_parts);
 			if (!c_op.has_value()) {
 				return {};
 			}
-			ProcessRecipe(pair.to(), c_op.value());
+			ProcessRecipe(pair.to(), c_op.value().first, c_op.value().second);
 		}
 	}
 
@@ -68,7 +68,8 @@ namespace pcs {
 	/**
 	 * @brief Handles a Composite Operation type, the Transition type present within Recipe States/LTS 
 	 */
-	std::optional<const TopologyState*> Controller::HandleComposite(const CompositeOperation& co, const TopologyState& topology_state) {
+	std::optional<std::pair<const TopologyState*, Parts>> Controller::HandleComposite(const CompositeOperation& co, const TopologyState& topology_state,
+		                                                                              Parts plan_parts) {
 		const std::vector<std::string>* res_state = &topology_state;
 		for (const auto& tuple : co.sequential) {
 			seq_tuple_ = &tuple;
@@ -77,19 +78,20 @@ namespace pcs {
 				op.name(), fmt::join(input, ","), fmt::join(output, ",")));
 
 			std::vector<PlanTransition> plan_transitions;
-			auto seq = HandleSequentialOperation(*res_state, plan_transitions, parts_);
+			auto seq = HandleSequentialOperation(*res_state, plan_transitions, plan_parts);
 			if (!seq.has_value()) {
 				return {};
 			}
-			res_state = seq.value();
+			res_state = seq.value().first;
+			plan_parts = seq.value().second;
 		}
-		return {res_state};
+		return {std::make_pair(res_state, plan_parts)};
 	}
 	
 	/**
 	 * @brief Handles a single sequential operation. Returns the resulting end-state if reliasable, nullopt otherwise.
 	 */
-	std::optional<const TopologyState*> Controller::HandleSequentialOperation(const TopologyState& topology_state,
+	std::optional<std::pair<const TopologyState*, Parts>> Controller::HandleSequentialOperation(const TopologyState& topology_state,
 		                                                                     std::vector<PlanTransition> plan_transitions, 
 		                                                                     Parts plan_parts) {
 		const auto& [op, input, output] = *seq_tuple_;
@@ -99,11 +101,12 @@ namespace pcs {
 
 		for (const auto& transition : topology_->at(topology_state).transitions_) {
 			if (op.name() == transition.label().second) {
-				parts_ = plan_parts; 
-				// bool transfer = TransferParts(transition.label().first, parts_);
-				bool transfer = true;
-				if (!transfer) {
-					return {};
+				if (!input.empty()) {
+					bool allocate = true;
+					// allocate = plan_parts.Allocate(transition.label(), input);
+					if (!allocate) {
+					   return {};
+					}
 				}
 				std::vector<std::string> vec(num_of_resources_, "-");
 				vec[transition.label().first] = transition.label().second;
@@ -112,8 +115,8 @@ namespace pcs {
 				for (const auto& plan_t : plan_transitions) { // Unpack the plan
 					ApplyTransition(plan_t);
 				}
-				parts_.Add(transition.label(), output);
-				return { &transition.to()};
+				plan_parts.Add(transition.label(), output);
+				return {std::make_pair(& transition.to(), plan_parts)};
 			} else {
 				std::optional<TransferOperation> opt = StringToTransfer(transition.label().second);
 				if (opt.has_value()) {
@@ -128,7 +131,7 @@ namespace pcs {
 			}
 		}
 
-		std::optional<const TopologyState*> found = std::nullopt;
+		std::optional<std::pair<const TopologyState*, Parts>> found = std::nullopt;
 		for (const auto& [k, v] : transfers) {
 			// map type - [ TransferOperation key, tuple<end_state, transition, inverse transition> ]
 			const TopologyState& state_vec = *std::get<0>(v);
@@ -136,6 +139,7 @@ namespace pcs {
 			label_vec[std::get<1>(v)->first] = k.name();
 			label_vec[std::get<2>(v)->first] = std::get<2>(v)->second;
 
+			// plan_parts.Synchronize(k.n(), std::get<2>(v)->first, input);
 			plan_transitions.emplace_back(&topology_state, label_vec, &state_vec);
 			found = HandleSequentialOperation(state_vec, plan_transitions, plan_parts); // Recurse DFS
 			if (found) {
