@@ -4,7 +4,7 @@ project ("pcs" VERSION 0 LANGUAGES CXX)
 
 option(PCS_RUN_TESTS "Run tests" ON)
 option(PCS_COMPILE_BENCHMARKS "Compile benchmarks" ON)
-option(PCS_VERBOSE_OUTPUT "Verbose output" OFF)
+option(PCS_VERBOSE_OUTPUT "Verbose output" ON)
 
 # Library
 add_subdirectory(src/pcs)

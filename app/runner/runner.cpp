@@ -102,7 +102,7 @@ void Run(const std::string& name, const RunnerOpts& opts) {
 		CompleteTopology(machine);
 	}
 
-	/* Generate controller and generate images */
+	/* Generate controller */
 	pcs::Controller con(&machine, machine.topology(), &recipe);
 	auto controller_lts = con.Generate();
 	if (controller_lts.has_value()) {
@@ -111,7 +111,13 @@ void Run(const std::string& name, const RunnerOpts& opts) {
 	} else {
 		PCS_WARN("[PAD] No controller generated");
 	}
+
+	/* Export machine, print incremenetal topology stats, and generate images */
 	pcs::ExportMachine(machine, export_folder);
+	if (opts.incremental_topology) {
+		PCS_INFO(fmt::format(fmt::fg(fmt::color::white_smoke), "[Topology] Number Of States = {}, Number of Transitions = {}", machine.topology()->lts().NumOfStates(),
+			machine.topology()->lts().NumOfTransitions()));
+	}
 	if (opts.generate_images) {
 		GraphVizSave(export_folder, num_resources, opts.only_highlighted_topology_image);
 	}
