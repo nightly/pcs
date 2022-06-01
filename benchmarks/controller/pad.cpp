@@ -7,7 +7,7 @@
 #include "pcs/lts/parsers/string_string.h"
 
 static void BM_PADControllerCompleteTopology(benchmark::State& state) {
-	pcs::System machine;
+	pcs::Environment machine;
 	try {
 		machine.AddResource("../../data/pad/Resource1.txt", false);
 		machine.AddResource("../../data/pad/Resource2.txt", false);
@@ -34,11 +34,11 @@ static void BM_PADControllerCompleteTopology(benchmark::State& state) {
 	}
 }
 
-BENCHMARK(BM_PADControllerCompleteTopology);
+BENCHMARK(BM_PADControllerCompleteTopology)->Unit(benchmark::kMillisecond);
 
 
 static void BM_PADControllerIncrementalTopology(benchmark::State& state) {
-	pcs::System machine;
+	pcs::Environment machine;
 	try {
 		machine.AddResource("../../data/pad/Resource1.txt", false);
 		machine.AddResource("../../data/pad/Resource2.txt", false);
@@ -65,5 +65,5 @@ static void BM_PADControllerIncrementalTopology(benchmark::State& state) {
 	}
 }
 
-BENCHMARK(BM_PADControllerIncrementalTopology);
+BENCHMARK(BM_PADControllerIncrementalTopology)->Unit(benchmark::kMillisecond);
 

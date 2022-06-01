@@ -4,8 +4,6 @@
 #include <span>
 #include <string>
 
-#include <iostream>
-
 #include <spdlog/fmt/ranges.h>
 
 #include "pcs/lts/lts.h"
@@ -45,7 +43,7 @@ namespace pcs {
 	}
 
 	/**
-	 * @brief ExpandState functions similar to CombineRecursive but it will not recursively expand itself.
+	 * @brief ExpandState is similar to CombineRecursive but it will not recursively expand itself.
 	 * We apply the transitions that are found from the given state key based on the current individual resource states.
 	 */
 	void IncrementalTopology::ExpandState(const std::vector<std::string>& key) {

@@ -7,11 +7,11 @@ namespace pcs {
 
 	class Parts {
 	public:
-		using TopologyTransition = std::pair<size_t, std::string>;
 		using TopologyState = std::vector<std::string>;
+		using TopologyTransition = std::pair<size_t, std::string>;
 
-		using ControllerTransition = std::vector<std::string>;
 		using ControllerState = std::vector<std::string>;
+		using ControllerTransition = std::vector<std::string>;
 	private:
 		std::vector<std::vector<std::string>> parts_;
 	public:
@@ -27,6 +27,8 @@ namespace pcs {
 		void Add(const TopologyTransition& transition, const std::vector<std::string>& output);
 		bool Synchronize(size_t in, size_t out, const std::vector<std::string>& input);
 		bool Allocate(const TopologyTransition& transition, const std::vector<std::string>& input);
+
+		bool operator==(const Parts& other) const;
 
 		friend std::ostream& operator<<(std::ostream& os, const Parts& parts);
 	};

@@ -8,11 +8,10 @@ macro(package_add_test TESTNAME)
     add_executable(${TESTNAME} ${ARGN})
 
     target_compile_features(${TESTNAME}  PRIVATE cxx_std_20)
-
     target_link_libraries(${TESTNAME} 
     PRIVATE 
         pcs
-        gtest 
+        gtest
         gmock
         gtest_main)
 

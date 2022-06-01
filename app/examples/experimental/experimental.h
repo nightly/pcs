@@ -6,8 +6,8 @@
 
 #include "pcs/lts/parsers/string_string.h"
 #include "pcs/lts/export.h"
-#include "pcs/system/system.h"
-#include "pcs/system/writers.h"
+#include "pcs/environment/environment.h"
+#include "pcs/environment/writers.h"
 #include "pcs/product/recipe.h"
 #include "pcs/controller/controller.h"
 #include "pcs/common/log.h"
@@ -23,8 +23,8 @@ inline static pcs::Recipe LoadExpRecipe() {
 	return recipe;
 }
 
-inline static pcs::System LoadExpMachine() {
-	pcs::System machine;
+inline static pcs::Environment LoadExpMachine() {
+	pcs::Environment machine;
 	try {
 		machine.AddResource("../../data/pad/Resource1.txt", false);
 		//machine.AddResource("../../data/pad/Resource2.txt", false);
@@ -37,7 +37,7 @@ inline static pcs::System LoadExpMachine() {
 	return machine;
 }
 
-inline static void ComputeExpTopology(pcs::System& machine) {
+inline static void ComputeExpTopology(pcs::Environment& machine) {
 	machine.Complete();
 }
 
@@ -45,9 +45,9 @@ inline void Experimental() {
 	pcs::Recipe recipe = LoadExpRecipe();
 	pcs::ExportToFile(recipe.lts(), "../../exports/experimental/recipe.txt");
 
-	pcs::System machine = LoadExpMachine();
+	pcs::Environment machine = LoadExpMachine();
 	ComputeExpTopology(machine);
-	pcs::ExportMachine(machine, "../../exports/experimental");
+	pcs::ExportEnvironment(machine, "../../exports/experimental");
 
 	pcs::Controller con(&machine, machine.topology(), &recipe);
 	std::optional<const pcs::LTS<std::vector<std::string>, std::vector<std::string>, boost::hash<std::vector<std::string>>>*> controller = con.Generate();

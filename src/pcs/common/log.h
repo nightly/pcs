@@ -1,8 +1,8 @@
 #pragma once
 
-#if (defined _DEBUG == 1)
+#if (defined _DEBUG)
 	#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_TRACE
-#elif (defined PCS_VERBOSE == 1) 
+#elif (PCS_VERBOSE == 1) 
 	#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_INFO
 #else 
 	#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_CRITICAL
@@ -10,11 +10,8 @@
 
 // Log level must be defined prior to including spdlog.h
 #include <spdlog/spdlog.h>
-#include <spdlog/fmt/ostr.h>
-#include <spdlog/fmt/ranges.h>
-#include <spdlog/fmt/bundled/color.h>
 
-#if (defined _DEBUG == 1 || defined PCS_VERBOSE == 1)
+#if (defined _DEBUG || PCS_VERBOSE == 1)
 	#define PCS_TRACE(...) SPDLOG_TRACE( __VA_ARGS__)
 	#define PCS_DEBUG(...) SPDLOG_DEBUG( __VA_ARGS__)
 	#define PCS_INFO(...) SPDLOG_INFO( __VA_ARGS__)

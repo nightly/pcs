@@ -15,14 +15,14 @@
 
 namespace pcs {
 
-	class System {
+	class Environment {
 	private:
 		std::vector<LTS<std::string, std::string>> resources_;
 		std::unique_ptr<ITopology> topology_;
 	public:
-		System() = default;
-		System(const std::span<LTS<std::string, std::string>>& resources, bool compute_topology);
-		System(std::vector<LTS<std::string, std::string>>&& resources, bool compute_topology);
+		Environment() = default;
+		Environment(const std::span<LTS<std::string, std::string>>& resources, bool compute_topology);
+		Environment(std::vector<LTS<std::string, std::string>>&& resources, bool compute_topology);
 
 		const std::vector<LTS<std::string, std::string>>& resources() const;
 		const ITopology* topology() const;

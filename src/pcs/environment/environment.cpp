@@ -1,4 +1,4 @@
-#include "pcs/system/system.h"
+#include "pcs/environment/environment.h"
 
 #include "pcs/topology/complete.h"
 #include "pcs/topology/incremental.h"
@@ -7,46 +7,45 @@
 
 namespace pcs {
 
-	System::System(std::vector<LTS<std::string, std::string>>&& resources, bool compute_complete) {
+	Environment::Environment(std::vector<LTS<std::string, std::string>>&& resources, bool compute_complete) {
 		resources_ = std::move(resources);
 		if (compute_complete) {
 			Complete();
 		}
 	}
 
-	System::System(const std::span<LTS<std::string, std::string>>& resources, bool compute_complete) {
+	Environment::Environment(const std::span<LTS<std::string, std::string>>& resources, bool compute_complete) {
 		resources_.assign(resources.begin(), resources.end());
 		if (compute_complete) {
 			Complete();
 		}
 	}
 
-	const std::vector<LTS<std::string, std::string>>& System::resources() const {
+	const std::vector<LTS<std::string, std::string>>& Environment::resources() const {
 		return resources_;
 	}
 
-	const ITopology* System::topology() const {
+	const ITopology* Environment::topology() const {
 		return topology_.get();
 	}
 
-	ITopology* System::topology() {
+	ITopology* Environment::topology() {
 		return topology_.get();
 	}
 
-	size_t System::NumOfResources() const {
+	size_t Environment::NumOfResources() const {
 		return resources_.size();
 	}
 
-	size_t System::NumOfTopologyStates() const {
+	size_t Environment::NumOfTopologyStates() const {
 		return topology_->lts().NumOfStates();
 	}
 
-
-	void System::Complete() {
+	void Environment::Complete() {
 		topology_ = std::make_unique<CompleteTopology>(resources_);
 	}
 
-	void System::Incremental() {
+	void Environment::Incremental() {
 		topology_ = std::make_unique<IncrementalTopology>(resources_);
 	}
 
@@ -56,7 +55,7 @@ namespace pcs {
 	 * @param is_json: specifies whether the LTS is in .txt or .json format
 	 * @exception Propagates std::ifstream::failure
 	 */
-	void System::AddResource(const std::filesystem::path& filepath, bool is_json) {
+	void Environment::AddResource(const std::filesystem::path& filepath, bool is_json) {
 		LTS<std::string> lts;
 		try {
 			if (is_json) {
@@ -73,7 +72,7 @@ namespace pcs {
 	/*
 	 * @brief Adds a LTS<std::string> resource to the machine & handles the implications on the topology 
 	 */
-	void System::AddResource(const LTS<std::string, std::string>& resource) {
+	void Environment::AddResource(const LTS<std::string, std::string>& resource) {
 		resources_.emplace_back(resource);
 
 		//if (topology_.NumOfStates() == 0) {
@@ -86,7 +85,7 @@ namespace pcs {
 	/* 
 	 * @brief Adds a resource with move semantics
 	 */
-	void System::AddResource(LTS<std::string, std::string>&& resource) {
+	void Environment::AddResource(LTS<std::string, std::string>&& resource) {
 		resources_.emplace_back(std::move(resource));
 
 		//if (topology_.NumOfStates() == 0) {

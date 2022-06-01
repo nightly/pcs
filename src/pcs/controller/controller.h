@@ -1,6 +1,6 @@
 #pragma once
 
-#include "pcs/system/system.h"
+#include "pcs/environment/environment.h"
 #include "pcs/product/recipe.h"
 #include "pcs/lts/lts.h"
 #include "pcs/operation/transfer.h"
@@ -22,26 +22,26 @@ namespace pcs {
 		using ControllerState = std::vector<std::string>;
 	private:
 		LTS<std::vector<std::string>, std::vector<std::string>, boost::hash<std::vector<std::string>>> controller_;
-		const System* machine_;
+		const Environment* machine_;
 		const Recipe* recipe_;
 		ITopology* topology_;
 
 		size_t num_of_resources_;
-
-		const std::tuple<Observable, std::vector<std::string>, std::vector<std::string>>* seq_tuple_;
 	public:
-		Controller(const System* machine, ITopology* topology, const Recipe* recipe);
+		Controller(const Environment* machine, ITopology* topology, const Recipe* recipe);
 		std::optional<const LTS<std::vector<std::string>, std::vector<std::string>, boost::hash<std::vector<std::string>>>*> Generate();
-	private:		
+	private:
 
 		bool ProcessRecipe(const std::string& recipe_state, const TopologyState* topoloy_state, const Parts plan_parts);
 
 		std::optional<std::pair<const TopologyState*, Parts>> HandleComposite(const CompositeOperation& co, const std::vector<std::string>& topology_state,
 			Parts plan_parts);
 
-		std::optional<std::pair<const TopologyState*, Parts>> HandleSequentialOperation(const std::vector<std::string>& topology_state, 
-			std::vector<PlanTransition> plan_transitions, Parts plan_parts);
+		std::optional<std::pair<const TopologyState*, Parts>> HandleSequentialOperation(const std::vector<std::string>& topology_state,
+			std::vector<PlanTransition> plan_transitions, Parts plan_parts,
+			const std::tuple<Observable, std::vector<std::string>, std::vector<std::string>>& seq_tuple);
 
 		void ApplyTransition(const PlanTransition& plan_t);
+		void ApplyAllTransitions(const std::span<PlanTransition>& plan_transitions);
 	};
 }

@@ -13,13 +13,13 @@
 
 namespace pcs {
 
-	using SVecHash = boost::hash<std::vector<std::string>>;
 	using ControllerState = std::vector<std::string>;
 	using ControllerTransition = std::vector<std::string>;
 
 	using TopologyState = std::vector<std::string>;
 	using TopologyTransition = std::pair<size_t, std::string>;
 
+	using SVecHash = boost::hash<std::vector<std::string>>;
 	using TargetMapT = std::unordered_map<ControllerState, std::unordered_set<std::string>, SVecHash>;
 
 	/*

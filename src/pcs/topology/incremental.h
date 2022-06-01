@@ -1,5 +1,4 @@
 #pragma once
-
 #include "pcs/topology/topology.h"
 
 #include <vector>
