@@ -1,8 +1,0 @@
-s0
-s1 nop s1
-s0 nop s0
-s2 nop s2
-s0 in:3 s1
-s2 out:3 s0
-s1 applyglue s2
-s1 engrave s2

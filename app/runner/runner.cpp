@@ -98,42 +98,6 @@ void Run(const std::string& name, const RunnerOpts& opts) {
 	pcs::Environment machine = LoadMachine(data_folder, num_resources);
 	if (opts.incremental_topology) {
 		IncrementalTopology(machine);
-	}
-	else {
-		CompleteTopology(machine);
-	}
-
-	/* Generate controller and generate images */
-	pcs::Controller con(&machine, machine.topology(), &recipe);
-	auto controller_lts = con.Generate();
-	if (controller_lts.has_value()) {
-		pcs::ExportToFile(**controller_lts, export_folder + "/controller.txt");
-		pcs::Highlighter::HighlightTopology(machine.topology()->lts(), **controller_lts, export_folder + "/highlighted_topology.txt");
-	}
-	else {
-		PCS_WARN("[PAD] No controller generated");
-	}
-	pcs::ExportEnvironment(machine, export_folder);
-	if (opts.generate_images) {
-		GraphVizSave(export_folder, num_resources, opts.only_highlighted_topology_image);
-	}
-}
-
-pcs::Environment RunReturnMachine(const std::string& name, const RunnerOpts& opts) {
-
-	/* Determine number of resources and set data/export folder paths */
-	PCS_INFO(fmt::format(fmt::fg(fmt::color::white_smoke), "Using {} Example", name));
-	std::string data_folder = "../../data/" + name + '/';
-	std::string export_folder = "../../exports/" + name + (opts.incremental_topology ? "/incremental/" : "/complete/");
-	size_t num_resources = NumOfResources(data_folder);
-
-	/* Load everything */
-	pcs::Recipe recipe = LoadRecipe(data_folder);
-	pcs::ExportToFile(recipe.lts(), export_folder + "/recipe.txt");
-
-	pcs::Environment machine = LoadMachine(data_folder, num_resources);
-	if (opts.incremental_topology) {
-		IncrementalTopology(machine);
 	} else {
 		CompleteTopology(machine);
 	}
@@ -157,48 +121,4 @@ pcs::Environment RunReturnMachine(const std::string& name, const RunnerOpts& opt
 	if (opts.generate_images) {
 		GraphVizSave(export_folder, num_resources, opts.only_highlighted_topology_image);
 	}
-	return machine;
-}
-
-
-void AddResourceAdaptive(const std::string& name, const std::string& recipefolder, const RunnerOpts& opts, pcs::Environment& machine) {
-
-	/* Determine number of resources and set data/export folder paths */
-	PCS_INFO(fmt::format(fmt::fg(fmt::color::white_smoke), "Using {} Example", name));
-	std::string data_folder = "../../data/" + name + '/';
-	std::string data_folder_recipe = "../../data/" + recipefolder + '/';
-	std::string export_folder = "../../exports/" + name + (opts.incremental_topology ? "/incremental/" : "/complete/");
-	size_t num_resources = NumOfResources(data_folder);
-
-	/* Load everything */
-	pcs::Recipe recipe = LoadRecipe(data_folder_recipe);
-	pcs::ExportToFile(recipe.lts(), export_folder + "/recipe.txt");
-
-	//pcs::system machine2 = loadmachine(data_folder, num_resources);
-	machine.AddResource(data_folder + "Resource5.txt", false);
-	if (opts.incremental_topology) {
-		IncrementalTopology(machine);
-	}
-	else {
-		CompleteTopology(machine);
-	}
-
-
-
-	/* Generate controller and generate images */
-	pcs::Controller con(&machine, machine.topology(), &recipe);
-	auto controller_lts = con.Generate();
-	if (controller_lts.has_value()) {
-		pcs::ExportToFile(**controller_lts, export_folder + "/controller.txt");
-		pcs::Highlighter::HighlightTopology(machine.topology()->lts(), **controller_lts, export_folder + "/highlighted_topology.txt");
-	}
-	else {
-		PCS_WARN("[PAD] No controller generated");
-	}
-	pcs::ExportEnvironment(machine, export_folder);
-	if (opts.generate_images) {
-		GraphVizSave(export_folder, num_resources, opts.only_highlighted_topology_image);
-	}
-
-
 }
