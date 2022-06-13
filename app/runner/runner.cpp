@@ -113,13 +113,13 @@ void Run(const std::string& name, const RunnerOpts& opts) {
 	else {
 		PCS_WARN("[PAD] No controller generated");
 	}
-	pcs::ExportMachine(machine, export_folder);
+	pcs::ExportEnvironment(machine, export_folder);
 	if (opts.generate_images) {
 		GraphVizSave(export_folder, num_resources, opts.only_highlighted_topology_image);
 	}
 }
 
-pcs::System RunReturnMachine(const std::string& name, const RunnerOpts& opts) {
+pcs::Environment RunReturnMachine(const std::string& name, const RunnerOpts& opts) {
 
 	/* Determine number of resources and set data/export folder paths */
 	PCS_INFO(fmt::format(fmt::fg(fmt::color::white_smoke), "Using {} Example", name));
@@ -131,7 +131,7 @@ pcs::System RunReturnMachine(const std::string& name, const RunnerOpts& opts) {
 	pcs::Recipe recipe = LoadRecipe(data_folder);
 	pcs::ExportToFile(recipe.lts(), export_folder + "/recipe.txt");
 
-	pcs::System machine = LoadMachine(data_folder, num_resources);
+	pcs::Environment machine = LoadMachine(data_folder, num_resources);
 	if (opts.incremental_topology) {
 		IncrementalTopology(machine);
 	} else {
@@ -161,7 +161,7 @@ pcs::System RunReturnMachine(const std::string& name, const RunnerOpts& opts) {
 }
 
 
-void AddResourceAdaptive(const std::string& name, const std::string& recipefolder, const RunnerOpts& opts, pcs::System& machine) {
+void AddResourceAdaptive(const std::string& name, const std::string& recipefolder, const RunnerOpts& opts, pcs::Environment& machine) {
 
 	/* Determine number of resources and set data/export folder paths */
 	PCS_INFO(fmt::format(fmt::fg(fmt::color::white_smoke), "Using {} Example", name));
@@ -195,7 +195,7 @@ void AddResourceAdaptive(const std::string& name, const std::string& recipefolde
 	else {
 		PCS_WARN("[PAD] No controller generated");
 	}
-	pcs::ExportMachine(machine, export_folder);
+	pcs::ExportEnvironment(machine, export_folder);
 	if (opts.generate_images) {
 		GraphVizSave(export_folder, num_resources, opts.only_highlighted_topology_image);
 	}

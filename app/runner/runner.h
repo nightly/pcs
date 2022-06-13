@@ -2,7 +2,7 @@
 
 #include <array>
 #include <filesystem>
-
+#include "pcs/environment/environment.h"
 #include "pcs/lts/lts.h"
 #include "pcs/product/recipe.h"
 #include "pcs/environment/environment.h"
@@ -14,8 +14,8 @@ struct RunnerOpts {
 };
 
 void Run(const std::string& name, const RunnerOpts& opts);
-pcs::System RunReturnMachine(const std::string&	name, const RunnerOpts& opts);
-void AddResourceAdaptive(const std::string& name, const std::string& recipefolder, const RunnerOpts& opts, pcs::System &machine);
+pcs::Environment RunReturnMachine(const std::string&	name, const RunnerOpts& opts);
+void AddResourceAdaptive(const std::string& name, const std::string& recipefolder, const RunnerOpts& opts, pcs::Environment &machine);
 
 static size_t NumOfResources(const std::filesystem::path& data_folder);
 

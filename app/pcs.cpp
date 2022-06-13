@@ -1,6 +1,6 @@
 #include "runner/runner.h"
 #include "examples/merge/merge.h"
-#include "pcs/system/system.h"
+#include "pcs/environment/environment.h"
 #include "examples/experimental/experimental.h"
 #include "examples/experimental/experimental2.h"
 
@@ -14,7 +14,7 @@ int main() {
 
 	RunnerOpts opts{ .incremental_topology = false, .generate_images = false, .only_highlighted_topology_image = true };
 	//Run("pad", opts);
-	pcs::System machine;
+	pcs::Environment machine;
 	machine = RunReturnMachine("adaptive", opts);
 	Run("hinge",  opts);
 
