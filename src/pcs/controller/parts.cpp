@@ -10,11 +10,11 @@
 
 namespace pcs {
 
-	using TopologyTransition = std::pair<size_t, std::string>;
 	using TopologyState = std::vector<std::string>;
+	using TopologyTransition = std::pair<size_t, std::string>;
 
-	using ControllerTransition = std::vector<std::string>;
 	using ControllerState = std::vector<std::string>;
+	using ControllerTransition = std::vector<std::string>;
 
 	// ==========================
 	// Constructors & destructor
@@ -73,8 +73,6 @@ namespace pcs {
 		size_t count = 0;
 		size_t input_size = input.size();
 
-		// PCS_INFO("Sync Old Parts: {}", *this);
-
 		auto end = std::remove_if(parts_[out].begin(), parts_[out].end(),
 			[&](const auto& i) {
 				if (std::find(input.begin(), input.end(), i) != input.end()) {
@@ -89,22 +87,17 @@ namespace pcs {
 
 		parts_[out].erase(end, parts_[out].end());
 
-
-		// PCS_INFO("Sync New Parts: {}", *this);
-
 		if (count != input_size) {
 			PCS_WARN(fmt::format(fmt::fg(fmt::color::light_yellow) | fmt::emphasis::underline, 
 				"[Parts Sync] Not all parts were found at resource {} from set: {}", out, fmt::join(input, ",")));
 			return false;
 		}
 
-
-
 		return true;
 	}
 
 	/*
-	 * @brief Returns whether or not parts can be successfully allocated to the resource
+	 * @brief Returns whether or not parts can be allocated to the resource. **(Resource N depletes the Part Set P)**
 	 * @param transition: Topology Transition in the form of std::pair<size_t, std::pair>
 	 * @param input: the input parts for that resource. Note: the resource will consume these parts.
 	 * @returns True if parts at present at resource and can be depleted, false otherwise.
@@ -136,6 +129,10 @@ namespace pcs {
 		}
 
 		return true;
+	}
+
+	bool Parts::operator==(const Parts& other) const {
+		return parts_ == other.parts_;
 	}
 
 

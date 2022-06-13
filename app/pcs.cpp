@@ -10,7 +10,7 @@ int main() {
 		spdlog::set_level(spdlog::level::trace);
 	#endif
 
-	//MergeExample(4);
+	// MergeExample(6);
 
 	RunnerOpts opts{ .incremental_topology = false, .generate_images = false, .only_highlighted_topology_image = true };
 	//Run("pad", opts);

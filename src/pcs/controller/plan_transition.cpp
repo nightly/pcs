@@ -25,12 +25,19 @@ namespace pcs {
 	}
 	
 	PlanTransition::PlanTransition(PlanTransition&& other) noexcept 
-		: from(std::move(other.from)), label(std::move(other.label)), to(std::move(other.to)) {}
+		: label(std::move(other.label)) {
+		from = other.from;
+		other.from = nullptr;
+		to = other.to;
+		other.to = nullptr;
+	}
 	
 	PlanTransition& PlanTransition::operator=(PlanTransition&& other) noexcept {
-		from = std::move(other.from);
+		from = other.from;
+		other.from = nullptr;
 		label = std::move(other.label);
-		to = std::move(other.to);
+		to = other.to;
+		other.to = nullptr;
 		return *this;
 	}
 

@@ -5,7 +5,7 @@
 
 #include "pcs/lts/lts.h"
 #include "pcs/product/recipe.h"
-#include "pcs/system/system.h"
+#include "pcs/environment/environment.h"
 
 struct RunnerOpts {
 	bool incremental_topology;
@@ -19,8 +19,8 @@ void AddResourceAdaptive(const std::string& name, const std::string& recipefolde
 
 static size_t NumOfResources(const std::filesystem::path& data_folder);
 
-static pcs::System LoadMachine(const std::string& data_folder, size_t num_resources);
+static pcs::Environment LoadMachine(const std::string& data_folder, size_t num_resources);
 static pcs::Recipe LoadRecipe(const std::string& data_folder);
-static void CompleteTopology(pcs::System& machine);
-static void IncrementalTopology(pcs::System& machine);
+static void CompleteTopology(pcs::Environment& machine);
+static void IncrementalTopology(pcs::Environment& machine);
 static void GraphVizSave(const std::string& export_folder, size_t num_resources, bool only_highlighted_topology);

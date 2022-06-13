@@ -9,6 +9,15 @@ option(PCS_VERBOSE_OUTPUT "Verbose output" OFF)
 # Library
 add_subdirectory(src/pcs)
 
+# Application
+add_subdirectory(app)
+
+# Preprocessor definitions
+if (PCS_VERBOSE_OUTPUT)
+    target_compile_definitions(pcs PRIVATE PCS_VERBOSE=1)
+    target_compile_definitions(pcs_cli PRIVATE PCS_VERBOSE=1)
+endif()
+
 # Tests
 if ((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME) AND PCS_RUN_TESTS)
     include(CTest)
@@ -18,17 +27,7 @@ if ((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME) AND PCS_RUN_TESTS)
     add_subdirectory(tests)
 endif()
 
-# Application
-add_subdirectory(app)
-
 # Benchmarks
 if ((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME) AND PCS_COMPILE_BENCHMARKS)
     add_subdirectory(benchmarks)
-endif()
-
-
-# Preprocessor definitions
-if (PCS_VERBOSE_OUTPUT)
-    target_compile_definitions(pcs PRIVATE PCS_VERBOSE=1)
-    target_compile_definitions(pcs_cli PRIVATE PCS_VERBOSE=1)
 endif()

@@ -3,8 +3,6 @@
 #include <string>
 #include <span>
 #include <vector>
-#include <optional>
-#include <unordered_set>
 
 #include <boost/container_hash/hash.hpp>
 
@@ -28,7 +26,3 @@ namespace pcs {
 	};
 
 }
-
-/*
- * @Todo: consider CRTP as a slight performance increase
- */

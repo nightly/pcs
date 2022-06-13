@@ -39,6 +39,7 @@ package_add_benchmark("topology-complete-range" "topology/complete/range.cpp")
 
 package_add_benchmark("controller-pad" "controller/pad.cpp")
 package_add_benchmark("controller-hinge" "controller/hinge.cpp")
+package_add_benchmark("controller-hinge-resources" "controller/hinge_resources.cpp")
 
 # ==================
 #   Experimental
