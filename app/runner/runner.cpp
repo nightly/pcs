@@ -63,16 +63,16 @@ static void IncrementalTopology(pcs::Environment& machine) {
 
 static void GraphVizSave(const std::string& export_folder, size_t num_resources, bool only_highlighted_topology) {
 	std::filesystem::current_path(export_folder);
-	system("dot -Tpng recipe.txt -o recipe.png");
+	system("dot -Tpng recipe.gv -o recipe.png");
 	for (size_t i = 1; i <= num_resources; ++i) {
 		std::string resource = "Resource" + std::to_string(i);
-		std::string command = "dot -Tpng " + resource + ".txt -o " + resource + ".png";
+		std::string command = "dot -Tpng " + resource + ".gv -o " + resource + ".png";
 		system(command.c_str());
 	}
-	system("dot -Tpng controller.txt -o controller.png");
-	system("dot -Tpng highlighted_topology.txt -o highlighted_topology.png");
+	system("dot -Tpng controller.gv -o controller.png");
+	system("dot -Tpng highlighted_topology.gv -o highlighted_topology.png");
 	if (!only_highlighted_topology) {
-		system("dot -Tpng topology.txt -o topology.png");
+		system("dot -Tpng topology.gv -o topology.png");
 	}
 }
 
@@ -93,7 +93,7 @@ void Run(const std::string& name, const RunnerOpts& opts) {
 
 	/* Load everything */
 	pcs::Recipe recipe = LoadRecipe(data_folder);
-	pcs::ExportToFile(recipe.lts(), export_folder + "/recipe.txt");
+	pcs::ExportToFile(recipe.lts(), export_folder + "/recipe.gv");
 
 	pcs::Environment machine = LoadMachine(data_folder, num_resources);
 	if (opts.incremental_topology) {
@@ -106,8 +106,8 @@ void Run(const std::string& name, const RunnerOpts& opts) {
 	pcs::Controller con(&machine, machine.topology(), &recipe);
 	auto controller_lts = con.Generate();
 	if (controller_lts.has_value()) {
-		pcs::ExportToFile(**controller_lts, export_folder + "/controller.txt");
-		pcs::Highlighter::HighlightTopology(machine.topology()->lts(), **controller_lts, export_folder + "/highlighted_topology.txt");
+		pcs::ExportToFile(**controller_lts, export_folder + "/controller.gv");
+		pcs::Highlighter::HighlightTopology(machine.topology()->lts(), **controller_lts, export_folder + "/highlighted_topology.gv");
 	} else {
 		PCS_WARN("[PAD] No controller generated");
 	}

@@ -3,6 +3,8 @@
 #include <unordered_set>
 #include <vector>
 #include <string>
+#include <ostream>
+#include <fstream>
 
 #include "pcs/operation/observable.h"
 
@@ -35,11 +37,27 @@ namespace pcs {
 		void set_output(std::vector<std::string>&& output);
 		void set_output(const std::vector<std::string>& output);
 
+		template <std::size_t N>
+		decltype(auto) get() const {
+			if constexpr (N == 0) return operation();
+			else if constexpr (N == 1) return input();
+			else if constexpr (N == 2) return output();
+		}
+
 		bool operator==(const TaskExpression& other) const;
+		friend std::ostream& operator<<(std::ostream& os, const TaskExpression& task);
+		friend std::ofstream& operator<<(std::ofstream& os, const TaskExpression& task);
 	};
 
 }
 
-/*
-* @Todo: use this in CompositeOperation.
-*/
+namespace std {
+
+	template<>
+	struct tuple_size<pcs::TaskExpression> : std::integral_constant<std::size_t, 3> {};
+
+	template<std::size_t N>
+	struct tuple_element<N, pcs::TaskExpression> {
+		using type = decltype(std::declval<pcs::TaskExpression>().get<N>());
+	};
+}

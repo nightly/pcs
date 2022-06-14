@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.22)
 
 set(PCS_SOURCES "lts/lts.h" "lts/state.h" "lts/writers.h" "lts/transition.h"
-"lts/parsers/string_string.cpp" "lts/parsers/string_operation.cpp"
+"lts/parsers/parsers.h" "lts/parsers/state.cpp" "lts/parsers/transition.cpp"
 
 "topology/topology.h" "topology/core.cpp" "topology/complete.cpp" "topology/incremental.cpp" 
  "topology/stitch.cpp" 
@@ -28,10 +28,13 @@ target_include_directories(pcs
         ${PROJECT_SOURCE_DIR}/src
 )
 
-target_precompile_headers(pcs 
-    PUBLIC
-     "${CMAKE_CURRENT_SOURCE_DIR}/common/pch.h"
-)
+if (PCS_PCH)
+    target_precompile_headers(pcs 
+        PUBLIC
+         "${CMAKE_CURRENT_SOURCE_DIR}/common/pch.h"
+    )
+endif()
+
 
 # ==================
 #   Dependencies

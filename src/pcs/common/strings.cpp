@@ -34,4 +34,18 @@ namespace pcs {
 		return vec;
 	}
 
+	/*
+	 * @param delimiter: default = ',' 
+	 */
+	std::string USetToString(const std::unordered_set<std::string>& set, char delimiter) {
+		std::string ret;
+		for (auto it = set.begin(); it != set.end(); ++it) {
+			if (it != set.begin()) {
+				ret += delimiter;
+			}
+			ret += *it;
+		}
+		return ret;
+	}
+
 }

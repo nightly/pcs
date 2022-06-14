@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <unordered_set>
 #include <string>
 
 namespace pcs {
@@ -25,8 +26,8 @@ namespace pcs {
 		const std::vector<std::string>& AtResource(size_t resource) const;
 
 		void Add(const TopologyTransition& transition, const std::vector<std::string>& output);
-		bool Synchronize(size_t in, size_t out, const std::vector<std::string>& input);
-		bool Allocate(const TopologyTransition& transition, const std::vector<std::string>& input);
+		bool Synchronize(size_t in, size_t out, const std::unordered_set<std::string>& input);
+		bool Allocate(const TopologyTransition& transition, const std::unordered_set<std::string>& input);
 
 		bool operator==(const Parts& other) const;
 

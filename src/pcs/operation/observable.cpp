@@ -18,7 +18,7 @@ namespace pcs {
 	}
 
 	std::ostream& operator<<(std::ostream& os, const Observable& operation) {
-		os << "Operation Name: " << operation.name_ << '\n';
+		os << "Operation Name: " << operation.name_;
 		return os;
 	}
 }

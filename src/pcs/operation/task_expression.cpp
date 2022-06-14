@@ -3,8 +3,11 @@
 #include <unordered_set>
 #include <vector>
 #include <string>
+#include <ostream>
+#include <fstream>
 
 #include "pcs/operation/observable.h"
+#include "pcs/common/strings.h"
 
 namespace pcs {
 
@@ -72,6 +75,16 @@ namespace pcs {
 
 	bool TaskExpression::operator==(const TaskExpression& other) const {
 		return (operation_ == other.operation_) && (input_ == other.input_) && (output_ == other.output_);
+	}
+
+	std::ostream& operator<<(std::ostream& os, const TaskExpression& task) {
+		os << task.operation().name() << "(" << USetToString(task.input()) << ")" << "(" << VectorToString(task.output()) << ")";
+		return os;
+	}
+	
+	std::ofstream& operator<<(std::ofstream& os, const TaskExpression& task) {
+		os << task.operation().name() << "(" << USetToString(task.input()) << ")" << "(" << VectorToString(task.output()) << ")";
+		return os;
 	}
 
 }

@@ -1,5 +1,9 @@
 #include "pcs/product/parsers/recipe.h"
 
+#include <unordered_set>
+#include <string>
+#include <vector>
+
 #include "nlohmann/json.hpp"
 
 #include "pcs/product/recipe.h"
@@ -41,38 +45,44 @@ namespace pcs {
 		lts.set_initial_state(j["initialState"], true);
 		for (const auto& t : j["transitions"]) {
 			CompositeOperation co;
+
 			if (t["label"]["guard"] != nlohmann::json::object()) {
-				co.guard.first.name_ = t["label"]["guard"]["name"];
+				std::unordered_set<std::string> input;
+				co.guard.set_operation(pcs::Observable(t["label"]["guard"]["name"]));
 				for (const auto& g : t["label"]["guard"]["input"]) {
-					co.guard.second.emplace_back(g);
+					input.emplace(g);
 				}
+				co.guard.set_input(std::move(input));
 			}
+
 			for (const auto& seq_op : t["label"]["sequential"]) {
 				Observable o;
 				o.name_ = seq_op["name"];
-				std::vector<std::string> input;
+				std::unordered_set<std::string> input;
 				std::vector<std::string> output;
 				for (const auto& in : seq_op["input"]) {
-					input.emplace_back(in);
+					input.emplace(in);
 				}
 				for (const auto& out : seq_op["output"]) {
 					output.emplace_back(out);
 				}
-				co.sequential.emplace_back(std::move(o), input, output);
+				co.sequential.emplace_back(std::move(o), std::move(input), std::move(output));
 			}
+
 			for (const auto& par_op : t["label"]["parallel"]) {
 				Observable o;
 				o.name_ = par_op["name"];
-				std::vector<std::string> input;
+				std::unordered_set<std::string> input;
 				std::vector<std::string> output;
 				for (const auto& in : par_op["input"]) {
-					input.emplace_back(in);
+					input.emplace(in);
 				}
 				for (const auto& out : par_op["output"]) {
 					output.emplace_back(out);
 				}
-				co.parallel.emplace_back(std::move(o), input, output);
+				co.parallel.emplace_back(std::move(o), std::move(input), std::move(output));
 			}
+
 			lts.AddTransition(t["startState"], std::move(co), t["endState"], true);
 		}
 	}

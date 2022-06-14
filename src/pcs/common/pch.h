@@ -5,9 +5,11 @@
 */
 
 // std
+#include <span>
 #include <array>
 #include <vector>
 #include <string>
+#include <string_view>
 #include <unordered_map>
 #include <unordered_set>
 #include <optional>
@@ -41,6 +43,7 @@
 #include "pcs/operation/transfer.h"
 #include "pcs/operation/composite.h"
 #include "pcs/operation/guard.h"
+#include "pcs/operation/task_expression.h"
 
 // Product
 #include "pcs/product/recipe.h"

@@ -18,7 +18,11 @@
 
 namespace pcs {
 
-	CompleteTopology::CompleteTopology(const std::vector<LTS<std::string, std::string>>& ltss)
+	/*
+	 * @param ltss: the LTSs to merge
+	 * @param recursive: @default = true. Iterative or recursive DFS.
+	 */
+	CompleteTopology::CompleteTopology(const std::vector<LTS<std::string, std::string>>& ltss, bool recursive)
 	 :ltss_(ltss) {
 		std::vector<std::string> initial_key;
 		initial_key.reserve(ltss.size());
@@ -26,19 +30,27 @@ namespace pcs {
 			initial_key.emplace_back(lts.initial_state());
 		}
 		topology_.set_initial_state(initial_key);
-		CombineRecursive(initial_key);
+		if (recursive) {
+			CombineRecursive(initial_key);
+		} else {
+			CombineRecursive(initial_key); // ...
+		}
 	}
 
 	const LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>>& CompleteTopology::lts() const {
 		return topology_;
 	}
 
-	const State<std::vector<std::string>, std::pair<size_t, std::string>>& CompleteTopology::at(const std::vector<std::string>& key) {
-		return topology_.states().at(key);
+	CompleteTopology::operator const LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>>& () const {
+		return topology_;
 	}
 
 	const std::vector<std::string>& CompleteTopology::initial_state() const {
 		return topology_.initial_state();
+	}
+
+	const State<std::vector<std::string>, std::pair<size_t, std::string>>& CompleteTopology::at(const std::vector<std::string>& key) {
+		return topology_.states().at(key);
 	}
 
 	void CompleteTopology::CombineRecursive(std::vector<std::string>& states_vec) {

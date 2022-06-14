@@ -7,14 +7,15 @@
 
 #include "pcs/operation/guard.h"
 #include "pcs/operation/observable.h"
+#include "pcs/operation/task_expression.h"
 
 namespace pcs {
 
 	struct CompositeOperation {
 	public:
-		std::pair<Guard, std::vector<std::string>> guard; // Operation + Input parts
-		std::vector<std::tuple<Observable, std::vector<std::string>, std::vector<std::string>>> sequential; // Operation, Input, Output
-		std::vector<std::tuple<Observable, std::vector<std::string>, std::vector<std::string>>> parallel; // ^
+		TaskExpression guard;
+		std::vector<TaskExpression> sequential;
+		std::vector<TaskExpression> parallel;
 	public:
 		CompositeOperation() = default;
 		CompositeOperation(Guard&& guard, std::vector<Observable>&& parallel_operations, std::vector<Observable>&& sequential_operations);

@@ -121,6 +121,14 @@ namespace pcs {
 			return (initial_state_ == other.initial_state_) && (states_ == other.states_);
 		}
 
+		State& at(const KeyT& key) {
+			return states_[key];
+		}
+
+		const State& at(const KeyT& key) const {
+			return states_.at(key);
+		}
+
 		State& operator[](const KeyT& key) {
 			return states_[key];
 		}

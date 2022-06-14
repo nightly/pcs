@@ -22,7 +22,7 @@ namespace pcs {
 		
 		const std::vector<pcs::LTS<std::string, std::string>>& resources = environment.resources();
 		for (size_t i = 0; i < environment.NumOfResources(); i++) {
-			std::string r_path = directory.string() + '/' + "Resource" += std::to_string(i + 1) += ".txt";
+			std::string r_path = directory.string() + '/' + "Resource" + std::to_string(i + 1) + ".gv";
 			try {
 				pcs::ExportToFile(resources[i], r_path);
 			} catch (std::ofstream::failure& e) {
@@ -31,7 +31,7 @@ namespace pcs {
 		}
 
 		const auto& topology = environment.topology()->lts();
-		std::string topology_path = directory.string() + '/' + "topology" + ".txt";
+		std::string topology_path = directory.string() + '/' + "topology" + ".gv";
 		try {
 			pcs::ExportToFile(topology, topology_path);
 		} catch (std::ofstream::failure& e) {

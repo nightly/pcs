@@ -18,8 +18,9 @@ namespace pcs {
 	public:
 		IncrementalTopology(const std::vector<LTS<std::string, std::string>>& ltss);
 		const LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>>& lts() const override;
-		const State<std::vector<std::string>, std::pair<size_t, std::string>>& at(const std::vector<std::string>& key) override;
+		operator const LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>>& () const override;
 		const std::vector<std::string>& initial_state() const override;
+		const State<std::vector<std::string>, std::pair<size_t, std::string>>& at(const std::vector<std::string>& key) override;
 	private:
 		void ExpandState(const std::vector<std::string>& key);
 

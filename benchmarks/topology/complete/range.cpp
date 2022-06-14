@@ -3,7 +3,7 @@
 
 #include <array>
 
-#include "pcs/lts/parsers/string_string.h"
+#include "pcs/lts/parsers/parsers.h"
 
 static void BM_TopologyRange(benchmark::State& state) {
     std::vector<pcs::LTS<std::string, std::string>> ltss;
@@ -19,5 +19,6 @@ static void BM_TopologyRange(benchmark::State& state) {
     }
 }
 
-BENCHMARK(BM_TopologyRange)->Arg(6)->Iterations(1000)->Unit(benchmark::kMillisecond);
-// Can use ->Ranges() instad of Arg() but requires a multiplier (?)
+// BENCHMARK(BM_TopologyRange)->Arg(6)->Iterations(1000)->Unit(benchmark::kMillisecond);
+
+BENCHMARK(BM_TopologyRange)->DenseRange(2, 10, 1)->Unit(benchmark::kMillisecond);

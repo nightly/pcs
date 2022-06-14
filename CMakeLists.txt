@@ -6,6 +6,8 @@ option(PCS_RUN_TESTS "Run tests" ON)
 option(PCS_COMPILE_BENCHMARKS "Compile benchmarks" ON)
 option(PCS_VERBOSE_OUTPUT "Verbose output" OFF)
 
+option(PCS_PCH "Use precompiled headers" ON)
+
 # Library
 add_subdirectory(src/pcs)
 

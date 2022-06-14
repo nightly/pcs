@@ -18,5 +18,8 @@ namespace pcs {
 
 		const LTS<std::string, CompositeOperation>& lts() const;
 		void set_recipe(const std::filesystem::path& filepath);
+
+		operator const LTS<std::string, CompositeOperation>& () const;
+
 	};
 }

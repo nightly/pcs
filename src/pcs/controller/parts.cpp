@@ -69,13 +69,13 @@ namespace pcs {
 	 *	      Note that input parts must follow a 1-1 string mapping of the parts in the resources to the recipe.
 	 * @returns Whether or not the parts could be synchronized. This will fail when parts to be synchronized don't exist.
 	 */
-	bool Parts::Synchronize(size_t in, size_t out, const std::vector<std::string>& input) {
+	bool Parts::Synchronize(size_t in, size_t out, const std::unordered_set<std::string>& input) {
 		size_t count = 0;
 		size_t input_size = input.size();
 
 		auto end = std::remove_if(parts_[out].begin(), parts_[out].end(),
 			[&](const auto& i) {
-				if (std::find(input.begin(), input.end(), i) != input.end()) {
+				if (input.contains(i)) {
 					count++;
 					parts_[in].emplace_back(i);
 					return true;
@@ -88,7 +88,7 @@ namespace pcs {
 		parts_[out].erase(end, parts_[out].end());
 
 		if (count != input_size) {
-			PCS_WARN(fmt::format(fmt::fg(fmt::color::light_yellow) | fmt::emphasis::underline, 
+			PCS_TRACE(fmt::format(fmt::fg(fmt::color::light_yellow) | fmt::emphasis::underline, 
 				"[Parts Sync] Not all parts were found at resource {} from set: {}", out, fmt::join(input, ",")));
 			return false;
 		}
@@ -102,17 +102,15 @@ namespace pcs {
 	 * @param input: the input parts for that resource. Note: the resource will consume these parts.
 	 * @returns True if parts at present at resource and can be depleted, false otherwise.
 	 */
-	bool Parts::Allocate(const TopologyTransition& transition, const std::vector<std::string>& input) {
+	bool Parts::Allocate(const TopologyTransition& transition, const std::unordered_set<std::string>& input) {
 		size_t count = 0;
 		size_t input_size = input.size();
 		size_t resource = transition.first;
 
-		// PCS_INFO("Allocate Parts: {} at resource {}", *this, resource);
-
 		auto end = std::remove_if(parts_[resource].begin(), parts_[resource].end(),
 			[&](const auto& i) {
-				if (std::find(input.begin(), input.end(), i) != input.end()) {
-					PCS_INFO(fmt::format(fmt::fg(fmt::color::coral), "[Parts] Consuming part {} at resource {}", resource, i));
+				if (input.contains(i)) {
+					PCS_INFO(fmt::format(fmt::fg(fmt::color::coral), "[Parts] Consuming part {} at resource {}", i, resource));
 					count++;
 					return true;
 				} else {
@@ -123,7 +121,7 @@ namespace pcs {
 		parts_[resource].erase(end, parts_[resource].end());
 
 		if (count != input_size) {
-			PCS_WARN(fmt::format(fmt::fg(fmt::color::light_yellow) | fmt::emphasis::underline, "[Parts] Not all parts were found at resource {} from set: {}", resource,
+			PCS_TRACE(fmt::format(fmt::fg(fmt::color::light_yellow) | fmt::emphasis::underline, "[Parts] Not all parts were found at resource {} from set: {}", resource,
 				fmt::join(input, ",")));
 			return false;
 		}
@@ -134,7 +132,6 @@ namespace pcs {
 	bool Parts::operator==(const Parts& other) const {
 		return parts_ == other.parts_;
 	}
-
 
 	std::ostream& operator<<(std::ostream& os, const Parts& parts) {
 		for (size_t i = 0; i < parts.parts_.size(); ++i) {
@@ -152,7 +149,3 @@ namespace pcs {
 	}
 
 }
-
-/*
- * @Cleanup: input parts in operations should probably use unordered_set instead of vector 
- */

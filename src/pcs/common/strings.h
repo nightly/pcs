@@ -3,11 +3,14 @@
 #include <string>
 #include <span>
 #include <vector>
+#include <unordered_set>
 #include <string_view>
 
 namespace pcs {
 
 	std::string VectorToString(const std::vector<std::string>& vector);
 	std::vector<std::string> StringToVector(const std::string& str, char delimiter = ',');
+
+	std::string USetToString(const std::unordered_set<std::string>& set, char delimiter = ',');
 
 }

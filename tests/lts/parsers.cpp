@@ -1,4 +1,4 @@
-#include "pcs/lts/parsers/string_string.h"
+#include "pcs/lts/parsers/parsers.h"
 #include <gtest/gtest.h>
 
 #include <string>

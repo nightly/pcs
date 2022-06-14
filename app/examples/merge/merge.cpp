@@ -60,10 +60,10 @@ void MergeExample(size_t number) {
 	// File output
 	try {
 		for (size_t i = 0; i < ltss.size(); i++) {
-			std::string path = "../../exports/merge/lts" + std::to_string(i + 1) + ".txt";
+			std::string path = "../../exports/merge/lts" + std::to_string(i + 1) + ".gv";
 			pcs::ExportToFile(ltss[i], path);
 		}
-		pcs::ExportToFile(lts_combined, "../../exports/merge/combined-lts.txt");
+		pcs::ExportToFile(lts_combined, "../../exports/merge/combined-lts.gv");
 	} catch (std::ofstream::failure) {
 		std::cerr << "Error writing to files or creating directory\n";
 		return std::exit(1);

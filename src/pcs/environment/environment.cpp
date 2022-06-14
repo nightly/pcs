@@ -2,7 +2,7 @@
 
 #include "pcs/topology/complete.h"
 #include "pcs/topology/incremental.h"
-#include "pcs/lts/parsers/string_string.h"
+#include "pcs/lts/parsers/parsers.h"
 #include "pcs/common/log.h"
 
 namespace pcs {

@@ -23,13 +23,16 @@ namespace pcs {
 		ExpandState(initial_key);
 	}
 
-	
 	const LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>>& IncrementalTopology::lts() const {
 		return topology_;
 	}
 
 	const std::vector<std::string>& IncrementalTopology::initial_state() const {
 		return topology_.initial_state();
+	}
+
+	IncrementalTopology::operator const LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>>& () const {
+		return topology_;
 	}
 
 	const State<std::vector<std::string>, std::pair<size_t, std::string>>& IncrementalTopology::at(const std::vector<std::string>& key) {

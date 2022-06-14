@@ -5,7 +5,7 @@
 
 ## Build instructions
 ### Requirements
-- [CMake](https://cmake.org/) (>=3.8)
+- [CMake](https://cmake.org/) (>=3.22)
 - [Git](https://git-scm.com/) (for submodule cloning)
 - C++20 compiler
 
@@ -23,13 +23,13 @@ git submodule update --recursive
 ```
 
 ### CMake
-Build the project using CMake, which will automatically invoke the tests unless otherwise specified.
+Build the project using CMake or simply open it using an IDE that has CMake support.
 ```
 cmake -S. -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build
 ```
 
-The tests can also be run with the following:
+All of the tests can also be run with the following:
 ```
 cd build
 ctest --output-on-failure --verbose
@@ -51,11 +51,11 @@ The labelled transition systems parsed and generated can be visualised using the
 
 The output generated in `exports/` can be visualised entirely online [here](http://magjac.com/graphviz-visual-editor/) or [here](https://sketchviz.com/new) without installing GraphViz on your system.
 
-Alternatively with GraphViz installed, the following command can be run for a given LTS file `lts1.txt`:
+Alternatively with GraphViz installed, the following command can be run for a given LTS file `lts1.gv`:
 ```
-dot -Tpng lts1.txt -o lts1.png
+dot -Tpng lts1.gv -o lts1.png
 ```
 Or for SVG format:
 ```
-dot -Tsvg lts1.txt -o lts1.svg
+dot -Tsvg lts1.gv -o lts1.svg
 ```

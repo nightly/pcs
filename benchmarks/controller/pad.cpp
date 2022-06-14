@@ -4,7 +4,6 @@
 #include <array>
 
 #include "pcs/topology/topology.h"
-#include "pcs/lts/parsers/string_string.h"
 
 static void BM_PADControllerCompleteTopology(benchmark::State& state) {
 	pcs::Environment machine;

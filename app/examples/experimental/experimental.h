@@ -4,7 +4,6 @@
 #include <optional>
 #include <iostream>
 
-#include "pcs/lts/parsers/string_string.h"
 #include "pcs/lts/export.h"
 #include "pcs/environment/environment.h"
 #include "pcs/environment/writers.h"

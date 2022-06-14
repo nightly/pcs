@@ -19,10 +19,9 @@ namespace pcs {
 		virtual ~ITopology() = default;
 
 		virtual const LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>>& lts() const = 0;
-
 		virtual const std::vector<std::string>& initial_state() const = 0;
-
 		virtual const State<std::vector<std::string>, std::pair<size_t, std::string>>& at(const std::vector<std::string>& key) = 0;
+		virtual operator const LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>>& () const = 0;
 	};
 
 }
