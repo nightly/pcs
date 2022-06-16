@@ -80,15 +80,6 @@
             "output": [
               "h2"
             ]
-          },
-          {
-            "name": "takeimages",
-            "input": [
-              "h2"
-            ],
-            "output": [
-              "h2"
-            ]
           }
         ],
         "parallel": []

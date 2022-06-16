@@ -10,4 +10,3 @@ s4 out:1 s0
 s0 in:3 s3
 s3 out:2 s0
 s3 out:1 s0
-s2 out:1 s0
