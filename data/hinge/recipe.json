@@ -65,7 +65,7 @@
         ],
         "parallel": []
       },
-      "endState": "E"
+      "endState": "D"
     },
     {
       "startState": "C",
@@ -93,10 +93,30 @@
         ],
         "parallel": []
       },
-      "endState": "D"
+      "endState": "E"
+    },
+
+    {
+      "startState": "C",
+      "label": {
+        "guard": {},
+        "sequential": [
+          {
+            "name": "remove",
+            "input": [
+              "h1"
+            ],
+            "output": [
+              "h1"
+            ]
+          }
+        ],
+        "parallel": []
+      },
+      "endState": "F"
     },
     {
-      "startState": "D",
+      "startState": "E",
       "label": {
         "guard": {},
         "sequential": [
@@ -115,7 +135,7 @@
       "endState": "G"
     },
     {
-      "startState": "D",
+      "startState": "E",
       "label": {
         "guard": {},
         "sequential": [
