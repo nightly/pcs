@@ -10,15 +10,16 @@
             "name": "load",
             "input": [],
             "output": [
-              "d",
-              "s"
+              "spring",
+              "ball",
+              "pin"
             ]
           },
           {
             "name": "join",
             "input": [
-              "d",
-              "s"
+              "spring",
+              "ball"
             ],
             "output": [
               "h"
@@ -35,19 +36,9 @@
         "guard": {},
         "sequential": [
           {
-            "name": "load",
-            "input": [],
-            "output": [
-              "balls",
-              "spring"
-            ]
-          },
-          {
-            "name": "attach",
+            "name": "applyadhesive",
             "input": [
-              "h",
-              "balls",
-              "spring"
+              "h"
             ],
             "output": [
               "h1"
@@ -83,19 +74,18 @@
         "guard": {},
         "sequential": [
           {
-            "name": "load",
-            "input": [],
+            "name": "press",
+            "input": [
+              "h1"
+            ],
             "output": [
-              "tube",
-              "retainer"
+              "h2"
             ]
           },
           {
-            "name": "press",
+            "name": "takeimages",
             "input": [
-              "h1",
-              "tube",
-              "retainer"
+              "h2"
             ],
             "output": [
               "h2"
@@ -107,26 +97,7 @@
       "endState": "D"
     },
     {
-      "startState": "C",
-      "label": {
-        "guard": {},
-        "sequential": [
-          {
-            "name": "remove",
-            "input": [
-              "h1"
-            ],
-            "output": [
-              "h1"
-            ]
-          }
-        ],
-        "parallel": []
-      },
-      "endState": "F"
-    },
-    {
-      "startState": "F",
+      "startState": "D",
       "label": {
         "guard": {},
         "sequential": [
@@ -144,9 +115,8 @@
       },
       "endState": "G"
     },
-
     {
-      "startState": "F",
+      "startState": "D",
       "label": {
         "guard": {},
         "sequential": [

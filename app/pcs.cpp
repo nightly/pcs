@@ -10,8 +10,8 @@ int main() {
 
 	// MergeExample(2);
 
-	RunnerOpts opts{ .incremental_topology = true, .generate_images = true, .only_highlighted_topology_image = true };
-	Run("pad",  opts);
+	RunnerOpts opts{ .incremental_topology = true, .generate_images = true, .only_highlighted_topology_image = false };
+	Run("hinge",  opts);
 
 	return 0;
 }

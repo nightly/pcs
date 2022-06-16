@@ -51,7 +51,7 @@ static void HingeController3R(benchmark::State& state) {
 	}
 }
 
-BENCHMARK(HingeController3R)->Unit(benchmark::kMillisecond);
+// BENCHMARK(HingeController3R)->Unit(benchmark::kMillisecond);
 
 static void HingeController4R(benchmark::State& state) {
 	pcs::Environment machine;
@@ -76,7 +76,7 @@ static void HingeController4R(benchmark::State& state) {
 	}
 }
 
-BENCHMARK(HingeController4R)->Unit(benchmark::kMillisecond);
+// BENCHMARK(HingeController4R)->Unit(benchmark::kMillisecond);
 
 
 // 6+ Resources - use normal recipe. Duplicates the testing station resource (R3).
@@ -112,4 +112,4 @@ static void HingeController(benchmark::State& state) {
 	}
 }
 
-BENCHMARK(HingeController)->DenseRange(6, 10, 1)->Unit(benchmark::kMillisecond);
+// BENCHMARK(HingeController)->DenseRange(6, 10, 1)->Unit(benchmark::kMillisecond);

@@ -5,6 +5,8 @@
 #include <string_view>
 #include <sstream>
 
+#include "pcs/common/strings.h"
+
 namespace pcs {
 
 	template <>
@@ -22,6 +24,11 @@ namespace pcs {
 		std::getline(ss, action);
 
 		return { stoul(n), action};
+	}
+
+	template<>
+	std::vector<std::string> ParseTransitionString(const std::string& str) {
+		return StringToVector(str);
 	}
 
 }

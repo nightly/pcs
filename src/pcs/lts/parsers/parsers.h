@@ -60,7 +60,7 @@ namespace pcs {
 		}
 	}
 
-	template <typename StateT, typename TransitionT, typename HashF = std::hash<StateT>>
+	template <typename StateT, typename TransitionT, typename HashF>
 	void ParseJson(LTS<StateT, TransitionT, HashF>& lts, const nlohmann::json& j) {
 		std::string initial_state_str = j["initialState"];
 		StateT initial_state = ParseStateString<StateT>(initial_state_str);
@@ -88,7 +88,7 @@ namespace pcs {
 	 * The expected form consists of: initialState as a string, and an array of transitions
 	 * consisting of startState, label, and endState strings.
 	 */
-	template <typename StateT, typename TransitionT, typename HashF = std::hash<StateT>>
+	template <typename StateT, typename TransitionT, typename HashF>
 	void ReadFromJsonFile(LTS<StateT, TransitionT, HashF>& lts, const std::filesystem::path& filepath) {
 		nlohmann::json j;
 		try {
