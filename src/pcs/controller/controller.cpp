@@ -29,7 +29,7 @@ namespace pcs {
 
 	std::optional<const LTS<std::vector<std::string>, std::vector<std::string>, boost::hash<std::vector<std::string>>>*> Controller::Generate() {
 		const std::string& recipe_init_state = recipe_->lts().initial_state();
-		controller_.set_initial_state(topology_->initial_state(), true);
+		controller_.set_initial_state(topology_->initial_state());
 		Parts plan_parts(machine_->NumOfResources());
 		std::vector<PlanTransition> plan_transitions, basic_plan;
 		PCS_INFO(fmt::format(fmt::fg(fmt::color::light_green), "Controller initial state {}", fmt::join(controller_.initial_state(), ",")));
@@ -37,7 +37,7 @@ namespace pcs {
 
 		// The first transition of the recipe does not have a guard associated with it
 		const auto& first_transition = recipe_->lts().at(recipe_init_state).transitions()[0]; 
-		bool generated = BuildPlan(first_transition.to(), &controller_.initial_state(), 
+		bool generated = DFS(first_transition.to(), &controller_.initial_state(), 
 			plan_parts, basic_plan, plan_transitions, first_transition.label(), 0);
 
 		PCS_INFO(fmt::format(fmt::fg(fmt::color::light_green), "Controller generation completed: realisability = {}", generated));
@@ -71,7 +71,7 @@ namespace pcs {
 	 * Recursive backtracking DFS.
 	 *
 	 */
-	bool Controller::BuildPlan(const std::string& next_recipe_state, const std::vector<std::string>* topology_state, Parts plan_parts, 
+	bool Controller::DFS(const std::string& next_recipe_state, const std::vector<std::string>* topology_state, Parts plan_parts, 
 		                      std::vector<PlanTransition> basic_plan, std::vector<PlanTransition> plan_transitions,
 							  const CompositeOperation& co, size_t seq_id) {
 
@@ -125,7 +125,7 @@ namespace pcs {
 
 				bool sync = plan_parts.Synchronize(std::get<2>(v)->first, std::get<1>(v)->first, input);
 				plan_transitions.emplace_back(topology_state, label_vec, &state_vec);
-				found = BuildPlan(next_recipe_state, &state_vec, plan_parts, basic_plan, plan_transitions, co, seq_id);
+				found = DFS(next_recipe_state, &state_vec, plan_parts, basic_plan, plan_transitions, co, seq_id);
 				if (found == true) {
 					break;
 				}
@@ -136,20 +136,20 @@ namespace pcs {
 		// 4. Process the next operation
 		seq_id++;
 		if (seq_id < (co.HasGuard() ? (co.sequential.size() + 1) : co.sequential.size())) [[Likely]] {
-			PCS_INFO(fmt::format(fmt::fg(fmt::color::lavender), "[BT] Processed Operation = \"{}\" with input parts [{}] and output parts [{}]",
+			PCS_INFO(fmt::format(fmt::fg(fmt::color::lavender), "[Backtrack DFS] Processed Operation = \"{}\" with input parts [{}] and output parts [{}]",
 				op.name(), fmt::join(input, ","), fmt::join(output, ",")));
-			return BuildPlan(next_recipe_state, topology_state, plan_parts, basic_plan, plan_transitions, co, seq_id);
+			return DFS(next_recipe_state, topology_state, plan_parts, basic_plan, plan_transitions, co, seq_id);
 		} else {
 			ApplyAllTransitions(plan_transitions);
 			basic_plan.insert(std::end(basic_plan), std::begin(plan_transitions), std::end(plan_transitions));
 			plan_transitions.clear();
-			PCS_INFO(fmt::format(fmt::fg(fmt::color::lavender), "[BT] Processed Composite Operation at Recipe State {}. Last operation = \"{}\" with input parts [{}] and output parts [{}]",
+			PCS_INFO(fmt::format(fmt::fg(fmt::color::lavender), "[Backtrack DFS] Processed Composite Operation at Recipe State {}. Last operation = \"{}\" with input parts [{}] and output parts [{}]",
 				next_recipe_state, op.name(), fmt::join(input, ","), fmt::join(output, ",")));
 
 			for (const auto& rec_transition : recipe_->lts()[next_recipe_state].transitions_) {
 				PCS_INFO(fmt::format(fmt::fg(fmt::color::gold) | fmt::emphasis::bold, "Processing recipe transition to: {}",
 					rec_transition.to()));
-				bool realise = BuildPlan(rec_transition.to(), topology_state, plan_parts, 
+				bool realise = DFS(rec_transition.to(), topology_state, plan_parts, 
 					basic_plan, plan_transitions, rec_transition.label(), 0);
 				if (realise == false) {
 					return false;

@@ -14,6 +14,7 @@ namespace pcs {
 	class IncrementalTopology : public ITopology {
 	private:
 		LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>> topology_;
+		std::unordered_set<std::vector<std::string>, boost::hash<std::vector<std::string>>> visited_;
 		const std::vector<LTS<std::string, std::string>>& ltss_;
 	public:
 		IncrementalTopology(const std::vector<LTS<std::string, std::string>>& ltss);

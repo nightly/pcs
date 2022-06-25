@@ -42,7 +42,7 @@ namespace pcs {
 	 * @param j: json object containing the correct object layout as previously defined
 	 */
 	void ParseJson(LTS<std::string, CompositeOperation>& lts, const nlohmann::json& j) {
-		lts.set_initial_state(j["initialState"], true);
+		lts.set_initial_state(j["initialState"]);
 		for (const auto& t : j["transitions"]) {
 			CompositeOperation co;
 
@@ -83,7 +83,7 @@ namespace pcs {
 				co.parallel.emplace_back(std::move(o), std::move(input), std::move(output));
 			}
 
-			lts.AddTransition(t["startState"], std::move(co), t["endState"], true);
+			lts.AddTransition(t["startState"], std::move(co), t["endState"]);
 		}
 	}
 }

@@ -35,8 +35,6 @@ cd build
 ctest --output-on-failure --verbose
 ```
 
-### Development
-This project adheres to the [Google C++ style guide](https://google.github.io/styleguide/cppguide.html) and the [C++ Core Guidelines](https://isocpp.github.io/CppCoreGuidelines/).
 
 ## Layout 
 - `app`: contains a CLI executable application. The `examples/` subdirectory has pre-made examples to run.

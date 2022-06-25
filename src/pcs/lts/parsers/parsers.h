@@ -35,7 +35,7 @@ namespace pcs {
 				if (first_line) {
 					std::string initial_state_str = line;
 					StateT initial_state = ParseStateString<StateT>(line);
-					lts.set_initial_state(initial_state, true);
+					lts.set_initial_state(initial_state);
 					first_line = false;
 					continue;
 				}
@@ -53,7 +53,7 @@ namespace pcs {
 				end_state = ParseStateString<StateT>(end_state_str);
 				label = ParseTransitionString<TransitionT>(label_str);
 
-				lts.AddTransition(start_state, label, end_state, true);
+				lts.AddTransition(start_state, label, end_state);
 			}
 		} catch (std::ifstream::failure& e) {
 			throw;
@@ -64,7 +64,7 @@ namespace pcs {
 	void ParseJson(LTS<StateT, TransitionT, HashF>& lts, const nlohmann::json& j) {
 		std::string initial_state_str = j["initialState"];
 		StateT initial_state = ParseStateString<StateT>(initial_state_str);
-		lts.set_initial_state(initial_state, true);
+		lts.set_initial_state(initial_state);
 
 		for (const auto& t : j["transitions"]) {
 			std::string start_state_str, label_str, end_state_str;
@@ -79,7 +79,7 @@ namespace pcs {
 			end_state = ParseStateString<StateT>(end_state_str);
 			label = ParseTransitionString<TransitionT>(label_str);
 		
-			lts.AddTransition(start_state, label, end_state, true);
+			lts.AddTransition(start_state, label, end_state);
 		}
 	}
 

@@ -13,7 +13,7 @@ TEST(ParseLTS, LTS1) {
 	pcs::ReadFromFile(got, "../../tests/lts/testdata/lts1.txt");
 
 	pcs::LTS expected;
-	expected.set_initial_state("s0", true);
+	expected.set_initial_state("s0");
 	expected.AddTransition("s0", "a1", "s1");
 	expected.AddTransition("s1", "a2", "s2");
 
@@ -25,7 +25,7 @@ TEST(ParseLTS, LTS1_JSON) {
 	pcs::ReadFromJsonFile(got, "../../tests/lts/testdata/lts1.json");
 
 	pcs::LTS expected;
-	expected.set_initial_state("s0", true);
+	expected.set_initial_state("s0");
 	expected.AddTransition("s0", "a1", "s1");
 	expected.AddTransition("s1", "a2", "s2");
 

@@ -53,8 +53,6 @@ static pcs::Environment LoadMachine(const std::string& data_folder, size_t num_r
 
 static void CompleteTopology(pcs::Environment& machine) {
 	machine.Complete();
-	PCS_INFO(fmt::format(fmt::fg(fmt::color::white_smoke), "[Topology] Number Of States = {}, Number of Transitions = {}", machine.topology()->lts().NumOfStates(),
-		machine.topology()->lts().NumOfTransitions()));
 }
 
 static void IncrementalTopology(pcs::Environment& machine) {
@@ -114,10 +112,8 @@ void Run(const std::string& name, const RunnerOpts& opts) {
 
 	/* Export machine, print incremenetal topology stats, and generate images */
 	pcs::ExportEnvironment(machine, export_folder);
-	if (opts.incremental_topology) {
-		PCS_INFO(fmt::format(fmt::fg(fmt::color::white_smoke), "[Topology] Number Of States = {}, Number of Transitions = {}", machine.topology()->lts().NumOfStates(),
-			machine.topology()->lts().NumOfTransitions()));
-	}
+	PCS_INFO(fmt::format(fmt::fg(fmt::color::white_smoke), "[Topology] Number Of States = {}, Number of Transitions = {}", machine.topology()->lts().NumOfStates(),
+		machine.topology()->lts().NumOfTransitions()));
 	if (opts.generate_images) {
 		GraphVizSave(export_folder, num_resources, opts.only_highlighted_topology_image);
 	}

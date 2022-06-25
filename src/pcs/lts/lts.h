@@ -5,6 +5,7 @@
 #include <ostream>
 #include <fstream>
 #include <vector>
+#include <queue>
 
 #include "pcs/lts/state.h"
 #include "pcs/common/log.h"
@@ -27,8 +28,8 @@ namespace pcs {
 	public:
 		LTS() = default;
 
-		LTS(const KeyT& initial_state, bool create_initial=true) {
-			SetInitialState(initial_state, create_initial);
+		LTS(const KeyT& initial_state) {
+			set_initial_state(initial_state);
 		}
 
 		~LTS() = default;
@@ -41,8 +42,8 @@ namespace pcs {
 			return initial_state_;
 		}
 
-		void set_initial_state(const KeyT& state, bool create_if_not_exists=true) {
-			if (!HasState(state) && create_if_not_exists) {
+		void set_initial_state(const KeyT& state) {
+			if (!HasState(state)) {
 				AddState(state, State());
 			}
 			initial_state_ = state;
@@ -97,24 +98,16 @@ namespace pcs {
 			return false;
 		}
 
-		void AddTransition(const KeyT& start_state, const TransitionT& label, const KeyT& end_state, 
-		                   bool create_missing_states = true) {
-			if (!HasState(start_state) && create_missing_states) {
+		void AddTransition(const KeyT& start_state, const TransitionT& label, const KeyT& end_state) {
+			if (!HasState(start_state)) {
 				AddState(start_state, State());
 			}
-			if (!HasState(end_state) && create_missing_states) {
+			if (!HasState(end_state)) {
 				AddState(end_state, State());
 			}
 
 			State& s = states_.at(start_state);
 			s.AddTransition(label, end_state);
-		}
-
-		/**
-		 * @brief AddTransition should be preferred as the method for creating State objects by creating them as needed with transitions. 
-		 */
-		bool AddState(const KeyT& key) {
-			return AddState(key, State());
 		}
 
 		bool operator==(const LTS& other) const {

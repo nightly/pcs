@@ -15,7 +15,7 @@ TEST(ProductParser, Recipe1) {
 	LTS<std::string, CompositeOperation> got, expected;
 	ReadFromJsonFile(got, "../../tests/product/testdata/recipe1.json");
 
-	expected.set_initial_state("A", false);
+	expected.set_initial_state("A");
 
 	CompositeOperation co1;
 	Observable co1_seq1, co1_seq2, co1_seq3;
@@ -32,7 +32,7 @@ TEST(ProductParser, Recipe1) {
 	co1_seq3.name_ = "applyglue";
 	co1.sequential.emplace_back(co1_seq3, std::unordered_set<std::string>({ "p" }), std::vector<std::string>({ "p" }));
 	
-	expected.AddTransition("A", co1, "B", true);
+	expected.AddTransition("A", co1, "B");
 
 	CompositeOperation co2;
 	Observable co2_seq1, co2_par1;
@@ -42,7 +42,7 @@ TEST(ProductParser, Recipe1) {
 	co2_par1.name_ = "store";
 	co2.parallel.emplace_back(co2_par1, std::unordered_set<std::string>({ "p0" }), std::vector<std::string>());
 	
-	expected.AddTransition("A", co2, "E", true);
+	expected.AddTransition("A", co2, "E");
 
 	ASSERT_EQ(got, expected);
 }

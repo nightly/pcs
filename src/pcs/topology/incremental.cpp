@@ -19,7 +19,7 @@ namespace pcs {
 		for (const auto& lts : ltss_) {
 			initial_key.emplace_back(lts.initial_state());
 		}
-		topology_.set_initial_state(initial_key, true);
+		topology_.set_initial_state(initial_key);
 		ExpandState(initial_key);
 	}
 
@@ -36,11 +36,11 @@ namespace pcs {
 	}
 
 	const State<std::vector<std::string>, std::pair<size_t, std::string>>& IncrementalTopology::at(const std::vector<std::string>& key) {
-		if (topology_.states().contains(key) == true) {
+		if (visited_.contains(key) == true) {
 			return topology_.states().at(key);
 		} else {
-			topology_.AddState(key);
 			ExpandState(key);
+			visited_.emplace(key);
 			return topology_.states().at(key);
 		}
 	}
@@ -60,11 +60,11 @@ namespace pcs {
 					if (!transfer_state.has_value()) {
 						continue;
 					}
-					topology_.AddTransition(key, std::make_pair(i, transition.label()), *transfer_state, false);
+					topology_.AddTransition(key, std::make_pair(i, transition.label()), *transfer_state);
 				} else {
 					std::vector<std::string> next_states = key;
 					next_states[i] = transition.to();
-					topology_.AddTransition(key, std::make_pair(i, transition.label()), next_states, false);
+					topology_.AddTransition(key, std::make_pair(i, transition.label()), next_states);
 				}
 			}
 		}

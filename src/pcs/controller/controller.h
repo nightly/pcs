@@ -34,7 +34,7 @@ namespace pcs {
 		std::optional<const LTS<std::vector<std::string>, std::vector<std::string>, boost::hash<std::vector<std::string>>>*> Generate();
 	private:
 		const TaskExpression& CurrentTask(const CompositeOperation& co, size_t seq_id);
-		bool BuildPlan(const std::string& recipe_state, const std::vector<std::string>* topology_state, Parts plan_parts, 
+		bool DFS(const std::string& recipe_state, const std::vector<std::string>* topology_state, Parts plan_parts, 
 		              std::vector<PlanTransition> basic_plan, std::vector<PlanTransition> plan_transitions, const CompositeOperation& co, size_t seq_id);
 
 		void ApplyTransition(const PlanTransition& plan_t);
