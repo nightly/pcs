@@ -20,7 +20,6 @@ namespace pcs {
 			initial_key.emplace_back(lts.initial_state());
 		}
 		topology_.set_initial_state(initial_key);
-		ExpandState(initial_key);
 	}
 
 	const LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>>& IncrementalTopology::lts() const {
