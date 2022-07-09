@@ -1,0 +1,31 @@
+{
+  "initialState": "A",
+  "transitions": [
+    {
+      "startState": "A",
+      "label": {
+        "guard": {},
+        "sequential": [
+          {
+            "name": "load",
+            "input": [],
+            "output": [
+              "p1"
+            ]
+          },
+          {
+            "name": "drill",
+            "input": [
+              "p1"
+            ],
+            "output": [
+              "p2"
+            ]
+          }
+        ],
+        "parallel": []
+      },
+      "endState": "B"
+    }
+  ]
+}

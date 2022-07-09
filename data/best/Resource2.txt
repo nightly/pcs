@@ -1,0 +1,9 @@
+s0
+s0 nop s0
+s0 in:2 s1
+s0 in:9 s1
+s1 out:2 s0
+s1 nop s1
+s1 drill s2
+s2 out:2 s1
+s1 in:2 s2

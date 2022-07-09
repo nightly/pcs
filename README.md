@@ -35,7 +35,6 @@ cd build
 ctest --output-on-failure --verbose
 ```
 
-
 ## Layout 
 - `app`: contains a CLI executable application. The `examples/` subdirectory has pre-made examples to run.
 - `benchmarks`: contains all the project's benchmarks

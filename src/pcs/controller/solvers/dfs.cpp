@@ -36,8 +36,8 @@ namespace pcs {
 		PCS_INFO(fmt::format(fmt::fg(fmt::color::light_green), "Recipe initial state: {}", recipe_init_state));
 
 		// The first transition of the recipe does not have a guard associated with it
-		const auto& first_transition = recipe_->lts().at(recipe_init_state).transitions()[0]; 
-		bool generated = DFS(first_transition.to(), &controller_.initial_state(), 
+		const auto& first_transition = recipe_->lts().at(recipe_init_state).transitions()[0];
+		bool generated = DFS(first_transition.to(), &controller_.initial_state(),
 			plan_parts, basic_plan, plan_transitions, first_transition.label(), 0);
 
 		PCS_INFO(fmt::format(fmt::fg(fmt::color::light_green), "Controller generation completed: realisability = {}", generated));
@@ -59,7 +59,8 @@ namespace pcs {
 	const TaskExpression& Controller::CurrentTask(const CompositeOperation& co, size_t seq_id) {
 		if (seq_id == 0 && co.HasGuard()) {
 			return co.guard;
-		} else {
+		}
+		else {
 			co.HasGuard() ? seq_id-- : seq_id;
 			return co.sequential[seq_id];
 		}
@@ -71,9 +72,9 @@ namespace pcs {
 	 * Recursive backtracking DFS.
 	 *
 	 */
-	bool Controller::DFS(const std::string& next_recipe_state, const std::vector<std::string>* topology_state, Parts plan_parts, 
-		                      std::vector<PlanTransition> basic_plan, std::vector<PlanTransition> plan_transitions,
-							  const CompositeOperation& co, size_t seq_id) {
+	bool Controller::DFS(const std::string& next_recipe_state, const std::vector<std::string>* topology_state, Parts plan_parts,
+		std::vector<PlanTransition> basic_plan, std::vector<PlanTransition> plan_transitions,
+		const CompositeOperation& co, size_t seq_id) {
 
 		// 1. Get the current sequential operation to process
 		const TaskExpression& task = CurrentTask(co, seq_id);
@@ -100,13 +101,15 @@ namespace pcs {
 					found = true;
 					break;
 				}
-			} else {
+			}
+			else {
 				std::optional<TransferOperation> opt = StringToTransfer(transition.label().second);
 				if (opt.has_value()) {
 					if (opt->IsOut()) {
 						std::get<0>(transfers[*opt]) = &(transition.to());
 						std::get<1>(transfers[*opt]) = &(transition.label());
-					} else {
+					}
+					else {
 						TransferOperation inverse = opt->Inverse(); // The associated map key is the inverse
 						std::get<2>(transfers[inverse]) = &(transition.label());
 					}
@@ -139,7 +142,8 @@ namespace pcs {
 			PCS_INFO(fmt::format(fmt::fg(fmt::color::lavender), "[Backtrack DFS] Processed Operation = \"{}\" with input parts [{}] and output parts [{}]",
 				op.name(), fmt::join(input, ","), fmt::join(output, ",")));
 			return DFS(next_recipe_state, topology_state, plan_parts, basic_plan, plan_transitions, co, seq_id);
-		} else {
+		}
+		else {
 			ApplyAllTransitions(plan_transitions);
 			basic_plan.insert(std::end(basic_plan), std::begin(plan_transitions), std::end(plan_transitions));
 			plan_transitions.clear();
@@ -149,7 +153,7 @@ namespace pcs {
 			for (const auto& rec_transition : recipe_->lts()[next_recipe_state].transitions_) {
 				PCS_INFO(fmt::format(fmt::fg(fmt::color::gold) | fmt::emphasis::bold, "Processing recipe transition to: {}",
 					rec_transition.to()));
-				bool realise = DFS(rec_transition.to(), topology_state, plan_parts, 
+				bool realise = DFS(rec_transition.to(), topology_state, plan_parts,
 					basic_plan, plan_transitions, rec_transition.label(), 0);
 				if (realise == false) {
 					return false;
