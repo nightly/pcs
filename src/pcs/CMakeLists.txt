@@ -7,7 +7,7 @@ set(PCS_SOURCES "lts/lts.h" "lts/state.h" "lts/writers.h" "lts/transition.h"
  "topology/stitch.cpp" 
 
 "controller/solvers/dfs.cpp" "controller/solvers/best.cpp" 
-"controller/plan_transition.cpp" "controller/parts.cpp"
+"controller/core.cpp" "controller/plan_transition.cpp" "controller/parts.cpp"
 "controller/highlighter.cpp"
 
 "product/recipe.cpp"  "product/parsers/recipe.cpp"
@@ -18,7 +18,7 @@ set(PCS_SOURCES "lts/lts.h" "lts/state.h" "lts/writers.h" "lts/transition.h"
 
 "environment/environment.cpp" "environment/writers.cpp"
 
-"common/directory.cpp" "common/strings.cpp" "common/pch.h")
+"common/directory.cpp" "common/strings.cpp" "common/empty.h" "common/pch.h")
 
 add_library(pcs STATIC ${PCS_SOURCES})
 

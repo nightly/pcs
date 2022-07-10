@@ -8,6 +8,7 @@
 
 #include "pcs/lts/lts.h"
 #include "pcs/lts/state.h"
+#include "pcs/common/empty.h"
 
 namespace pcs {
 
@@ -16,16 +17,6 @@ namespace pcs {
 	// Generic structure output
 	// =========================
 
-	/**
-	 * @brief std::pair operator<<
-	 */
-	template <typename T, typename U>
-	static std::ostream& operator<<(std::ostream& os, const std::pair<T, U>& pair) {
-		os << pair.first;
-		os << ": ";
-		os << pair.second;
-		return os;
-	}
 
 	/**
 	* @brief std::vector operator<< overload delimited by commas
@@ -41,6 +32,16 @@ namespace pcs {
 		return os;
 	}
 
+	/**
+	 * @brief std::pair operator<<
+	 */
+	template <typename T, typename U>
+	static std::ostream& operator<<(std::ostream& os, const std::pair<T, U>& pair) {
+		os << pair.first;
+		os << ": ";
+		os << pair.second;
+		return os;
+	}
 
 	// ==============================
 	// LTS & State ostream & ofstream
@@ -90,7 +91,7 @@ namespace pcs {
 
 	template <typename KeyT, typename TransitionT, typename HashF>
 	std::ostream& operator<<(std::ostream& os, const LTS<KeyT, TransitionT, HashF>& lts) {
-		if (lts.initial_state().empty() && lts.states_.empty()) {
+		if (lts.states_.empty()) {
 			os << "Empty Labelled Transition System\n";
 			return os;
 		}

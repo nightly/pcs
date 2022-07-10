@@ -13,24 +13,25 @@
 
 namespace pcs {
 
-	using ControllerState = std::vector<std::string>;
+	using ControllerState = std::pair<std::string, std::vector<std::string>>;
 	using ControllerTransition = std::vector<std::string>;
 
 	using TopologyState = std::vector<std::string>;
 	using TopologyTransition = std::pair<size_t, std::string>;
 
 	using SVecHash = boost::hash<std::vector<std::string>>;
-	using TargetMapT = std::unordered_map<ControllerState, std::unordered_set<std::string>, SVecHash>;
+	using TargetMapT = std::unordered_map<TopologyState, std::unordered_set<std::string>, SVecHash>;
 
 	/*
 	 * @brief Builds the target map, where KeyT = a target state, and ValueT = set of target transitions.
 	 * 
 	 * target_map: KeyT = Controller/Topology State and UnorderedSet values are the individual transitions
 	 */
-	 TargetMapT Highlighter::BuildTargetMap(const LTS<ControllerState, ControllerTransition, SVecHash>& controller) {
+	 TargetMapT Highlighter::BuildTargetMap(const LTS<ControllerState, ControllerTransition, 
+		                                   boost::hash<ControllerState>>& controller) {
 		 TargetMapT target_map;
 		for (const auto& state : controller.states()) {
-			target_map[state.first] = std::unordered_set<std::string>();
+			target_map[state.first.second] = std::unordered_set<std::string>();
 			for (const auto& t : state.second.transitions()) {
 				// in the form (_, load, _, _, _) whereas we just want load
 				std::vector<std::string> vec = t.label();
@@ -38,7 +39,7 @@ namespace pcs {
 					if (s == "" || s == "-") {
 						continue;
 					}
-					target_map[state.first].insert(s);
+					target_map[state.first.second].insert(s);
 				}
 			}
 		}
@@ -49,7 +50,7 @@ namespace pcs {
 	 * @brief Returns a highlighted topology showing the path the controller took
 	 */
 	void Highlighter::HighlightTopology(const LTS<TopologyState, TopologyTransition, SVecHash>& topology,
-		                  const LTS<ControllerState, ControllerTransition, SVecHash>& controller, const std::filesystem::path& out_path) {
+		                  const LTS<ControllerState, ControllerTransition, boost::hash<ControllerState>>& controller, const std::filesystem::path& out_path) {
 		std::ofstream os;
 		os.exceptions(std::ofstream::badbit);
 		CreateDirectoryForPath(out_path);

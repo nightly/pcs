@@ -2,7 +2,7 @@ s0
 s0 nop s0
 s0 load s1
 s1 out:1 s0
-s1 out:9 s0
+s1 out:36 s0
 s0 in:1 s2
 s2 rem s3
 s2 store s3

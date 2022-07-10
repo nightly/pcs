@@ -48,4 +48,18 @@ namespace pcs {
 		return ret;
 	}
 
+	std::string& RightTrim(std::string& s, const char* ws) {
+		s.erase(s.find_last_not_of(ws) + 1);
+		return s;
+	}
+
+	std::string& LeftTrim(std::string& s, const char* ws) {
+		s.erase(0, s.find_first_not_of(ws));
+		return s;
+	}
+
+	std::string& Trim(std::string& s, const char* ws) {
+		return LeftTrim(RightTrim(s, ws), ws);
+	}
+
 }

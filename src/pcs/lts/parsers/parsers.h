@@ -13,6 +13,7 @@
 #include "pcs/operation/operation.h"
 #include "pcs/lts/parsers/state.h"
 #include "pcs/lts/parsers/transition.h"
+#include "pcs/common/strings.h"
 
 namespace pcs {
 
@@ -49,9 +50,9 @@ namespace pcs {
 				std::getline(ss, label_str, ' ');
 				std::getline(ss, end_state_str);
 
-				start_state = ParseStateString<StateT>(start_state_str);
-				end_state = ParseStateString<StateT>(end_state_str);
-				label = ParseTransitionString<TransitionT>(label_str);
+				start_state = ParseStateString<StateT>(Trim(start_state_str));
+				end_state = ParseStateString<StateT>(Trim(end_state_str));
+				label = ParseTransitionString<TransitionT>(Trim(label_str));
 
 				lts.AddTransition(start_state, label, end_state);
 			}

@@ -52,7 +52,7 @@ static void HingeControllerUsingComplete(benchmark::State& state) {
 
 	for (auto _ : state) {
 		pcs::Controller con(&machine, machine.topology(), &recipe);
-		std::optional<const pcs::LTS<std::vector<std::string>, std::vector<std::string>, boost::hash<std::vector<std::string>>>*> controller_lts = con.Generate();
+		auto controller_lts = con.Generate();
 		benchmark::DoNotOptimize(controller_lts);
 		benchmark::ClobberMemory();
 	}
@@ -84,7 +84,7 @@ static void HingeCompleteWithController(benchmark::State& state) {
 	for (auto _ : state) {
 		machine.Complete();
 		pcs::Controller con(&machine, machine.topology(), &recipe);
-		std::optional<const pcs::LTS<std::vector<std::string>, std::vector<std::string>, boost::hash<std::vector<std::string>>>*> controller_lts = con.Generate();
+		auto controller_lts = con.Generate();
 		benchmark::DoNotOptimize(controller_lts);
 		benchmark::ClobberMemory();
 	}
@@ -116,7 +116,7 @@ static void HingeIncrementalWithController(benchmark::State& state) {
 	for (auto _ : state) {
 		machine.Incremental();
 		pcs::Controller con(&machine, machine.topology(), &recipe);
-		std::optional<const pcs::LTS<std::vector<std::string>, std::vector<std::string>, boost::hash<std::vector<std::string>>>*> controller_lts = con.Generate();
+	    auto controller_lts = con.Generate();
 		benchmark::DoNotOptimize(controller_lts);
 		benchmark::ClobberMemory();
 	}
