@@ -39,7 +39,7 @@ TEST(Controller, Pad) {
 	auto opt = con.Generate();
 	ASSERT_EQ(opt.has_value(), true);
 	auto got = opt.value();
-	ASSERT_EQ(*got, expected);
+	ASSERT_EQ(got, expected);
 }
 
 TEST(Controller, Pad_Incremental) {
@@ -61,5 +61,5 @@ TEST(Controller, Pad_Incremental) {
 	auto opt = con.Generate();
 	ASSERT_EQ(opt.has_value(), true);
 	auto got = opt.value();
-	ASSERT_EQ(*got, expected);
+	ASSERT_EQ(got, expected);
 }

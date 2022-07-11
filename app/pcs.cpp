@@ -12,9 +12,9 @@ int main() {
 
 	// MergeExample(2);
 
-	RunnerOpts opts{ .solver = SolverOpt::BreadthFirstMinTransitions, .incremental_topology = true, 
+	RunnerOpts opts{ .solver = SolverOpt::DepthFirst, .incremental_topology = true, 
 		             .generate_images = true, .only_highlighted_topology_image = false };
-	Run("best", opts);
+	Run("pad", opts);
 
 	return 0;
 }

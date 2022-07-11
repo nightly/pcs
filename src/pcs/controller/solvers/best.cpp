@@ -175,7 +175,7 @@ namespace pcs {
 					 bool sync = next_stage.parts.Synchronize(std::get<2>(v)->first, std::get<1>(v)->first, input);
 					 if (!sync) {}
 					
-	                 PlanTransition plan_t(*next_stage.to_recipe_state, next_stage.topology_state, label_vec, &state_vec);
+                     PlanTransition plan_t(*next_stage.to_recipe_state, next_stage.topology_state, label_vec, &state_vec);
 					 next_stage.topology_state = &state_vec;
 					 ApplyTransition(plan_t, next_candidate.controller);
 					 if (opt == MinimizeOpt::Transitions) {

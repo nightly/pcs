@@ -37,7 +37,7 @@ TEST(Best_Controller, DFS) {
 	auto opt = con.Generate();
 	ASSERT_EQ(opt.has_value(), true);
 	auto got = opt.value();
-	ASSERT_EQ(*got, expected);
+	ASSERT_EQ(got, expected);
 }
 
 TEST(Best_Controller, BreadthFirst) {
