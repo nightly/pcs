@@ -86,7 +86,8 @@ void Run(const std::string& name, const RunnerOpts& opts) {
 	/* Determine number of resources and set data/export folder paths */
 	PCS_INFO(fmt::format(fmt::fg(fmt::color::white_smoke), "Using {} Example", name));
 	std::string data_folder = "../../data/" + name + '/';
-	std::string export_folder = "../../exports/" + name + (opts.incremental_topology ? "/incremental/" : "/complete/");
+	std::string export_folder = "../../exports/" + name + (opts.solver == SolverOpt::DepthFirst ? "/dfs/" : "/bfs/") +
+		                        (opts.incremental_topology ? "/incremental/" : "/complete/");
 	size_t num_resources = NumOfResources(data_folder);
 
 	/* Load everything */

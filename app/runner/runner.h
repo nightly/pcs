@@ -7,7 +7,13 @@
 #include "pcs/product/recipe.h"
 #include "pcs/environment/environment.h"
 
+enum SolverOpt {
+	DepthFirst,
+	BreadthFirst,
+};
+
 struct RunnerOpts {
+	SolverOpt solver;
 	bool incremental_topology;
 	bool generate_images;
 	bool only_highlighted_topology_image; // Exports the highlighted topology only, rather than topology & highlighted topology

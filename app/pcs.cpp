@@ -12,8 +12,9 @@ int main() {
 
 	// MergeExample(2);
 
-	RunnerOpts opts{ .incremental_topology = true, .generate_images = true, .only_highlighted_topology_image = false };
-	Run("pad", opts);
+	RunnerOpts opts{ .solver = SolverOpt::DepthFirst, .incremental_topology = true, 
+		             .generate_images = true, .only_highlighted_topology_image = false };
+	Run("best", opts);
 
 	return 0;
 }

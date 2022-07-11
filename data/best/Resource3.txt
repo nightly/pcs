@@ -2,5 +2,4 @@ s0
 s0 nop s0
 s0 in:1 s1
 s1 out:2 s0
-s0 in:3 s3
 s3 out:2 s0

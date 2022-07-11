@@ -43,7 +43,6 @@ namespace pcs {
 	public:
 		BestController(const Environment* machine, ITopology* topology, const Recipe* recipe);
 		std::optional<ControllerType> Generate(MinimizeOpt opt);
-	private:
 	};
 
 }

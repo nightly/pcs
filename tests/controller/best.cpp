@@ -53,10 +53,15 @@ TEST(Best_Controller, BreadthFirst) {
 		throw;
 	}
 	machine.Complete();
-	
-	pcs::MinimizeOpt opt_sync{ pcs::MinimizeOpt::Transitions };
-	pcs::MinimizeOpt opt_resources{ pcs::MinimizeOpt::Resources };
 
+	pcs::BestController bc(&machine, machine.topology(), &recipe);
+	auto lts_min_sync = bc.Generate(pcs::MinimizeOpt::Transitions);
+	auto lts_min_resources = bc.Generate(pcs::MinimizeOpt::Resources);
 
+	ASSERT_EQ(lts_min_sync.has_value(), true);
+	ASSERT_EQ(lts_min_resources.has_value(), true);
 
+	// Minimizing the number of transitions and resources results in the same controller for this simple example
+	ASSERT_EQ(*lts_min_sync, expected);
+	ASSERT_EQ(*lts_min_resources, expected);
 }
