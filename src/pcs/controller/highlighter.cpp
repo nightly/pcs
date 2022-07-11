@@ -71,7 +71,11 @@ namespace pcs {
 			for (const auto& pair : topology.states()) {
 				auto& state = pair.second;
 				if (state.IsEmpty()) {
-					os << "	" << "\"" << pair.first << "\"" << "\n";
+					if (target_map.contains(pair.first)) {
+						os << "	" << "\"" << pair.first << "\"" << " [shape=circle, style=filled, fillcolor=dodgerblue2]" << "\n";
+					} else {
+						os << "	" << "\"" << pair.first << "\"" << "\n";
+					}
 				}
 				for (const auto& t : state.transitions_) {
 					if ((target_map.contains(pair.first)) && (target_map[pair.first].contains(t.label().second))) {

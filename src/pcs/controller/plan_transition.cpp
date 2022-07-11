@@ -9,13 +9,13 @@ namespace pcs {
 	 * @brief: A tuple-like way of representing the controller's planned transitions whilst evaluating CompositeOperations 
 	 */
 	PlanTransition::PlanTransition(const std::string& recipe_state, const TopologyState* from, const std::vector<std::string>& label, const TopologyState* to) 
-		: recipe_state(recipe_state), from(from), label(label), to(to) {}
+		: recipe_state(&recipe_state), from(from), label(label), to(to) {}
 
-	PlanTransition::PlanTransition(std::string&& recipe_state, const TopologyState* from, std::vector<std::string>&& label, const TopologyState* to)
-		: recipe_state(std::move(recipe_state)), from(from), label(std::move(label)), to(to) {}
+	PlanTransition::PlanTransition(const std::string& recipe_state, const TopologyState* from, std::vector<std::string>&& label, const TopologyState* to)
+		: recipe_state(&recipe_state), from(from), label(std::move(label)), to(to) {}
 
-	PlanTransition::PlanTransition(const PlanTransition& other) 
-		: recipe_state(recipe_state), from(other.from), label(other.label), to(other.to) {}
+	PlanTransition::PlanTransition(const PlanTransition& other)
+		: recipe_state(other.recipe_state), from(other.from), label(other.label), to(other.to) {}
 
 	PlanTransition& PlanTransition::operator=(const PlanTransition& other) {
 		recipe_state = other.recipe_state;

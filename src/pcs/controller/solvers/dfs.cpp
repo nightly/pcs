@@ -24,7 +24,9 @@ namespace pcs {
 
 	std::optional<const Controller::ControllerType*> Controller::Generate() {
 		const std::string& recipe_init_state = recipe_->lts().initial_state();
-		controller_.set_initial_state({ recipe_init_state, topology_->initial_state()});
+		const auto& first_transition = recipe_->lts().at(recipe_init_state).transitions()[0];
+		controller_.set_initial_state({ first_transition.to(), topology_->initial_state()});
+
 		Parts plan_parts(machine_->NumOfResources());
 		std::vector<PlanTransition> plan_transitions, basic_plan;
 		PCS_INFO(fmt::format(fmt::fg(fmt::color::light_green), "Controller initial state ({} - {})", controller_.initial_state().first,
@@ -32,7 +34,6 @@ namespace pcs {
 		PCS_INFO(fmt::format(fmt::fg(fmt::color::light_green), "Recipe initial state: {}", recipe_init_state));
 
 		// The first transition of the recipe does not have a guard associated with it
-		const auto& first_transition = recipe_->lts().at(recipe_init_state).transitions()[0];
 		bool generated = DFS(first_transition.to(), &topology_->initial_state(),
 			plan_parts, basic_plan, plan_transitions, first_transition.label(), 0);
 
@@ -66,8 +67,11 @@ namespace pcs {
 		const auto& [op, input, output] = task;
 
 		// 2. Realise the sequential operation by trying to directly reach it whilst collecting synchronization operations.
+
+		// map type - [ TransferOperation key, tuple(end_state, transition, inverse transition) ]
 		std::unordered_map<TransferOperation, std::tuple<const TopologyState*, const TopologyTransition*,
 			const TopologyTransition*>> transfers;
+		
 		bool found = false;
 		for (const auto& transition : topology_->at(*topology_state).transitions_) {
 			if (op.name() == transition.label().second) {
@@ -85,8 +89,7 @@ namespace pcs {
 					found = true;
 					break;
 				}
-			}
-			else {
+			} else {
 				std::optional<TransferOperation> opt = StringToTransfer(transition.label().second);
 				if (opt.has_value()) {
 					if (opt->IsOut()) {
@@ -103,7 +106,7 @@ namespace pcs {
 		// 3. Since the sequential operation hasn't been reached, begin iterating over synchronization transitions.
 		if (!found) {
 			for (const auto& [k, v] : transfers) {
-				// map type - [ TransferOperation key, tuple<end_state, transition, inverse transition> ]
+				// map type - [ TransferOperation key, tuple(end_state, transition, inverse transition) ]
 				const TopologyState& state_vec = *std::get<0>(v);
 				std::vector<std::string> label_vec(num_of_resources_, "-");
 				label_vec[std::get<1>(v)->first] = k.name();

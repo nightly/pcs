@@ -24,6 +24,8 @@ namespace pcs {
 		                     LTS<std::pair<std::string, std::vector<std::string>>, std::vector<std::string>, 
 		                         boost::hash<std::pair<std::string, std::vector<std::string>>>>& controller);
 
+	void SynchronizeOperation();
+	void ObservableOperation();
 	bool Nopize();
 
 }
