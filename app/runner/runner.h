@@ -9,7 +9,8 @@
 
 enum SolverOpt {
 	DepthFirst,
-	BreadthFirst,
+	BreadthFirstMinTransitions,
+	BreadthFirstMinResources,
 };
 
 struct RunnerOpts {
@@ -28,3 +29,4 @@ static pcs::Recipe LoadRecipe(const std::string& data_folder);
 static void CompleteTopology(pcs::Environment& machine);
 static void IncrementalTopology(pcs::Environment& machine);
 static void GraphVizSave(const std::string& export_folder, size_t num_resources, bool only_highlighted_topology);
+static void ControllerGraphVizSave();

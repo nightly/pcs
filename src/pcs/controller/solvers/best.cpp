@@ -95,9 +95,9 @@ namespace pcs {
 
 
 	std::optional<ControllerType> BestController::Generate(MinimizeOpt opt) {
+		bool first_generated = false;
 		Candidate best_candidate;
 		best_candidate.num = std::numeric_limits<size_t>::max();
-		bool first_generated = false;
 		std::priority_queue<Candidate, std::vector<Candidate>, CandidateComparator> pq;
 
 		Parts initial_parts(num_of_resources_);

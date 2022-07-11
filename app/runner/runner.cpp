@@ -74,6 +74,8 @@ static void GraphVizSave(const std::string& export_folder, size_t num_resources,
 	}
 }
 
+using ControllerType = pcs::LTS<std::pair<std::string, std::vector<std::string>>, std::vector<std::string>,
+	                            boost::hash<std::pair<std::string, std::vector<std::string>>>>;
 
 /*
  * @param name: the name of the example folder to find from `data/` e.g. "hinge" for data/hinge
@@ -86,7 +88,21 @@ void Run(const std::string& name, const RunnerOpts& opts) {
 	/* Determine number of resources and set data/export folder paths */
 	PCS_INFO(fmt::format(fmt::fg(fmt::color::white_smoke), "Using {} Example", name));
 	std::string data_folder = "../../data/" + name + '/';
-	std::string export_folder = "../../exports/" + name + (opts.solver == SolverOpt::DepthFirst ? "/dfs/" : "/bfs/") +
+
+	std::string type;
+	switch (opts.solver) {
+	case SolverOpt::DepthFirst:
+		type = "/dfs/";
+		break;
+	case SolverOpt::BreadthFirstMinTransitions:
+		type = "/bfs-transitions/";
+		break;
+	case SolverOpt::BreadthFirstMinResources:
+		type = "/bfs-resources/";
+		break;
+	}
+
+	std::string export_folder = "../../exports/" + name + type +
 		                        (opts.incremental_topology ? "/incremental/" : "/complete/");
 	size_t num_resources = NumOfResources(data_folder);
 
@@ -101,12 +117,23 @@ void Run(const std::string& name, const RunnerOpts& opts) {
 		CompleteTopology(machine);
 	}
 
-	/* Generate controller */
-	pcs::Controller con(&machine, machine.topology(), &recipe);
-	auto controller_lts = con.Generate();
+
+	std::optional<ControllerType> controller_lts;
+
+	if (opts.solver == SolverOpt::DepthFirst) {
+		pcs::Controller con(&machine, machine.topology(), &recipe);
+		controller_lts = con.Generate();
+	} else if (opts.solver == SolverOpt::BreadthFirstMinTransitions) {
+		pcs::BestController con(&machine, machine.topology(), &recipe);
+		controller_lts = con.Generate(pcs::MinimizeOpt::Transitions);
+	} else if (opts.solver == SolverOpt::BreadthFirstMinResources) {
+		pcs::BestController con(&machine, machine.topology(), &recipe);
+		controller_lts = con.Generate(pcs::MinimizeOpt::Resources);
+	}
+
 	if (controller_lts.has_value()) {
-		pcs::ExportToFile(**controller_lts, export_folder + "/controller.gv");
-		pcs::Highlighter::HighlightTopology(machine.topology()->lts(), **controller_lts, export_folder + "/highlighted_topology.gv");
+		pcs::ExportToFile(*controller_lts, export_folder + "/controller.gv");
+		pcs::Highlighter::HighlightTopology(machine.topology()->lts(), *controller_lts, export_folder + "/highlighted_topology.gv");
 	} else {
 		PCS_WARN("[PAD] No controller generated");
 	}

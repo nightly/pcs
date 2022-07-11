@@ -22,10 +22,10 @@ namespace pcs {
 	Controller::Controller(const Environment* machine, ITopology* topology, const Recipe* recipe)
 		: machine_(machine), recipe_(recipe), topology_(topology), num_of_resources_(machine_->NumOfResources()) {}
 
-	std::optional<const Controller::ControllerType*> Controller::Generate() {
+	std::optional<Controller::ControllerType> Controller::Generate() {
 		const std::string& recipe_init_state = recipe_->lts().initial_state();
 		const auto& first_transition = recipe_->lts().at(recipe_init_state).transitions()[0];
-		controller_.set_initial_state({ first_transition.to(), topology_->initial_state()});
+		controller_.set_initial_state({ first_transition.to(), topology_->initial_state() });
 
 		Parts plan_parts(machine_->NumOfResources());
 		std::vector<PlanTransition> plan_transitions, basic_plan;
@@ -43,13 +43,13 @@ namespace pcs {
 		  * @Hack: Visualises controller no matter what (wherever it reached) for testing purposes.
 		  *	However, doesn't affect above realisability output though
 		  */
-		return &controller_;
+		return { std::move(controller_) };
 		/*****************************************************************************************/
 
 		if (!generated) {
 			return {};
 		}
-		return &controller_;
+		return { std::move(controller_) };
 	}
 
 	/*

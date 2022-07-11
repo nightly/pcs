@@ -33,7 +33,7 @@ namespace pcs {
 		size_t num_of_resources_;
 	public:
 		Controller(const Environment* machine, ITopology* topology, const Recipe* recipe);
-		std::optional<const ControllerType*> Generate();
+		std::optional<ControllerType> Generate();
 	private:
 		bool DFS(const std::string& recipe_state, const std::vector<std::string>* topology_state, Parts plan_parts,
 			std::vector<PlanTransition> basic_plan, std::vector<PlanTransition> plan_transitions, const CompositeOperation& co, size_t seq_id);
