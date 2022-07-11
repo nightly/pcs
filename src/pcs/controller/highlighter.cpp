@@ -6,6 +6,8 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#include <boost/container_hash/hash.hpp>
+
 #include "pcs/common/directory.h"
 #include "pcs/common/log.h"
 #include "pcs/common/strings.h"
@@ -19,13 +21,12 @@ namespace pcs {
 	using TopologyState = std::vector<std::string>;
 	using TopologyTransition = std::pair<size_t, std::string>;
 
-	using SVecHash = boost::hash<std::vector<std::string>>;
-	using TargetMapT = std::unordered_map<TopologyState, std::unordered_set<std::string>, SVecHash>;
+	using TargetMapT = std::unordered_map<TopologyState, std::unordered_set<std::string>, boost::hash<TopologyState>>;
 
 	/*
 	 * @brief Builds the target map, where KeyT = a target state, and ValueT = set of target transitions.
 	 * 
-	 * target_map: KeyT = Controller/Topology State and UnorderedSet values are the individual transitions
+	 * target_map: KeyT = Topology State and values are an unordered set of transitions applicable to that state
 	 */
 	 TargetMapT Highlighter::BuildTargetMap(const LTS<ControllerState, ControllerTransition, 
 		                                   boost::hash<ControllerState>>& controller) {
@@ -49,8 +50,9 @@ namespace pcs {
 	/*
 	 * @brief Returns a highlighted topology showing the path the controller took
 	 */
-	void Highlighter::HighlightTopology(const LTS<TopologyState, TopologyTransition, SVecHash>& topology,
-		                  const LTS<ControllerState, ControllerTransition, boost::hash<ControllerState>>& controller, const std::filesystem::path& out_path) {
+	void Highlighter::HighlightTopology(const LTS<TopologyState, TopologyTransition, boost::hash<TopologyState>>& topology,
+		                  const LTS<ControllerState, ControllerTransition, boost::hash<ControllerState>>& controller, 
+		                  const std::filesystem::path& out_path) {
 		std::ofstream os;
 		os.exceptions(std::ofstream::badbit);
 		CreateDirectoryForPath(out_path);

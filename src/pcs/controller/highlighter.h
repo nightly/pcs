@@ -16,10 +16,9 @@ namespace pcs {
 		using TopologyState = std::vector<std::string>;
 		using TopologyTransition = std::pair<size_t, std::string>;
 
-		using SVecHash = boost::hash<std::vector<std::string>>;
-		using TargetMapT = std::unordered_map<TopologyState, std::unordered_set<std::string>, SVecHash>;
+		using TargetMapT = std::unordered_map<TopologyState, std::unordered_set<std::string>, boost::hash<TopologyState>>;
 	public:
-		static void HighlightTopology(const LTS<TopologyState, TopologyTransition, SVecHash>& topology,
+		static void HighlightTopology(const LTS < TopologyState, TopologyTransition, boost::hash<TopologyState>> & topology,
 			const LTS<ControllerState, ControllerTransition, boost::hash<ControllerState>>& controller, const std::filesystem::path& out_path);
 	private: 
 		static TargetMapT BuildTargetMap(const LTS<ControllerState, ControllerTransition, boost::hash<ControllerState>>& controller);

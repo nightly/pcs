@@ -5,6 +5,7 @@
 using namespace pcs;
 
 int main() {
+
 #if (defined _DEBUG == 1)
 	spdlog::set_level(spdlog::level::debug);
 #endif
@@ -12,7 +13,7 @@ int main() {
 	// MergeExample(2);
 
 	RunnerOpts opts{ .incremental_topology = true, .generate_images = true, .only_highlighted_topology_image = false };
-	Run("best", opts);
+	Run("pad", opts);
 
 	return 0;
 }

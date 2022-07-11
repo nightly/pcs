@@ -81,9 +81,9 @@ namespace pcs {
 					allocate = true;
 				}
 				if (allocate) {
-					std::vector<std::string> vec(num_of_resources_, "-");
-					vec[transition.label().first] = transition.label().second;
-					plan_transitions.emplace_back(next_recipe_state, topology_state, vec, &transition.to());
+					std::vector<std::string> label_vec(num_of_resources_, "-");
+					label_vec[transition.label().first] = transition.label().second;
+					plan_transitions.emplace_back(next_recipe_state, topology_state, label_vec, &transition.to());
 					plan_parts.Add(transition.label(), output);
 					topology_state = &transition.to();
 					found = true;
@@ -112,6 +112,7 @@ namespace pcs {
 				label_vec[std::get<1>(v)->first] = k.name();
 				label_vec[std::get<2>(v)->first] = std::get<2>(v)->second;
 				bool sync = plan_parts.Synchronize(std::get<2>(v)->first, std::get<1>(v)->first, input);
+				if (!sync) {}
 				plan_transitions.emplace_back(next_recipe_state, topology_state, label_vec, &state_vec);
 				found = DFS(next_recipe_state, &state_vec, plan_parts, basic_plan, plan_transitions, co, seq_id);
 				if (found == true) {
@@ -138,7 +139,7 @@ namespace pcs {
 				PCS_INFO(fmt::format(fmt::fg(fmt::color::gold) | fmt::emphasis::bold, "Processing recipe transition to: {}",
 					rec_transition.to()));
 				bool realise = DFS(rec_transition.to(), topology_state, plan_parts,
-					basic_plan, plan_transitions, rec_transition.label(), 0);
+					               basic_plan, plan_transitions, rec_transition.label(), 0);
 				if (realise == false) {
 					return false;
 				}

@@ -33,4 +33,5 @@ package_add_test("product-lts-parser" "product/parser.cpp")
 package_add_test("topology-complete" "topology/complete.cpp")
 
 package_add_test("controller" "controller/controller.cpp")
+package_add_test("best-controller" "controller/best.cpp")
 package_add_test("controller-parts" "controller/parts.cpp")

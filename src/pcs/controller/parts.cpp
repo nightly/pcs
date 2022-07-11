@@ -10,18 +10,14 @@
 
 namespace pcs {
 
-	using TopologyState = std::vector<std::string>;
 	using TopologyTransition = std::pair<size_t, std::string>;
-
-	using ControllerState = std::vector<std::string>;
-	using ControllerTransition = std::vector<std::string>;
 
 	// ==========================
 	// Constructors & destructor
 	// ==========================
 
 	Parts::Parts(size_t num_resources) {
-		parts_.resize(num_resources, std::vector<std::string>());
+		parts_.resize(num_resources, std::unordered_set<std::string>());
 	}
 
 	Parts::Parts(const Parts& other) 
@@ -44,86 +40,45 @@ namespace pcs {
 	// Member functions
 	// ==========================
 
-	const std::vector<std::string>& Parts::AtResource(size_t resource) const {
+	const std::unordered_set<std::string>& Parts::AtResource(size_t resource) const {
 		return parts_[resource];
 	}
 
-	/**
-	 * @brief Introduces parts into the accompanying resource following a successful operation completion.  
-	 * @param transition: a Topology Transition in the form of std::pair<size_t, std::string>. Excludes the "to" part.
-	 * @param output: the output parts to introduce, e.g. spring1, retainer3.
-	 */
+	// Add all operation output parts to the transition resource where the operation took place
 	void Parts::Add(const TopologyTransition& transition, const std::vector<std::string>& output) {
 		PCS_INFO(fmt::format(fmt::fg(fmt::color::coral),  "[Parts] Adding parts [{}] to resource {}",
 			fmt::join(output, ","), transition.first));
 		
 		for (const auto& part : output) {
-			parts_[transition.first].emplace_back(part);
+			parts_[transition.first].emplace(part);
 		}
 	}
 
-	/**
-	 * @brief Returns whether or not parts can be successfully synchronized.
-	 * @param TopologyTransition in, out: follows the form of std::pair<size_t, std::string>
-	 * @param input: the input parts that must be synchronized over, corresponding with the current operation.
-	 *	      Note that input parts must follow a 1-1 string mapping of the parts in the resources to the recipe.
-	 * @returns Whether or not the parts could be synchronized. This will fail when parts to be synchronized don't exist.
-	 */
+	// Move all parts from the operation input possible to the [in] transition
 	bool Parts::Synchronize(size_t in, size_t out, const std::unordered_set<std::string>& input) {
-		size_t count = 0;
-		size_t input_size = input.size();
-
-		auto end = std::remove_if(parts_[out].begin(), parts_[out].end(),
-			[&](const auto& i) {
-				if (input.contains(i)) {
-					count++;
-					parts_[in].emplace_back(i);
-					return true;
-				}
-				else {
-					return false;
-				}
-			});
-
-		parts_[out].erase(end, parts_[out].end());
-
-		if (count != input_size) {
-			PCS_TRACE(fmt::format(fmt::fg(fmt::color::light_yellow) | fmt::emphasis::underline, 
-				"[Parts Sync] Not all parts were found at resource {} from set: {}", out, fmt::join(input, ",")));
-			return false;
+		if (parts_[out].empty()) {
+			return false; // No parts present at the resource
 		}
-
+		
+		for (const auto& p : input) {
+			if (parts_[out].contains(p)) {
+				parts_[out].erase(p);
+				parts_[in].emplace(p);
+			}
+		}
 		return true;
 	}
 
-	/*
-	 * @brief Returns whether or not parts can be allocated to the resource. **(Resource N depletes the Part Set P)**
-	 * @param transition: Topology Transition in the form of std::pair<size_t, std::pair>
-	 * @param input: the input parts for that resource. Note: the resource will consume these parts.
-	 * @returns True if parts at present at resource and can be depleted, false otherwise.
-	 */
+	// Consume parts at the resource from the operation input set at the specified resource
 	bool Parts::Allocate(const TopologyTransition& transition, const std::unordered_set<std::string>& input) {
-		size_t count = 0;
-		size_t input_size = input.size();
-		size_t resource = transition.first;
-
-		auto end = std::remove_if(parts_[resource].begin(), parts_[resource].end(),
-			[&](const auto& i) {
-				if (input.contains(i)) {
-					PCS_INFO(fmt::format(fmt::fg(fmt::color::coral), "[Parts] Consuming part {} at resource {}", i, resource));
-					count++;
-					return true;
-				} else {
-					return false;
-				}
-			});
-
-		parts_[resource].erase(end, parts_[resource].end());
-
-		if (count != input_size) {
-			PCS_TRACE(fmt::format(fmt::fg(fmt::color::light_yellow) | fmt::emphasis::underline, "[Parts] Not all parts were found at resource {} from set: {}", resource,
-				fmt::join(input, ",")));
-			return false;
+		for (const auto& p : input) {
+			if (parts_[transition.first].contains(p)) {
+				parts_[transition.first].erase(p);
+			} else {
+				PCS_TRACE(fmt::format(fmt::fg(fmt::color::coral), "[Parts] Unable to consume part {}, expected at resource {} for operation {}",
+					p, transition.first, transition.second));
+				return false;
+			}
 		}
 
 		return true;

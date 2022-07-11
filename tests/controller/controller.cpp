@@ -6,7 +6,6 @@
 
 #include <boost/container_hash/hash.hpp>
 
-
 static pcs::Environment LoadPadMachine() {
 	pcs::Environment machine;
 	try {
@@ -22,7 +21,8 @@ static pcs::Environment LoadPadMachine() {
 }
 
 TEST(Controller, Pad) {
-	pcs::LTS<std::vector<std::string>, std::vector<std::string>, boost::hash<std::vector<std::string>>> expected;
+	pcs::LTS<std::pair<std::string, std::vector<std::string>>, std::vector<std::string>, 
+		     boost::hash<std::pair<std::string,std::vector<std::string>>>> expected;
 	pcs::ReadFromFile(expected, "../../tests/controller/testdata/pad.txt");
 
 	pcs::Environment machine = LoadPadMachine();
@@ -37,13 +37,14 @@ TEST(Controller, Pad) {
 
 	pcs::Controller con(&machine, machine.topology(), &recipe);
 	auto opt = con.Generate();
-	// ASSERT_EQ(opt.has_value(), true);
+	ASSERT_EQ(opt.has_value(), true);
 	auto got = opt.value();
-	// ASSERT_EQ(*got, expected);
+	ASSERT_EQ(*got, expected);
 }
 
-TEST(DISABLED_Controller, Pad_Incremental) {
-	pcs::LTS<std::vector<std::string>, std::vector<std::string>, boost::hash<std::vector<std::string>>> expected;
+TEST(Controller, Pad_Incremental) {
+	pcs::LTS<std::pair<std::string, std::vector<std::string>>, std::vector<std::string>,
+		boost::hash<std::pair<std::string, std::vector<std::string>>>> expected;
 	pcs::ReadFromFile(expected, "../../tests/controller/testdata/pad.txt");
 
 	pcs::Environment machine = LoadPadMachine();
@@ -58,7 +59,7 @@ TEST(DISABLED_Controller, Pad_Incremental) {
 
 	pcs::Controller con(&machine, machine.topology(), &recipe);
 	auto opt = con.Generate();
-	// ASSERT_EQ(opt.has_value(), true);
+	ASSERT_EQ(opt.has_value(), true);
 	auto got = opt.value();
-	// ASSERT_EQ(*got, expected);
+	ASSERT_EQ(*got, expected);
 }

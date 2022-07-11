@@ -24,7 +24,6 @@ namespace pcs {
 		using ControllerState = std::pair<std::string, std::vector<std::string>>;
 		using ControllerType = LTS<std::pair<std::string, std::vector<std::string>>, std::vector<std::string>,
 			                                boost::hash<std::pair<std::string, std::vector<std::string>>>>;
-
 	private:
 		ControllerType controller_;
 		const Environment* machine_;
