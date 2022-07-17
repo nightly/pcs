@@ -33,6 +33,11 @@ namespace pcs {
 			std::ifstream stream(filepath);
 			stream.exceptions(std::ifstream::badbit);
 			while (std::getline(stream, line)) {
+				
+				if (line == "") {
+					continue;
+				}
+
 				if (first_line) {
 					std::string initial_state_str = line;
 					StateT initial_state = ParseStateString<StateT>(line);
@@ -46,9 +51,9 @@ namespace pcs {
 				TransitionT label;
 
 				std::istringstream ss(line);
-				std::getline(ss, start_state_str, ' ');
-				std::getline(ss, label_str, ' ');
-				std::getline(ss, end_state_str);
+				std::getline(ss, start_state_str, '.');
+				std::getline(ss, label_str, '.');
+				std::getline(ss, end_state_str, '.');
 
 				start_state = ParseStateString<StateT>(Trim(start_state_str));
 				end_state = ParseStateString<StateT>(Trim(end_state_str));

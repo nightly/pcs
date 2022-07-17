@@ -1,4 +1,4 @@
-B@s0,s0,s0
-B@s0,s0,s0 load,-,- B@s1,s0,s0
-B@s1,s0,s0 out:36,in:36,- B@s0,s1,s0
-B@s0,s1,s0 -,drill,- B@s0,s2,s0
+B/s0,s0,s0
+B/s0,s0,s0. load,-,-. B/s1,s0,s0.
+B/s1,s0,s0. out:36,in:36,-. B/s0,s1,s0.
+B/s0,s1,s0. -,drill,-. B/s0,s2,s0.

@@ -94,11 +94,11 @@ void Run(const std::string& name, const RunnerOpts& opts) {
 	case SolverOpt::DepthFirst:
 		type = "/dfs/";
 		break;
-	case SolverOpt::BreadthFirstMinTransitions:
-		type = "/bfs-transitions/";
+	case SolverOpt::BestFirstTransitions:
+		type = "/best-transitions/";
 		break;
-	case SolverOpt::BreadthFirstMinResources:
-		type = "/bfs-resources/";
+	case SolverOpt::BestFirstResources:
+		type = "/best-resources/";
 		break;
 	}
 
@@ -123,10 +123,10 @@ void Run(const std::string& name, const RunnerOpts& opts) {
 	if (opts.solver == SolverOpt::DepthFirst) {
 		pcs::Controller con(&machine, machine.topology(), &recipe);
 		controller_lts = con.Generate();
-	} else if (opts.solver == SolverOpt::BreadthFirstMinTransitions) {
+	} else if (opts.solver == SolverOpt::BestFirstTransitions) {
 		pcs::BestController con(&machine, machine.topology(), &recipe);
 		controller_lts = con.Generate(pcs::MinimizeOpt::Transitions);
-	} else if (opts.solver == SolverOpt::BreadthFirstMinResources) {
+	} else if (opts.solver == SolverOpt::BestFirstResources) {
 		pcs::BestController con(&machine, machine.topology(), &recipe);
 		controller_lts = con.Generate(pcs::MinimizeOpt::Resources);
 	}

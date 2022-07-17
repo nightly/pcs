@@ -3,7 +3,6 @@
 namespace pcs {
 	 
 	 /**
-	 * @brief Basically a std::pair, to represent State transitions but with more domain-focused naming to avoid pair inception confusion
 	 * @tparam KeyT: the type of the State which the transition points to
 	 * @tparam TransitionT: the label of the given transition
 	 */

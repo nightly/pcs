@@ -21,7 +21,7 @@ namespace pcs {
 
 	template <>
 	std::pair<std::string, std::vector<std::string>> ParseStateString(const std::string& str) {
-		constexpr char delimiter = '@';
+		constexpr char delimiter = '/';
 		std::istringstream ss(str);
 		std::string p1, p2_str;
 		std::getline(ss, p1, delimiter);

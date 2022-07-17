@@ -15,6 +15,7 @@
 namespace pcs {
 
 	const TaskExpression& CurrentTask(const CompositeOperation& co, size_t seq_id);
+	bool IsLastOp(const CompositeOperation& co, size_t seq_id);
 
 	void ApplyTransition(const PlanTransition& plan_t, 
 		                 LTS<std::pair<std::string, std::vector<std::string>>, std::vector<std::string>, 

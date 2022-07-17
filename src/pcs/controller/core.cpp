@@ -27,6 +27,14 @@ namespace pcs {
 		}
 	}
 
+	bool IsLastOp(const CompositeOperation& co, size_t seq_id) {
+		if (co.HasGuard()) {
+			return (seq_id + 1) == co.sequential.size();
+		} else {
+			return (seq_id + 2) == co.sequential.size();
+		}
+	}
+
 	void ApplyTransition(const PlanTransition& plan_t, ControllerType& controller) {
 		controller.AddTransition({ *plan_t.recipe_state, *plan_t.from }, plan_t.label, { *plan_t.recipe_state, *plan_t.to });
 		PCS_INFO(fmt::format(fmt::fg(fmt::color::royal_blue) | fmt::emphasis::bold,

@@ -1,9 +1,9 @@
 s0,s0
-s0,s0 0/nop s0,s0
-s0,s0 0/load s1,s0
-s0,s0 1/nop s0,s0
-s1,s0 0/out:1 s0,s1
-s1,s0 1/nop s1,s0
-s1,s0 1/in:1 s0,s1
-s0,s1 0/nop s0,s1
-s0,s1 0/load s1,s1
+s0,s0. 0/nop. s0,s0.
+s0,s0. 0/load. s1,s0.
+s0,s0. 1/nop. s0,s0.
+s1,s0. 0/out:1. s0,s1.
+s1,s0. 1/nop. s1,s0.
+s1,s0. 1/in:1. s0,s1.
+s0,s1. 0/nop. s0,s1.
+s0,s1. 0/load. s1,s1.

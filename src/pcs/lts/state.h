@@ -1,7 +1,5 @@
 #pragma once 
 
-#include "pcs/lts/transition.h"
-
 #include <string>
 #include <vector>
 #include <ostream>

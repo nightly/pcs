@@ -14,7 +14,7 @@ int main() {
 
 	RunnerOpts opts{ .solver = SolverOpt::DepthFirst, .incremental_topology = true, 
 		             .generate_images = true, .only_highlighted_topology_image = false };
-	Run("pad", opts);
+	Run("best", opts);
 
 	return 0;
 }
