@@ -11,7 +11,7 @@
 #include <spdlog/fmt/bundled/color.h>
 #include <spdlog/fmt/ranges.h>
 
-#include "pcs/lts/lts.h"
+#include "lts/lts.h"
 #include "pcs/controller/core.h"
 #include "pcs/common/log.h"
 #include "pcs/common/strings.h"

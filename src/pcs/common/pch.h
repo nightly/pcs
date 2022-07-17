@@ -19,12 +19,12 @@
 #include <fstream>
 
 // LTS
-#include "pcs/lts/lts.h"
-#include "pcs/lts/state.h"
-#include "pcs/lts/transition.h"
-#include "pcs/lts/export.h"
-#include "pcs/lts/writers.h"
-#include "pcs/lts/parsers/parsers.h"
+#include "lts/lts.h"
+#include "lts/state.h"
+#include "lts/transition.h"
+#include "lts/export.h"
+#include "lts/writers.h"
+#include "lts/parsers/parsers.h"
 
 #include <boost/container_hash/hash.hpp>
 

@@ -17,7 +17,7 @@ namespace pcs {
 		}
 	}
 
-	const LTS<std::string, CompositeOperation>& Recipe::lts() const {
+	const nightly::LTS<std::string, CompositeOperation>& Recipe::lts() const {
 		return lts_;
 	}
 
@@ -33,7 +33,7 @@ namespace pcs {
 		}
 	}
 
-	Recipe::operator const LTS<std::string, CompositeOperation>& () const {
+	Recipe::operator const nightly::LTS<std::string, CompositeOperation>& () const {
 		return lts_;
 	}
 

@@ -4,15 +4,15 @@
 #include <array>
 #include <vector>
 
-#include "pcs/lts/lts.h"
+#include "lts/lts.h"
 #include "pcs/operation/composite.h"
 #include "pcs/operation/guard.h"
-#include "pcs/lts/writers.h"
+#include "lts/writers.h"
 
 using namespace pcs;
 
 TEST(ProductParser, Recipe1) {
-	LTS<std::string, CompositeOperation> got, expected;
+	nightly::LTS<std::string, CompositeOperation> got, expected;
 	ReadFromJsonFile(got, "../../tests/product/testdata/recipe1.json");
 
 	expected.set_initial_state("A");

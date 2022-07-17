@@ -1,6 +1,6 @@
 #pragma once
 
-#include "pcs/lts/lts.h"
+#include "lts/lts.h"
 #include "pcs/topology/topology.h"
 #include "pcs/controller/controller.h"
 
@@ -18,10 +18,10 @@ namespace pcs {
 
 		using TargetMapT = std::unordered_map<TopologyState, std::unordered_set<std::string>, boost::hash<TopologyState>>;
 	public:
-		static void HighlightTopology(const LTS < TopologyState, TopologyTransition, boost::hash<TopologyState>> & topology,
-			const LTS<ControllerState, ControllerTransition, boost::hash<ControllerState>>& controller, const std::filesystem::path& out_path);
+		static void HighlightTopology(const nightly::LTS<TopologyState, TopologyTransition, boost::hash<TopologyState>> & topology,
+			const nightly::LTS<ControllerState, ControllerTransition, boost::hash<ControllerState>>& controller, const std::filesystem::path& out_path);
 	private: 
-		static TargetMapT BuildTargetMap(const LTS<ControllerState, ControllerTransition, boost::hash<ControllerState>>& controller);
+		static TargetMapT BuildTargetMap(const nightly::LTS<ControllerState, ControllerTransition, boost::hash<ControllerState>>& controller);
 	};
 
 }

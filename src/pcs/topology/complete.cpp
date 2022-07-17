@@ -9,10 +9,10 @@
 
 #include <boost/container_hash/hash.hpp>
 
-#include "pcs/lts/lts.h"
+#include "lts/lts.h"
 #include "pcs/topology/topology.h"
 #include "pcs/topology/core.h"
-#include "pcs/lts/state.h"
+#include "lts/state.h"
 #include "pcs/operation/parsers/label.h"
 #include "pcs/common/log.h"
 
@@ -22,8 +22,8 @@ namespace pcs {
 	 * @param ltss: the LTSs to merge
 	 * @param recursive: @default = true. Iterative or recursive DFS.
 	 */
-	CompleteTopology::CompleteTopology(const std::vector<LTS<std::string, std::string>>& ltss, bool recursive)
-	 :ltss_(ltss) {
+	CompleteTopology::CompleteTopology(const std::vector<nightly::LTS<std::string, std::string>>& ltss, bool recursive)
+		: ltss_(ltss) {
 		std::vector<std::string> initial_key;
 		initial_key.reserve(ltss.size());
 		for (const auto& lts : ltss) {
@@ -37,11 +37,11 @@ namespace pcs {
 		}
 	}
 
-	const LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>>& CompleteTopology::lts() const {
+	const nightly::LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>>& CompleteTopology::lts() const {
 		return topology_;
 	}
 
-	CompleteTopology::operator const LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>>& () const {
+	CompleteTopology::operator const nightly::LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>>& () const {
 		return topology_;
 	}
 
@@ -49,7 +49,7 @@ namespace pcs {
 		return topology_.initial_state();
 	}
 
-	const State<std::vector<std::string>, std::pair<size_t, std::string>>& CompleteTopology::at(const std::vector<std::string>& key) {
+	const nightly::State<std::vector<std::string>, std::pair<size_t, std::string>>& CompleteTopology::at(const std::vector<std::string>& key) {
 		return topology_.states().at(key);
 	}
 

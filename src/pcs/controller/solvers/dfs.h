@@ -7,7 +7,7 @@
 
 #include "pcs/environment/environment.h"
 #include "pcs/product/recipe.h"
-#include "pcs/lts/lts.h"
+#include "lts/lts.h"
 #include "pcs/operation/transfer.h"
 #include "pcs/controller/plan_transition.h"
 #include "pcs/controller/parts.h"
@@ -22,7 +22,7 @@ namespace pcs {
 
 		using ControllerTransition = std::vector<std::string>;
 		using ControllerState = std::pair<std::string, std::vector<std::string>>;
-		using ControllerType = LTS<std::pair<std::string, std::vector<std::string>>, std::vector<std::string>,
+		using ControllerType = nightly::LTS<std::pair<std::string, std::vector<std::string>>, std::vector<std::string>,
 			                                boost::hash<std::pair<std::string, std::vector<std::string>>>>;
 	private:
 		ControllerType controller_;

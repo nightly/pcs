@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "pcs/topology/topology.h"
-#include "pcs/lts/parsers/parsers.h"
+#include "lts/parsers/parsers.h"
 
 static void HingeController2R(benchmark::State& state) {
 	pcs::Environment machine;

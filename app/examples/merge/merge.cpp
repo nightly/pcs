@@ -6,15 +6,15 @@
 #include <filesystem>
 #include <string>
 
-#include "pcs/lts/lts.h"
+#include "lts/lts.h"
 
 #include "pcs/topology/complete.h"
 #include "pcs/topology/topology.h"
 
-#include "pcs/lts/state.h"
-#include "pcs/lts/parsers/parsers.h"
-#include "pcs/lts/export.h"
-#include "pcs/lts/writers.h"
+#include "lts/state.h"
+#include "lts/parsers/parsers.h"
+#include "lts/export.h"
+#include "lts/writers.h"
 #include "pcs/common/log.h"
 
 /*
@@ -23,15 +23,15 @@
  */
 void MergeExample(size_t number) {
 	// Read LTS' & combine
-	std::vector<pcs::LTS<std::string, std::string>> ltss;
+	std::vector<nightly::LTS<std::string, std::string>> ltss;
 	ltss.reserve(number);
 	for (size_t i = 1; i <= number; ++i) {
 		try {
-			pcs::LTS<std::string, std::string> lts;
+			nightly::LTS<std::string, std::string> lts;
 			if (i % 2 == 0) {
-				pcs::ReadFromFile(lts, "../../data/lts/lts2.txt");
+				nightly::ReadFromFile(lts, "../../data/lts/lts2.txt");
 			} else {
-				pcs::ReadFromFile(lts, "../../data/lts/lts1.txt");
+				nightly::ReadFromFile(lts, "../../data/lts/lts1.txt");
 			}
 			ltss.emplace_back(lts);
 		} catch (std::ifstream::failure) {
@@ -41,7 +41,7 @@ void MergeExample(size_t number) {
 	}
 
 	pcs::CompleteTopology topology(ltss);
-	pcs::LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>> lts_combined = topology.lts();
+	nightly::LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>> lts_combined = topology.lts();
 
 	// Console output
 	for (size_t i = 0; i < ltss.size(); i++) {
@@ -61,9 +61,9 @@ void MergeExample(size_t number) {
 	try {
 		for (size_t i = 0; i < ltss.size(); i++) {
 			std::string path = "../../exports/merge/lts" + std::to_string(i + 1) + ".gv";
-			pcs::ExportToFile(ltss[i], path);
+			nightly::ExportToFile(ltss[i], path);
 		}
-		pcs::ExportToFile(lts_combined, "../../exports/merge/combined-lts.gv");
+		nightly::ExportToFile(lts_combined, "../../exports/merge/combined-lts.gv");
 	} catch (std::ofstream::failure) {
 		std::cerr << "Error writing to files or creating directory\n";
 		return std::exit(1);

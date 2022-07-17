@@ -13,7 +13,7 @@
 #include <spdlog/fmt/bundled/color.h>
 #include <spdlog/fmt/ranges.h>
 
-#include "pcs/lts/lts.h"
+#include "lts/lts.h"
 #include "pcs/controller/core.h"
 #include "pcs/common/log.h"
 #include "pcs/common/strings.h"
@@ -26,7 +26,7 @@ namespace pcs {
 
 	using ControllerTransition = std::vector<std::string>;
 	using ControllerState = std::pair<std::string, std::vector<std::string>>;
-	using ControllerType = LTS<std::pair<std::string, std::vector<std::string>>, std::vector<std::string>,
+	using ControllerType = nightly::LTS<std::pair<std::string, std::vector<std::string>>, std::vector<std::string>,
 		                       boost::hash<std::pair<std::string, std::vector<std::string>>>>;
 
 	BestController::BestController(const Environment* machine, ITopology* topology, const Recipe* recipe) 

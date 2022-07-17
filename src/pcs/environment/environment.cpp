@@ -2,26 +2,26 @@
 
 #include "pcs/topology/complete.h"
 #include "pcs/topology/incremental.h"
-#include "pcs/lts/parsers/parsers.h"
+#include "lts/parsers/parsers.h"
 #include "pcs/common/log.h"
 
 namespace pcs {
 
-	Environment::Environment(std::vector<LTS<std::string, std::string>>&& resources, bool compute_complete) {
+	Environment::Environment(std::vector<nightly::LTS<std::string, std::string>>&& resources, bool compute_complete) {
 		resources_ = std::move(resources);
 		if (compute_complete) {
 			Complete();
 		}
 	}
 
-	Environment::Environment(const std::span<LTS<std::string, std::string>>& resources, bool compute_complete) {
+	Environment::Environment(const std::span<nightly::LTS<std::string, std::string>>& resources, bool compute_complete) {
 		resources_.assign(resources.begin(), resources.end());
 		if (compute_complete) {
 			Complete();
 		}
 	}
 
-	const std::vector<LTS<std::string, std::string>>& Environment::resources() const {
+	const std::vector<nightly::LTS<std::string, std::string>>& Environment::resources() const {
 		return resources_;
 	}
 
@@ -56,7 +56,7 @@ namespace pcs {
 	 * @exception Propagates std::ifstream::failure
 	 */
 	void Environment::AddResource(const std::filesystem::path& filepath, bool is_json) {
-		LTS<std::string> lts;
+		nightly::LTS<std::string> lts;
 		try {
 			if (is_json) {
 				ReadFromJsonFile(lts, filepath);
@@ -72,7 +72,7 @@ namespace pcs {
 	/*
 	 * @brief Adds a LTS<std::string> resource to the machine & handles the implications on the topology 
 	 */
-	void Environment::AddResource(const LTS<std::string, std::string>& resource) {
+	void Environment::AddResource(const nightly::LTS<std::string, std::string>& resource) {
 		resources_.emplace_back(resource);
 
 		//if (topology_.NumOfStates() == 0) {
@@ -85,7 +85,7 @@ namespace pcs {
 	/* 
 	 * @brief Adds a resource with move semantics
 	 */
-	void Environment::AddResource(LTS<std::string, std::string>&& resource) {
+	void Environment::AddResource(nightly::LTS<std::string, std::string>&& resource) {
 		resources_.emplace_back(std::move(resource));
 
 		//if (topology_.NumOfStates() == 0) {

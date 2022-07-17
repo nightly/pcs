@@ -25,9 +25,6 @@ macro(package_add_test TESTNAME)
 endmacro()
 
 # Test Suite
-package_add_test("lts" "lts/lts.cpp")
-package_add_test("lts-parsers" "lts/parsers.cpp")
-
 package_add_test("product-lts-parser" "product/parser.cpp")
 
 package_add_test("topology-complete" "topology/complete.cpp")

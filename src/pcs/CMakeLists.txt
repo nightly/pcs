@@ -1,7 +1,6 @@
 cmake_minimum_required (VERSION 3.22)
 
-set(PCS_SOURCES "lts/lts.h" "lts/state.h" "lts/writers.h" "lts/transition.h"
-"lts/parsers/parsers.h" "lts/parsers/state.cpp" "lts/parsers/transition.cpp"
+set(PCS_SOURCES
 
 "topology/topology.h" "topology/core.cpp" "topology/complete.cpp" "topology/incremental.cpp" 
  "topology/stitch.cpp" 
@@ -41,7 +40,17 @@ endif()
 #   Dependencies
 # ==================
 
-add_subdirectory("${PROJECT_SOURCE_DIR}/external/json" "external/json")
+# =========
+#   Internal
+# =========
+
+add_subdirectory("${PROJECT_SOURCE_DIR}/src/pcs/lts" "src/pcs/lts")
+
+# =================
+#  General
+# =================
+
+## add_subdirectory("${PROJECT_SOURCE_DIR}/external/json" "external/json") # public dependency of lts
 add_subdirectory("${PROJECT_SOURCE_DIR}/external/spdlog" "external/spdlog")
 
 # =========
@@ -65,6 +74,7 @@ add_subdirectory("${PROJECT_SOURCE_DIR}/external/boost/move" "external/boost/mov
 
 target_link_libraries(pcs 
     PUBLIC 
+        lts
         nlohmann_json
         spdlog::spdlog
         Boost::container_hash

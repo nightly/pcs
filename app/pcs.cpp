@@ -2,6 +2,8 @@
 #include "examples/merge/merge.h"
 #include "examples/experimental/experimental.h"
 
+#include "pcs/common/log.h"
+
 using namespace pcs;
 
 int main() {

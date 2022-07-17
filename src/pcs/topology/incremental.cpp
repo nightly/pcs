@@ -6,12 +6,12 @@
 
 #include <spdlog/fmt/ranges.h>
 
-#include "pcs/lts/lts.h"
+#include "lts/lts.h"
 #include "pcs/common/log.h"
 
 namespace pcs {
 
-	IncrementalTopology::IncrementalTopology(const std::vector<LTS<std::string, std::string>>& ltss)
+	IncrementalTopology::IncrementalTopology(const std::vector<nightly::LTS<std::string, std::string>>& ltss)
 	: ltss_(ltss) { 
 		// We start our incremental topology by setting the initial state. We also expand the initial state.
 		std::vector<std::string> initial_key;
@@ -22,7 +22,7 @@ namespace pcs {
 		topology_.set_initial_state(initial_key);
 	}
 
-	const LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>>& IncrementalTopology::lts() const {
+	const nightly::LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>>& IncrementalTopology::lts() const {
 		return topology_;
 	}
 
@@ -30,11 +30,11 @@ namespace pcs {
 		return topology_.initial_state();
 	}
 
-	IncrementalTopology::operator const LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>>& () const {
+	IncrementalTopology::operator const nightly::LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>>& () const {
 		return topology_;
 	}
 
-	const State<std::vector<std::string>, std::pair<size_t, std::string>>& IncrementalTopology::at(const std::vector<std::string>& key) {
+	const nightly::State<std::vector<std::string>, std::pair<size_t, std::string>>& IncrementalTopology::at(const std::vector<std::string>& key) {
 		if (visited_.contains(key) == true) {
 			return topology_.states().at(key);
 		} else {

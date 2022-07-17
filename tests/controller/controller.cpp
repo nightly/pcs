@@ -21,9 +21,9 @@ static pcs::Environment LoadPadMachine() {
 }
 
 TEST(Controller, Pad) {
-	pcs::LTS<std::pair<std::string, std::vector<std::string>>, std::vector<std::string>, 
+	nightly::LTS<std::pair<std::string, std::vector<std::string>>, std::vector<std::string>, 
 		     boost::hash<std::pair<std::string,std::vector<std::string>>>> expected;
-	pcs::ReadFromFile(expected, "../../tests/controller/testdata/pad/controller.txt");
+	nightly::ReadFromFile(expected, "../../tests/controller/testdata/pad/controller.txt");
 
 	pcs::Environment machine = LoadPadMachine();
 	pcs::Recipe recipe;
@@ -43,9 +43,9 @@ TEST(Controller, Pad) {
 }
 
 TEST(Controller, Pad_Incremental) {
-	pcs::LTS<std::pair<std::string, std::vector<std::string>>, std::vector<std::string>,
+	nightly::LTS<std::pair<std::string, std::vector<std::string>>, std::vector<std::string>,
 		boost::hash<std::pair<std::string, std::vector<std::string>>>> expected;
-	pcs::ReadFromFile(expected, "../../tests/controller/testdata/pad/controller.txt");
+	nightly::ReadFromFile(expected, "../../tests/controller/testdata/pad/controller.txt");
 
 	pcs::Environment machine = LoadPadMachine();
 	pcs::Recipe recipe;

@@ -6,16 +6,15 @@
 #include <spdlog/fmt/bundled/color.h>
 #include <spdlog/fmt/ranges.h>
 
-#include "pcs/lts/lts.h"
+#include "lts/lts.h"
 #include "pcs/controller/plan_transition.h"
 #include "pcs/common/log.h"
 #include "pcs/operation/task_expression.h"
 #include "pcs/operation/composite.h"
 
-
 namespace pcs {
 
-	using ControllerType = LTS<std::pair<std::string, std::vector<std::string>>, std::vector<std::string>,
+	using ControllerType = nightly::LTS<std::pair<std::string, std::vector<std::string>>, std::vector<std::string>,
 		                                 boost::hash<std::pair<std::string, std::vector<std::string>>>>;
 
 	const TaskExpression& CurrentTask(const CompositeOperation& co, size_t seq_id) {

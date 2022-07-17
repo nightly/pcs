@@ -8,6 +8,9 @@ option(PCS_VERBOSE_OUTPUT "Verbose output" OFF)
 
 option(PCS_PCH "Use precompiled headers" ON)
 
+execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
+                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+
 # Library
 add_subdirectory(src/pcs)
 

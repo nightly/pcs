@@ -6,8 +6,8 @@
 #include <algorithm>
 #include <cctype>
 
-#include "pcs/lts/parsers/parsers.h"
-#include "pcs/lts/export.h"
+#include "lts/parsers/parsers.h"
+#include "lts/export.h"
 #include "pcs/environment/environment.h"
 #include "pcs/environment/writers.h"
 #include "pcs/product/recipe.h"
@@ -74,7 +74,7 @@ static void GraphVizSave(const std::string& export_folder, size_t num_resources,
 	}
 }
 
-using ControllerType = pcs::LTS<std::pair<std::string, std::vector<std::string>>, std::vector<std::string>,
+using ControllerType = nightly::LTS<std::pair<std::string, std::vector<std::string>>, std::vector<std::string>,
 	                            boost::hash<std::pair<std::string, std::vector<std::string>>>>;
 
 /*
@@ -108,7 +108,7 @@ void Run(const std::string& name, const RunnerOpts& opts) {
 
 	/* Load everything */
 	pcs::Recipe recipe = LoadRecipe(data_folder);
-	pcs::ExportToFile(recipe.lts(), export_folder + "/recipe.gv");
+	nightly::ExportToFile(recipe.lts(), export_folder + "/recipe.gv");
 
 	pcs::Environment machine = LoadMachine(data_folder, num_resources);
 	if (opts.incremental_topology) {
@@ -132,7 +132,7 @@ void Run(const std::string& name, const RunnerOpts& opts) {
 	}
 
 	if (controller_lts.has_value()) {
-		pcs::ExportToFile(*controller_lts, export_folder + "/controller.gv");
+		nightly::ExportToFile(*controller_lts, export_folder + "/controller.gv");
 		pcs::Highlighter::HighlightTopology(machine.topology()->lts(), *controller_lts, export_folder + "/highlighted_topology.gv");
 	} else {
 		PCS_WARN("[PAD] No controller generated");

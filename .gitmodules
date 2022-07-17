@@ -52,3 +52,6 @@
 [submodule "external/boost/move"]
 	path = external/boost/move
 	url = https://github.com/boostorg/move
+[submodule "src/pcs/lts"]
+	path = src/pcs/lts
+	url = https://github.com/nightly/lts

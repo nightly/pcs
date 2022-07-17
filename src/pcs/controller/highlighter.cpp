@@ -11,9 +11,12 @@
 #include "pcs/common/directory.h"
 #include "pcs/common/log.h"
 #include "pcs/common/strings.h"
-
+#include "lts/lts.h"
+#include "lts/transition.h"
 
 namespace pcs {
+
+	using namespace nightly;
 
 	using ControllerState = std::pair<std::string, std::vector<std::string>>;
 	using ControllerTransition = std::vector<std::string>;
@@ -28,7 +31,7 @@ namespace pcs {
 	 * 
 	 * target_map: KeyT = Topology State and values are an unordered set of transitions applicable to that state
 	 */
-	 TargetMapT Highlighter::BuildTargetMap(const LTS<ControllerState, ControllerTransition, 
+	 TargetMapT Highlighter::BuildTargetMap(const nightly::LTS<ControllerState, ControllerTransition, 
 		                                   boost::hash<ControllerState>>& controller) {
 		 TargetMapT target_map;
 		for (const auto& state : controller.states()) {
@@ -50,9 +53,9 @@ namespace pcs {
 	/*
 	 * @brief Returns a highlighted topology showing the path the controller took
 	 */
-	void Highlighter::HighlightTopology(const LTS<TopologyState, TopologyTransition, boost::hash<TopologyState>>& topology,
-		                  const LTS<ControllerState, ControllerTransition, boost::hash<ControllerState>>& controller, 
-		                  const std::filesystem::path& out_path) {
+	void Highlighter::HighlightTopology(const nightly::LTS<TopologyState, TopologyTransition, boost::hash<TopologyState>>& topology,
+		                               const nightly::LTS<ControllerState, ControllerTransition, boost::hash<ControllerState>>& controller, 
+		                               const std::filesystem::path& out_path) {
 		std::ofstream os;
 		os.exceptions(std::ofstream::badbit);
 		CreateDirectoryForPath(out_path);

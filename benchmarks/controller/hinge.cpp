@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "pcs/topology/topology.h"
-#include "pcs/lts/parsers/parsers.h"
+#include "lts/parsers/parsers.h"
 
 static void HingeCompleteTopology(benchmark::State& state) {
 	// The time to generate the complete topology alone

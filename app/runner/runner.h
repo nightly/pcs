@@ -3,7 +3,7 @@
 #include <array>
 #include <filesystem>
 
-#include "pcs/lts/lts.h"
+#include "lts/lts.h"
 #include "pcs/product/recipe.h"
 #include "pcs/environment/environment.h"
 
