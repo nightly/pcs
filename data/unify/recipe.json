@@ -1,0 +1,47 @@
+{
+  "initialState": "A",
+  "transitions": [
+    {
+      "startState": "A",
+      "label": {
+        "guard": {},
+        "sequential": [
+          {
+            "name": "load",
+            "input": [],
+            "parameters": [
+              {
+                "name": "velocity",
+                "value": "5"
+              }
+            ],
+            "output": [
+              "p1"
+            ]
+          },
+          {
+            "name": "drill",
+            "input": [
+              "p1"
+            ],
+            "parameters": [
+              {
+                "name": "speed",
+                "value": "35.5"
+              },
+              {
+                "name": "rotation",
+                "value": "90"
+              }
+            ],
+            "output": [
+              "p2"
+            ]
+          }
+        ],
+        "parallel": []
+      },
+      "endState": "B"
+    }
+  ]
+}

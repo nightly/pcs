@@ -18,6 +18,7 @@ struct RunnerOpts {
 	bool incremental_topology;
 	bool generate_images;
 	bool only_highlighted_topology_image; // Exports the highlighted topology only, rather than topology & highlighted topology
+	std::string recipe_name;
 };
 
 void Run(const std::string& name, const RunnerOpts& opts);
@@ -25,7 +26,7 @@ void Run(const std::string& name, const RunnerOpts& opts);
 static size_t NumOfResources(const std::filesystem::path& data_folder);
 
 static pcs::Environment LoadMachine(const std::string& data_folder, size_t num_resources);
-static pcs::Recipe LoadRecipe(const std::string& data_folder);
+static pcs::Recipe LoadRecipe(const std::string& data_folder, const std::string& recipe_file);
 static void CompleteTopology(pcs::Environment& machine);
 static void IncrementalTopology(pcs::Environment& machine);
 static void GraphVizSave(const std::string& export_folder, size_t num_resources, bool only_highlighted_topology);

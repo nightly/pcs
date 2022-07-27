@@ -22,7 +22,7 @@ namespace pcs {
 	using ControllerTransition = std::vector<std::string>;
 
 	using TopologyState = std::vector<std::string>;
-	using TopologyTransition = std::pair<size_t, std::string>;
+	using TopologyTransition = std::pair<size_t, ParameterizedOp>;
 
 	using TargetMapT = std::unordered_map<TopologyState, std::unordered_set<std::string>, boost::hash<TopologyState>>;
 
@@ -83,13 +83,13 @@ namespace pcs {
 					}
 				}
 				for (const auto& t : state.transitions_) {
-					if ((target_map.contains(pair.first)) && (target_map[pair.first].contains(t.label().second))) {
-						os << "	" << "\"" << pair.first << "\"" << " -> " << "\"" << t.to() << "\"" << " [color=\"royalblue4\" penwidth=2.25 label = " << "\"";
-						os << t.label() << "\"];\n";
+					if ((target_map.contains(pair.first)) && (target_map[pair.first].contains(t.label().second.operation().name()))) {
+						os << "	" << "\"" << pair.first << "\"" << " -> " << "\"" << t.to() << "\"" << " [color=\"royalblue4\" penwidth=2.25 label = " << "<";
+						os << t.label() << ">];\n";
 						os << "	" << "\"" << pair.first << "\"" << " [shape=circle, style=filled, fillcolor=dodgerblue2]" << "\n";
 					} else {
-						os << "	" << "\"" << pair.first << "\"" << " -> " << "\"" << t.to() << "\"" << " [label = " << "\"";
-						os << t.label() << "\"];\n";
+						os << "	" << "\"" << pair.first << "\"" << " -> " << "\"" << t.to() << "\"" << " [label = " << "<";
+						os << t.label() << ">];\n";
 					}
 				}
 			}

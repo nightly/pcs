@@ -7,13 +7,14 @@ set(PCS_SOURCES
 
 "controller/solvers/dfs.cpp" "controller/solvers/best.cpp" 
 "controller/core.cpp" "controller/plan_transition.cpp" "controller/parts.cpp"
-"controller/highlighter.cpp"
+"controller/unify.cpp" "controller/highlighter.cpp"
 
 "product/recipe.cpp"  "product/parsers/recipe.cpp"
 
 "operation/operation.h"  "operation/composite.cpp" "operation/guard.cpp" "operation/task_expression.cpp"
 "operation/observable.cpp" "operation/transfer.cpp" "operation/transfer_hash.h" "operation/nop.cpp"
-"operation/parsers/label.cpp" 
+"operation/parameter.cpp" "operation/parameterized_op.cpp"
+"operation/parsers/label.cpp" "operation/parsers/parameterized_op.cpp"
 
 "environment/environment.cpp" "environment/writers.cpp"
 
@@ -40,9 +41,9 @@ endif()
 #   Dependencies
 # ==================
 
-# =========
+# ===============
 #   Internal
-# =========
+# ===============
 
 add_subdirectory("${PROJECT_SOURCE_DIR}/src/pcs/lts" "src/pcs/lts")
 

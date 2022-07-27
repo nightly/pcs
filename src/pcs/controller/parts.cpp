@@ -7,10 +7,11 @@
 #include "spdlog/fmt/ostr.h"
 
 #include "pcs/common/log.h"
+#include "pcs/operation/parameterized_op.h"
 
 namespace pcs {
 
-	using TopologyTransition = std::pair<size_t, std::string>;
+	using TopologyTransition = std::pair<size_t, ParameterizedOp>;
 
 	// ==========================
 	// Constructors & destructor

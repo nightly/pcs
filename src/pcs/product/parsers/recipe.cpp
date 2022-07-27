@@ -9,6 +9,7 @@
 #include "pcs/product/recipe.h"
 #include "pcs/operation/guard.h"
 #include "pcs/operation/operation.h"
+#include "pcs/operation/parameter.h"
 
 namespace pcs {
 
@@ -59,28 +60,36 @@ namespace pcs {
 				Observable o;
 				o.name_ = seq_op["name"];
 				std::unordered_set<std::string> input;
+				std::vector<Parameter> parameters;
 				std::vector<std::string> output;
 				for (const auto& in : seq_op["input"]) {
 					input.emplace(in);
 				}
+				for (const auto& param : seq_op["parameters"]) {
+					parameters.emplace_back(param["name"], param["value"]);
+				}
 				for (const auto& out : seq_op["output"]) {
 					output.emplace_back(out);
 				}
-				co.sequential.emplace_back(std::move(o), std::move(input), std::move(output));
+				co.sequential.emplace_back(std::move(o), std::move(input), std::move(parameters), std::move(output));
 			}
 
 			for (const auto& par_op : t["label"]["parallel"]) {
 				Observable o;
 				o.name_ = par_op["name"];
 				std::unordered_set<std::string> input;
+				std::vector<Parameter> parameters;
 				std::vector<std::string> output;
 				for (const auto& in : par_op["input"]) {
 					input.emplace(in);
 				}
+				for (const auto& param : par_op["parameters"]) {
+					parameters.emplace_back(param["name"], param["value"]);
+				}
 				for (const auto& out : par_op["output"]) {
 					output.emplace_back(out);
 				}
-				co.parallel.emplace_back(std::move(o), std::move(input), std::move(output));
+				co.parallel.emplace_back(std::move(o), std::move(input), std::move(parameters), std::move(output));
 			}
 
 			lts.AddTransition(t["startState"], std::move(co), t["endState"]);

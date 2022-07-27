@@ -17,23 +17,6 @@ namespace pcs {
 	using ControllerType = nightly::LTS<std::pair<std::string, std::vector<std::string>>, std::vector<std::string>,
 		                                 boost::hash<std::pair<std::string, std::vector<std::string>>>>;
 
-	const TaskExpression& CurrentTask(const CompositeOperation& co, size_t seq_id) {
-		if (seq_id == 0 && co.HasGuard()) {
-			return co.guard;
-		} else {
-			co.HasGuard() ? seq_id-- : seq_id;
-			return co.sequential[seq_id];
-		}
-	}
-
-	bool IsLastOp(const CompositeOperation& co, size_t seq_id) {
-		if (co.HasGuard()) {
-			return (seq_id + 1) == co.sequential.size();
-		} else {
-			return (seq_id + 2) == co.sequential.size();
-		}
-	}
-
 	void ApplyTransition(const PlanTransition& plan_t, ControllerType& controller) {
 		controller.AddTransition({ *plan_t.recipe_state, *plan_t.from }, plan_t.label, { *plan_t.recipe_state, *plan_t.to });
 		PCS_INFO(fmt::format(fmt::fg(fmt::color::royal_blue) | fmt::emphasis::bold,

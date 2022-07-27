@@ -18,10 +18,11 @@
 #include "pcs/common/log.h"
 #include "pcs/common/strings.h"
 #include "pcs/operation/parsers/label.h"
+#include "pcs/controller/unify.h"
 
 namespace pcs {
 
-	using TopologyTransition = std::pair<size_t, std::string>;
+	using TopologyTransition = std::pair<size_t, ParameterizedOp>;
 	using TopologyState = std::vector<std::string>;
 
 	using ControllerTransition = std::vector<std::string>;
@@ -114,23 +115,24 @@ namespace pcs {
 
 			 Stage& stage = cand.descendants.front();
 			 const CompositeOperation& co = GetComposite(stage, *recipe_);
-			 const TaskExpression& task = CurrentTask(co, stage.seq_id);
-			 const auto& [op, input, output] = task;
+			 const TaskExpression& task = co.CurrentTask(stage.seq_id);
+			 const auto& [op, input, parameters, output] = task;
 
 			 std::unordered_map<TransferOperation, std::tuple<const TopologyState*, const TopologyTransition*,
 				 const TopologyTransition*>> transfers;
 
 			 bool found = false;
 			 for (const auto& transition : topology_->at(*stage.topology_state).transitions_) {
-				 if (op.name() == transition.label().second) {
+				 if (op.name() == transition.label().second.operation().name()) {
 					 bool allocate = true;
 					 if (!input.empty()) {
 						 allocate = stage.parts.Allocate(transition.label(), input);
 						 allocate = true;
 					 }
-					 if (allocate) {
+					 bool unify = Unify(transition.label().second.parameters(), parameters, op);
+					 if (allocate && unify) {
 						 std::vector<std::string> label_vec(num_of_resources_, "-");
-						 label_vec[transition.label().first] = transition.label().second;
+						 label_vec[transition.label().first] = transition.label().second.operation().name();
 
 						 PlanTransition plan_t(*stage.to_recipe_state, stage.topology_state, label_vec, &transition.to());
 						 ApplyTransition(plan_t, cand.controller);
@@ -147,7 +149,7 @@ namespace pcs {
 						 break;
 					 }
 				 } else {
-					 std::optional<TransferOperation> opt = StringToTransfer(transition.label().second);
+					 std::optional<TransferOperation> opt = StringToTransfer(transition.label().second.operation().name());
 					 if (opt.has_value()) {
 						 if (opt->IsOut()) {
 							 std::get<0>(transfers[*opt]) = &(transition.to());
@@ -171,7 +173,7 @@ namespace pcs {
 					 const TopologyState& state_vec = *std::get<0>(v);
 					 std::vector<std::string> label_vec(num_of_resources_, "-");
 					 label_vec[std::get<1>(v)->first] = k.name();
-					 label_vec[std::get<2>(v)->first] = std::get<2>(v)->second;
+					 label_vec[std::get<2>(v)->first] = std::get<2>(v)->second.operation().name();
 					 bool sync = next_stage.parts.Synchronize(std::get<2>(v)->first, std::get<1>(v)->first, input);
 					 if (!sync) {}
 					
@@ -195,10 +197,10 @@ namespace pcs {
 			 }
 
 			 stage.seq_id++;
-			 if (stage.seq_id < (co.HasGuard() ? (co.sequential.size() + 1) : co.sequential.size())) [[Likely]] {
+			 if (stage.seq_id < (co.HasGuard() ? (co.sequential.size() + 1) : co.sequential.size())) [[Likely]] { // Process next sequential operation
 				 pq.push(cand);
-			 } else {
-				 for (const auto& rec_transition : recipe_->lts()[*stage.to_recipe_state].transitions_) {
+			 } else { // Process recipe transitions
+				 for (const auto& rec_transition : recipe_->lts()[*stage.to_recipe_state].transitions_) { 
 					 Stage next_stage(*stage.topology_state, stage.parts, *stage.to_recipe_state, rec_transition.to(), 0);
 					 cand.descendants.push(next_stage);
 				 }

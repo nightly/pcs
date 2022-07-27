@@ -22,6 +22,23 @@ namespace pcs {
 		return false;
 	}
 
+	const TaskExpression& CompositeOperation::CurrentTask(size_t seq_id) const {
+		if (seq_id == 0 && HasGuard()) {
+			return guard;
+		} else {
+			HasGuard() ? seq_id-- : seq_id;
+			return sequential[seq_id];
+		}
+	}
+
+	bool CompositeOperation::IsLastOp(size_t seq_id) const {
+		if (HasGuard()) {
+			return (seq_id - 1) == sequential.size();
+		} else {
+			return (seq_id) == sequential.size();
+		}
+	}
+
 	std::ostream& operator<<(std::ostream& os, const CompositeOperation& co) {
 		os << "\n";
 		if (co.HasGuard()) {

@@ -23,11 +23,11 @@
  */
 void MergeExample(size_t number) {
 	// Read LTS' & combine
-	std::vector<nightly::LTS<std::string, std::string>> ltss;
+	std::vector<nightly::LTS<std::string, pcs::ParameterizedOp>> ltss;
 	ltss.reserve(number);
 	for (size_t i = 1; i <= number; ++i) {
 		try {
-			nightly::LTS<std::string, std::string> lts;
+			nightly::LTS<std::string, pcs::ParameterizedOp> lts;
 			if (i % 2 == 0) {
 				nightly::ReadFromFile(lts, "../../data/lts/lts2.txt");
 			} else {
@@ -41,7 +41,7 @@ void MergeExample(size_t number) {
 	}
 
 	pcs::CompleteTopology topology(ltss);
-	nightly::LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>> lts_combined = topology.lts();
+	nightly::LTS<std::vector<std::string>, std::pair<size_t, pcs::ParameterizedOp>, boost::hash<std::vector<std::string>>> lts_combined = topology.lts();
 
 	// Console output
 	for (size_t i = 0; i < ltss.size(); i++) {

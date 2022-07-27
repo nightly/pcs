@@ -4,11 +4,13 @@
 #include <unordered_set>
 #include <string>
 
+#include "pcs/operation/parameterized_op.h"
+
 namespace pcs {
 
 	class Parts {
 	public:
-		using TopologyTransition = std::pair<size_t, std::string>;
+		using TopologyTransition = std::pair<size_t, ParameterizedOp>;
 	private:
 		std::vector<std::unordered_set<std::string>> parts_;
 	public:

@@ -21,4 +21,8 @@ namespace pcs {
 		os << "Operation Name: " << operation.name_;
 		return os;
 	}
+
+	Observable* Observable::clone() const {
+		return new Observable(*this);
+	}
 }

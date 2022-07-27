@@ -12,5 +12,7 @@ namespace pcs {
 		~Nop() = default;
 
 		const std::string& name() const;
+		bool operator==(const Nop& other) const;
+		virtual Nop* clone() const override;
 	};
 }

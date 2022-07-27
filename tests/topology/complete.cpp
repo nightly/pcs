@@ -11,7 +11,7 @@
 
 
 TEST(CompleteTopology, IterativeRecursive) {
-	std::vector<nightly::LTS<std::string, std::string>> ltss;
+	std::vector<nightly::LTS<std::string, pcs::ParameterizedOp>> ltss;
 	ltss.resize(5);
 	nightly::ReadFromFile(ltss[0], "../../data/pad/Resource1.txt");
 	nightly::ReadFromFile(ltss[1], "../../data/pad/Resource2.txt");
@@ -28,8 +28,8 @@ TEST(CompleteTopology, IterativeRecursive) {
 }
 
 TEST(CompleteTopology, SelfMerge) {
-	nightly::LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>> expected, got;
-	std::vector<nightly::LTS<std::string, std::string>> ltss;
+	nightly::LTS<std::vector<std::string>, std::pair<size_t, pcs::ParameterizedOp>, boost::hash<std::vector<std::string>>> expected, got;
+	std::vector<nightly::LTS<std::string, pcs::ParameterizedOp>> ltss;
 	ltss.resize(2);
 	nightly::ReadFromFile(ltss[0], "../../tests/topology/testdata/lts1.txt");
 	nightly::ReadFromFile(ltss[1], "../../tests/topology/testdata/lts1.txt");
@@ -41,8 +41,8 @@ TEST(CompleteTopology, SelfMerge) {
 }
 
 TEST(CompleteTopology, Merge1And2) {
-	nightly::LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>> expected, got;
-	std::vector<nightly::LTS<std::string, std::string>> ltss;
+	nightly::LTS<std::vector<std::string>, std::pair<size_t, pcs::ParameterizedOp>, boost::hash<std::vector<std::string>>> expected, got;
+	std::vector<nightly::LTS<std::string, pcs::ParameterizedOp>> ltss;
 	ltss.resize(2);
 	nightly::ReadFromFile(ltss[0], "../../tests/topology/testdata/lts1.txt");
 	nightly::ReadFromFile(ltss[1], "../../tests/topology/testdata/lts2.txt");
@@ -54,8 +54,8 @@ TEST(CompleteTopology, Merge1And2) {
 }
 
 TEST(CompleteTopology, MergeMany) {
-	nightly::LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>> expected, got;
-	std::vector<nightly::LTS<std::string, std::string>> ltss;
+	nightly::LTS<std::vector<std::string>, std::pair<size_t, pcs::ParameterizedOp>, boost::hash<std::vector<std::string>>> expected, got;
+	std::vector<nightly::LTS<std::string, pcs::ParameterizedOp>> ltss;
 	ltss.resize(4);
 	nightly::ReadFromFile(ltss[0], "../../tests/topology/testdata/lts1.txt");
 	nightly::ReadFromFile(ltss[1], "../../tests/topology/testdata/lts2.txt");
@@ -69,8 +69,8 @@ TEST(CompleteTopology, MergeMany) {
 }
 
 TEST(CompleteTopology, MergeWithTransferOps) {
-	nightly::LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>> expected, got;
-	std::vector<nightly::LTS<std::string, std::string>> ltss;
+	nightly::LTS<std::vector<std::string>, std::pair<size_t, pcs::ParameterizedOp>, boost::hash<std::vector<std::string>>> expected, got;
+	std::vector<nightly::LTS<std::string, pcs::ParameterizedOp>> ltss;
 	ltss.resize(2);
 	nightly::ReadFromFile(ltss[0], "../../data/pad/Resource1.txt");
 	nightly::ReadFromFile(ltss[1], "../../data/pad/Resource5.txt");

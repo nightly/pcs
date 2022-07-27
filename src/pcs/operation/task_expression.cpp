@@ -11,21 +11,25 @@
 
 namespace pcs {
 
-	TaskExpression::TaskExpression(Observable&& operation, std::unordered_set<std::string>&& input, std::vector<std::string>&& output) 
-		: operation_(std::move(operation)), input_(std::move(input)), output_(std::move(output)) {}
+	TaskExpression::TaskExpression(Observable&& operation, std::unordered_set<std::string>&& input, std::vector<Parameter>&& parameters,
+		                          std::vector<std::string>&& output) 
+		: operation_(std::move(operation)), input_(std::move(input)), parameters_(std::move(parameters)), output_(std::move(output)) {}
 
-	TaskExpression::TaskExpression(const Observable& operation, const std::unordered_set<std::string>& input, const std::vector<std::string>& output)
-		: operation_(operation), input_(input), output_(output) {}
+	TaskExpression::TaskExpression(const Observable& operation, const std::unordered_set<std::string>& input, 
+		                           const std::vector<Parameter>& parameters, const std::vector<std::string>& output)
+		: operation_(operation), input_(input), parameters_(parameters), output_(output) {}
 
 	TaskExpression::TaskExpression(TaskExpression&& other) noexcept
-		: operation_(std::move(other.operation_)), input_(std::move(other.input_)), output_(std::move(other.output_)) {}
+		: operation_(std::move(other.operation_)), input_(std::move(other.input_)), 
+		  parameters_(std::move(other.parameters_)), output_(std::move(other.output_)) {}
 
 	TaskExpression::TaskExpression(const TaskExpression& other)
-		: operation_(other.operation_), input_(other.input_), output_(other.output_){}
+		: operation_(other.operation_), input_(other.input_), parameters_(other.parameters_), output_(other.output_){}
 
 	TaskExpression& TaskExpression::operator=(TaskExpression&& other) noexcept {
 		operation_ = std::move(other.operation_);
 		input_ = std::move(other.input_);
+		parameters_ = std::move(other.parameters_);
 		output_ = std::move(other.output_);
 		return *this;
 	}
@@ -33,6 +37,7 @@ namespace pcs {
 	TaskExpression& TaskExpression::operator=(const TaskExpression& other) {
 		operation_ = other.operation_;
 		input_ = other.input_;
+		parameters_ = other.parameters_;
 		output_ = other.output_;
 		return *this;
 	}
@@ -73,17 +78,43 @@ namespace pcs {
 		output_ = output_;
 	}
 
+	const std::vector<Parameter>& TaskExpression::parameters() const {
+		return parameters_;
+	}
+
+	void TaskExpression::set_parameters(std::vector<Parameter>&& parameters) {
+		parameters_ = std::move(parameters_);
+	}
+	
+	void TaskExpression::set_parameters(const std::vector<Parameter>& parameters) {
+		parameters_ = parameters;
+	}
+
 	bool TaskExpression::operator==(const TaskExpression& other) const {
-		return (operation_ == other.operation_) && (input_ == other.input_) && (output_ == other.output_);
+		return (operation_ == other.operation_) && (input_ == other.input_) && (parameters_ == other.parameters_) && (output_ == other.output_);
 	}
 
 	std::ostream& operator<<(std::ostream& os, const TaskExpression& task) {
 		os << task.operation().name() << "(" << USetToString(task.input()) << ")" << "(" << VectorToString(task.output()) << ")";
+		if (!task.parameters().empty()) {
+			os << " {";
+			for (const auto& p : task.parameters()) {
+				os << p;
+			}
+			os << "}";
+		}
 		return os;
 	}
 	
 	std::ofstream& operator<<(std::ofstream& os, const TaskExpression& task) {
 		os << task.operation().name() << "(" << USetToString(task.input()) << ")" << "(" << VectorToString(task.output()) << ")";
+		if (!task.parameters().empty()) {
+			os << "{<I>";
+			for (const auto& p : task.parameters()) {
+				os << p;
+			}
+			os << "</I>}";
+		}
 		return os;
 	}
 

@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <span>
+#include <memory>
 
 namespace pcs {
 
@@ -10,5 +11,6 @@ namespace pcs {
 	public:
 		virtual ~IOperation() = default;
 		virtual const std::string& name() const = 0;
+		virtual IOperation* clone() const = 0;
 	};
 }

@@ -31,6 +31,8 @@ namespace pcs {
 		TransferType type() const;
 		bool IsIn() const;
 		bool IsOut() const;
+
+		virtual TransferOperation* clone() const override;
 		
 		bool operator==(const TransferOperation& other) const;
 		bool operator <(const TransferOperation& other) const;

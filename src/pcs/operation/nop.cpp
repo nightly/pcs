@@ -10,4 +10,12 @@ namespace pcs {
 	const std::string& Nop::name() const {
 		return name_;
 	}
+
+	bool Nop::operator==(const Nop& other) const {
+		return name_ == other.name_;
+	}
+
+	Nop* Nop::clone() const {
+		return new Nop(*this);
+	}
 }

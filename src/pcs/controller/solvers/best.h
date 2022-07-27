@@ -12,6 +12,7 @@
 #include "lts/lts.h"
 #include "pcs/operation/transfer.h"
 #include "pcs/controller/plan_transition.h"
+#include "pcs/operation/parameterized_op.h"
 #include "pcs/controller/parts.h"
 
 namespace pcs {
@@ -26,7 +27,7 @@ namespace pcs {
 
 	class BestController {
 	public:
-		using TopologyTransition = std::pair<size_t, std::string>;
+		using TopologyTransition = std::pair<size_t, ParameterizedOp>;
 		using TopologyState = std::vector<std::string>;
 
 		using ControllerTransition = std::vector<std::string>;
@@ -34,7 +35,6 @@ namespace pcs {
 		using ControllerType = nightly::LTS<std::pair<std::string, std::vector<std::string>>, std::vector<std::string>,
 			boost::hash<std::pair<std::string, std::vector<std::string>>>>;
 	private:
-		ControllerType controller_;
 		const Environment* machine_;
 		const Recipe* recipe_;
 		ITopology* topology_;

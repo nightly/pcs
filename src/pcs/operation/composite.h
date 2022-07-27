@@ -21,6 +21,8 @@ namespace pcs {
 		CompositeOperation(Guard&& guard, std::vector<Observable>&& parallel_operations, std::vector<Observable>&& sequential_operations);
 
 		bool HasGuard() const;
+		const TaskExpression& CurrentTask(size_t seq_id) const;
+		bool IsLastOp(size_t seq_id) const;
 
 		bool operator==(const CompositeOperation& other) const;
 		friend std::ostream& operator<<(std::ostream& os, const CompositeOperation& co);

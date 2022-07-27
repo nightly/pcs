@@ -20,7 +20,7 @@ namespace pcs {
 		stream.exceptions(std::ofstream::badbit);
 		CreateDirectoryForPath(directory);
 		
-		const std::vector<nightly::LTS<std::string, std::string>>& resources = environment.resources();
+		const std::vector<nightly::LTS<std::string, ParameterizedOp>>& resources = environment.resources();
 		for (size_t i = 0; i < environment.NumOfResources(); i++) {
 			std::string r_path = directory.string() + '/' + "Resource" + std::to_string(i + 1) + ".gv";
 			try {

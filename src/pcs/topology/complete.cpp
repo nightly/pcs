@@ -22,7 +22,7 @@ namespace pcs {
 	 * @param ltss: the LTSs to merge
 	 * @param recursive: @default = true. Iterative or recursive DFS.
 	 */
-	CompleteTopology::CompleteTopology(const std::vector<nightly::LTS<std::string, std::string>>& ltss, bool recursive)
+	CompleteTopology::CompleteTopology(const std::vector<nightly::LTS<std::string, ParameterizedOp>>& ltss, bool recursive)
 		: ltss_(ltss) {
 		std::vector<std::string> initial_key;
 		initial_key.reserve(ltss.size());
@@ -37,11 +37,11 @@ namespace pcs {
 		}
 	}
 
-	const nightly::LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>>& CompleteTopology::lts() const {
+	const nightly::LTS<std::vector<std::string>, std::pair<size_t, ParameterizedOp>, boost::hash<std::vector<std::string>>>& CompleteTopology::lts() const {
 		return topology_;
 	}
 
-	CompleteTopology::operator const nightly::LTS<std::vector<std::string>, std::pair<size_t, std::string>, boost::hash<std::vector<std::string>>>& () const {
+	CompleteTopology::operator const nightly::LTS<std::vector<std::string>, std::pair<size_t, ParameterizedOp>, boost::hash<std::vector<std::string>>>& () const {
 		return topology_;
 	}
 
@@ -49,7 +49,7 @@ namespace pcs {
 		return topology_.initial_state();
 	}
 
-	const nightly::State<std::vector<std::string>, std::pair<size_t, std::string>>& CompleteTopology::at(const std::vector<std::string>& key) {
+	const nightly::State<std::vector<std::string>, std::pair<size_t, ParameterizedOp>>& CompleteTopology::at(const std::vector<std::string>& key) {
 		return topology_.states().at(key);
 	}
 
@@ -61,7 +61,7 @@ namespace pcs {
 
 		for (size_t i = 0; i < ltss_.size(); ++i) {
 			for (const auto& transition : ltss_[i].states().at(states_vec[i]).transitions_) {
-				if ((transition.label().find("in:") != std::string::npos) || (transition.label().find("out:") != std::string::npos)) {
+				if ((transition.label().operation().name().find("in:") != std::string::npos) || (transition.label().operation().name().find("out:") != std::string::npos)) {
 					std::optional<std::vector<std::string>> transfer_state = MatchingTransfer(ltss_, states_vec, i, transition);
 					if (!transfer_state.has_value()) {
 						continue;

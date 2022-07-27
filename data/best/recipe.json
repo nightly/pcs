@@ -9,6 +9,7 @@
           {
             "name": "load",
             "input": [],
+            "parameters": [],
             "output": [
               "p1"
             ]
@@ -18,6 +19,7 @@
             "input": [
               "p1"
             ],
+            "parameters": [],
             "output": [
               "p2"
             ]

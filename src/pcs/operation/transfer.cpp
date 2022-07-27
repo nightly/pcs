@@ -41,6 +41,10 @@ namespace pcs {
 	TransferOperation TransferOperation::Inverse() const {
 		return TransferOperation(type_ == TransferType::in ? TransferType::out : TransferType::in, n_);
 	}
+
+	TransferOperation* TransferOperation::clone() const {
+		return new TransferOperation(*this);
+	}
 	
 	bool TransferOperation::operator<(const TransferOperation& other) const {
 		return ((static_cast<size_t>(type_) + n_) < (static_cast<size_t>(other.type_) + other.n_));

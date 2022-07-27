@@ -6,7 +6,7 @@
 #include "lts/parsers/parsers.h"
 
 static void BM_TopologyRange(benchmark::State& state) {
-    std::vector<nightly::LTS<std::string, std::string>> ltss;
+    std::vector<nightly::LTS<std::string, pcs::ParameterizedOp>> ltss;
     ltss.resize(state.range(0));
     for (size_t i = 0; i < state.range(0); ++i) {
         nightly::ReadFromFile(ltss[i], "../../data/pad/Resource1.txt");

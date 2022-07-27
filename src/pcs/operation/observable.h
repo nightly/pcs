@@ -23,6 +23,7 @@ namespace pcs {
 
 		bool operator==(const Observable& other) const;
 		friend std::ostream& operator<<(std::ostream& os, const Observable& operation);
+		virtual Observable* clone() const override;
 	};
 
 }

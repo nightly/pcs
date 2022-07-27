@@ -14,7 +14,7 @@ namespace pcs {
 		using ControllerTransition = std::vector<std::string>;
 
 		using TopologyState = std::vector<std::string>;
-		using TopologyTransition = std::pair<size_t, std::string>;
+		using TopologyTransition = std::pair<size_t, ParameterizedOp>;
 
 		using TargetMapT = std::unordered_map<TopologyState, std::unordered_set<std::string>, boost::hash<TopologyState>>;
 	public:

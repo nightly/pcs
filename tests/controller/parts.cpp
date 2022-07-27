@@ -3,10 +3,12 @@
 
 #include <vector>
 #include <unordered_set>
+#include <memory>
 
 TEST(Parts, Add) {
 	pcs::Parts parts(2);
-	std::pair<size_t, std::string> add_t(0, "add_op");
+	pcs::ParameterizedOp add_op = pcs::StringToParameterizedOp("add");
+	std::pair<size_t, pcs::ParameterizedOp> add_t = std::make_pair(0, add_op);
 	
 	parts.Add(add_t, std::vector<std::string>{"p1", "p2", "p3"});
 	EXPECT_EQ(parts.AtResource(0), std::unordered_set<std::string>({ "p1", "p2", "p3" }));
@@ -14,10 +16,12 @@ TEST(Parts, Add) {
 
 TEST(Parts, Allocate) {
 	pcs::Parts parts(5);
-	std::pair<size_t, std::string> add_t(0, "add_op");
+	pcs::ParameterizedOp add_op = pcs::StringToParameterizedOp("add");
+	std::pair<size_t, pcs::ParameterizedOp> add_t = std::make_pair(0, add_op);
 	parts.Add(add_t, std::vector<std::string>{"p1", "p2", "p3"});
 
-	std::pair<size_t, std::string> allocate_t(0, "allocate_op");
+	pcs::ParameterizedOp allocate_op = pcs::StringToParameterizedOp("allocate");
+	std::pair<size_t, pcs::ParameterizedOp> allocate_t = std::make_pair(0, allocate_op);
 	bool allocate = parts.Allocate(allocate_t, std::unordered_set<std::string>{"p1", "p2", "p3"});
 	EXPECT_EQ(allocate, true);
 	EXPECT_EQ(parts.AtResource(0), std::unordered_set<std::string>());
@@ -25,23 +29,27 @@ TEST(Parts, Allocate) {
 
 TEST(Parts, AllocateMissingParts) {
 	pcs::Parts parts(5);
-	std::pair<size_t, std::string> add_t(0, "add_op");
+	pcs::ParameterizedOp add_op = pcs::StringToParameterizedOp("add");
+	std::pair<size_t, pcs::ParameterizedOp> add_t = std::make_pair(0, add_op);
 	parts.Add(add_t, std::vector<std::string>{ "p1", "p3" });
 	
-	std::pair<size_t, std::string> allocate_t(0, "allocate_op");
+	pcs::ParameterizedOp allocate_op = pcs::StringToParameterizedOp("allocate");
+	std::pair<size_t, pcs::ParameterizedOp> allocate_t = std::make_pair(0, allocate_op);
 	bool allocate = parts.Allocate(allocate_t, std::unordered_set<std::string>{ "p1", "p2", "p3" });
 	EXPECT_EQ(allocate, false);
 }
 
 TEST(Parts, Synchronize) {
 	pcs::Parts parts(10), expected_parts(10);
-	std::pair<size_t, std::string> add_t(0, "add_op");
+	pcs::ParameterizedOp add_op = pcs::StringToParameterizedOp("add");
+	std::pair<size_t, pcs::ParameterizedOp> add_t = std::make_pair(0, add_op);
 	parts.Add(add_t, std::vector<std::string>{ "p1", "p3" });
 
 	bool sync = parts.Synchronize(6, 0, std::unordered_set<std::string>{"p1", "p3"});
 	ASSERT_EQ(sync, true);
 
-	std::pair<size_t, std::string> add_t_expected(6, "add_op");
+	pcs::ParameterizedOp add_op_expected = pcs::StringToParameterizedOp("add");
+	std::pair<size_t, pcs::ParameterizedOp> add_t_expected = std::make_pair(6, add_op_expected);
 	expected_parts.Add(add_t_expected, std::vector<std::string>{ "p1", "p3" });
 	ASSERT_EQ(parts, expected_parts);
 }
@@ -54,20 +62,23 @@ TEST(Parts, SynchronizeNothing) {
 
 TEST(Parts, SynchronizeMissingParts) {
 	pcs::Parts parts(10), expected_parts(10);
-	std::pair<size_t, std::string> add_t(0, "add_op");
+	pcs::ParameterizedOp add_op = pcs::StringToParameterizedOp("add");
+	std::pair<size_t, pcs::ParameterizedOp> add_t = std::make_pair(0, add_op);
 	parts.Add(add_t, std::vector<std::string>{ "p1"});
 
 	bool sync = parts.Synchronize(6, 0, std::unordered_set<std::string>{"p1", "p3"});
 	ASSERT_EQ(sync, true);
 
-	std::pair<size_t, std::string> add_t_expected(6, "add_op");
+	pcs::ParameterizedOp add_op_expected = pcs::StringToParameterizedOp("add_op");
+	std::pair<size_t, pcs::ParameterizedOp> add_t_expected = std::make_pair(6, add_op_expected);
 	expected_parts.Add(add_t_expected, std::vector<std::string>{ "p1" });
 	ASSERT_EQ(parts, expected_parts);
 }
 
 TEST(Parts, SynchronizeSomeParts) {
 	pcs::Parts parts(10);
-	std::pair<size_t, std::string> add_t(0, "add_op");
+	pcs::ParameterizedOp add_op = pcs::StringToParameterizedOp("add");
+	std::pair<size_t, pcs::ParameterizedOp> add_t = std::make_pair(0, add_op);
 	parts.Add(add_t, std::vector<std::string>{ "p1", "p3"});
 
 	bool sync = parts.Synchronize(6, 0, std::unordered_set<std::string>{"p1"});

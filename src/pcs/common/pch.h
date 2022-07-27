@@ -17,6 +17,7 @@
 #include <ostream>
 #include <filesystem>
 #include <fstream>
+#include <memory>
 
 // LTS
 #include "lts/lts.h"

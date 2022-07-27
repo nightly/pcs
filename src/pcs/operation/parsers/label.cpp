@@ -13,11 +13,9 @@ namespace pcs {
 	std::unique_ptr<IOperation> StringToOperation(const std::string& label) {
 		if (label.find("in:") != std::string::npos) {
 			return std::make_unique<TransferOperation>(TransferType::in, stoull(label.substr(3)));
-		}
-		else if (label.find("out:") != std::string::npos) {
+		} else if (label.find("out:") != std::string::npos) {
 			return std::make_unique<TransferOperation>(TransferType::out, stoull(label.substr(4)));
-		}
-		else if (label == "nop") {
+		} else if (label == "nop") {
 			return std::make_unique<Nop>();
 		}
 		return std::make_unique<Observable>(label);

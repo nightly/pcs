@@ -28,10 +28,10 @@ static size_t NumOfResources(const std::filesystem::path& data_folder) {
 	return count;
 }
 
-static pcs::Recipe LoadRecipe(const std::string& data_folder) {
+static pcs::Recipe LoadRecipe(const std::string& data_folder, const std::string& recipe_file) {
 	pcs::Recipe recipe;
 	try {
-		recipe.set_recipe(data_folder + "recipe.json");
+		recipe.set_recipe(data_folder + recipe_file);
 	} catch (const std::ifstream::failure& e) {
 		throw;
 	}
@@ -107,7 +107,7 @@ void Run(const std::string& name, const RunnerOpts& opts) {
 	size_t num_resources = NumOfResources(data_folder);
 
 	/* Load everything */
-	pcs::Recipe recipe = LoadRecipe(data_folder);
+	pcs::Recipe recipe = LoadRecipe(data_folder, opts.recipe_name);
 	nightly::ExportToFile(recipe.lts(), export_folder + "/recipe.gv");
 
 	pcs::Environment machine = LoadMachine(data_folder, num_resources);
