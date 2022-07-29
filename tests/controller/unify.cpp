@@ -21,6 +21,13 @@ TEST(Unify, MatchWithConstant) {
 	EXPECT_EQ(pcs::Unify(resource_params, recipe_params, op), true);
 }
 
+TEST(Unify, MatchWithBidirectionalUnknowns) {
+	std::vector<pcs::Parameter> resource_params({ {"speed", "50"}, { "rotation", "90"}, {"magnitude", ""} });
+	std::vector<pcs::Parameter> recipe_params({ { "speed", "" }, { "rotation", "90" }, {"magnitude", "90"} });
+	pcs::Observable op("engrave");
+	EXPECT_EQ(pcs::Unify(resource_params, recipe_params, op), true);
+}
+
 TEST(Unify, MismatchNumber) {
 	std::vector<pcs::Parameter> resource_params({ {"speed", "50"} });
 	std::vector<pcs::Parameter> recipe_params({{ "speed", "50" }, { "rotation", "90" }});

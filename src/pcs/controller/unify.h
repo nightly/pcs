@@ -5,6 +5,6 @@
 
 namespace pcs {
 
-	bool Unify(const std::vector<Parameter>& resource_params, const std::vector<Parameter>& recipe_params, const pcs::Observable& operation);
+	bool Unify(const std::vector<Parameter>& operation_params, const std::vector<Parameter>& recipe_params, const pcs::Observable& operation);
 
 }
