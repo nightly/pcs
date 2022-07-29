@@ -22,7 +22,7 @@ namespace pcs {
 	std::optional<std::vector<std::string>> MatchingTransfer(const std::vector<nightly::LTS<std::string, ParameterizedOp>>& ltss,
 		                                                    const std::vector<std::string>& states_vec,
 		                                                    size_t current_ltss_idx, 
-		                                                    const nightly::Transition<ParameterizedOp, std::string>& current_transition) {
+		                                                    const nightly::Transition<std::string, ParameterizedOp>& current_transition) {
 		TransferOperation transfer = *(StringToTransfer(current_transition.label().operation().name()));
 		TransferOperation inverse = transfer.Inverse();
 

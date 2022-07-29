@@ -16,10 +16,10 @@ namespace pcs {
 		: operation_(std::move(op)), parameters_(std::move(parameters)) {}
 
 	ParameterizedOp::ParameterizedOp(const ParameterizedOp& other)
-		: operation_(std::move(StringToOperation(other.operation_.get()->name()))), parameters_(other.parameters_) {}
+		: operation_(other.operation_->clone()), parameters_(other.parameters_) {}
 	
 	ParameterizedOp& ParameterizedOp::operator=(const ParameterizedOp& other) {
-		operation_ = std::move(StringToOperation(other.operation_.get()->name()));
+		operation_ = std::unique_ptr<IOperation>(other.operation_->clone());
 		parameters_ = other.parameters_;
 		return *this;
 	}
