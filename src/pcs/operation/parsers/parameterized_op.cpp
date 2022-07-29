@@ -31,10 +31,9 @@ namespace pcs {
 		std::getline(ss, op_str, '(');
 		std::getline(ss, params_str);
 
-		std::unique_ptr<pcs::IOperation> op = pcs::StringToOperation(op_str);
 		std::vector<pcs::Parameter> parameters = pcs::StringToParameters(params_str);
 		
-		return pcs::ParameterizedOp(std::move(op), std::move(parameters));
+		return pcs::ParameterizedOp(std::move(op_str), std::move(parameters));
 	}
 
 }
@@ -48,10 +47,9 @@ namespace nightly {
 		std::getline(ss, op_str, '(');
 		std::getline(ss, params_str, ')');
 
-		std::unique_ptr<pcs::IOperation> op = pcs::StringToOperation(op_str);
 		std::vector<pcs::Parameter> parameters = pcs::StringToParameters(params_str);
 		
-		return pcs::ParameterizedOp(std::move(op), std::move(parameters));
+		return pcs::ParameterizedOp(std::move(op_str), std::move(parameters));
 	}
 
 	template <>
@@ -67,10 +65,9 @@ namespace nightly {
 		std::stringstream action_stream(action);
 		std::getline(action_stream, op_str, '(');
 		std::getline(action_stream, params_str, ')');
-		std::unique_ptr<pcs::IOperation> op = pcs::StringToOperation(op_str);
 		std::vector<pcs::Parameter> parameters = pcs::StringToParameters(params_str);
 
-		return { stoul(n), pcs::ParameterizedOp(std::move(op), std::move(parameters)) };
+		return { stoul(n), pcs::ParameterizedOp(std::move(op_str), std::move(parameters)) };
 	}
 
 }

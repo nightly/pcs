@@ -123,7 +123,7 @@ namespace pcs {
 
 			 bool found = false;
 			 for (const auto& transition : topology_->at(*stage.topology_state).transitions_) {
-				 if (op.name() == transition.label().second.operation().name()) {
+				 if (op.name() == transition.label().second.operation()) {
 					 bool allocate = true;
 					 if (!input.empty()) {
 						 allocate = stage.parts.Allocate(transition.label(), input);
@@ -132,7 +132,7 @@ namespace pcs {
 					 bool unify = Unify(transition.label().second.parameters(), parameters, op);
 					 if (allocate && unify) {
 						 std::vector<std::string> label_vec(num_of_resources_, "-");
-						 label_vec[transition.label().first] = transition.label().second.operation().name();
+						 label_vec[transition.label().first] = transition.label().second.operation();
 
 						 PlanTransition plan_t(*stage.to_recipe_state, stage.topology_state, label_vec, &transition.to());
 						 ApplyTransition(plan_t, cand.controller);
@@ -149,7 +149,7 @@ namespace pcs {
 						 break;
 					 }
 				 } else {
-					 std::optional<TransferOperation> opt = StringToTransfer(transition.label().second.operation().name());
+					 std::optional<TransferOperation> opt = StringToTransfer(transition.label().second.operation());
 					 if (opt.has_value()) {
 						 if (opt->IsOut()) {
 							 std::get<0>(transfers[*opt]) = &(transition.to());
@@ -173,7 +173,7 @@ namespace pcs {
 					 const TopologyState& state_vec = *std::get<0>(v);
 					 std::vector<std::string> label_vec(num_of_resources_, "-");
 					 label_vec[std::get<1>(v)->first] = k.name();
-					 label_vec[std::get<2>(v)->first] = std::get<2>(v)->second.operation().name();
+					 label_vec[std::get<2>(v)->first] = std::get<2>(v)->second.operation();
 					 bool sync = next_stage.parts.Synchronize(std::get<2>(v)->first, std::get<1>(v)->first, input);
 					 if (!sync) {}
 					

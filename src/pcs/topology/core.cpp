@@ -23,7 +23,7 @@ namespace pcs {
 		                                                    const std::vector<std::string>& states_vec,
 		                                                    size_t current_ltss_idx, 
 		                                                    const nightly::Transition<std::string, ParameterizedOp>& current_transition) {
-		TransferOperation transfer = *(StringToTransfer(current_transition.label().operation().name()));
+		TransferOperation transfer = *(StringToTransfer(current_transition.label().operation()));
 		TransferOperation inverse = transfer.Inverse();
 
 		for (size_t i = 0; i < ltss.size(); ++i) {
@@ -31,7 +31,7 @@ namespace pcs {
 				continue;
 			}
 			for (const auto& t : ltss[i].states().at(states_vec[i]).transitions_) {
-				if (t.label().operation().name().find(inverse.name()) != std::string::npos) {
+				if (t.label().operation().find(inverse.name()) != std::string::npos) {
 					std::vector<std::string> resulting_state = states_vec;
 					resulting_state[current_ltss_idx] = current_transition.to();
 					resulting_state[i] = t.to();

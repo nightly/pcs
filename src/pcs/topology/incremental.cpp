@@ -54,7 +54,7 @@ namespace pcs {
 
 		for (size_t i = 0; i < ltss_.size(); ++i) {
 			for (const auto& transition : ltss_[i].states().at(key[i]).transitions_) {
-				if ((transition.label().operation().name().find("in:") != std::string::npos) || (transition.label().operation().name().find("out:") != std::string::npos)) {
+				if ((transition.label().operation().find("in:") != std::string::npos) || (transition.label().operation().find("out:") != std::string::npos)) {
 					std::optional<std::vector<std::string>> transfer_state = MatchingTransfer(ltss_, key, i, transition);
 					if (!transfer_state.has_value()) {
 						continue;

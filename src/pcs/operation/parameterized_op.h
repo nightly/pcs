@@ -13,20 +13,21 @@ namespace pcs {
 
 	class ParameterizedOp {
 	private:
-		std::unique_ptr<IOperation> operation_;
+		std::string operation_;
 		std::vector<Parameter> parameters_;
 	public:
 		ParameterizedOp() = default;
-		ParameterizedOp(std::unique_ptr<IOperation>&& op, const std::vector<Parameter>& parameters);
-		ParameterizedOp(std::unique_ptr<IOperation>&& op, std::vector<Parameter>&& parameters);
+		ParameterizedOp(const std::string& op, const std::vector<Parameter>& parameters);
+		ParameterizedOp(std::string&& op, std::vector<Parameter>&& parameters);
 
 		ParameterizedOp(const ParameterizedOp& other);
 		ParameterizedOp& operator=(const ParameterizedOp& other);
 		ParameterizedOp(ParameterizedOp&& other) noexcept;
 		ParameterizedOp& operator=(ParameterizedOp&& other) noexcept;
 
-		const IOperation& operation() const;
-		void set_operation(std::unique_ptr<IOperation>&& op);
+		const std::string& operation() const;
+		void set_operation(const std::string& op);
+		void set_operation(std::string&& op);
 
 		const std::vector<Parameter>& parameters() const;
 		void set_parameters(const std::vector<Parameter>& parameters);

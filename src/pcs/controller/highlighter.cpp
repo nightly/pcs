@@ -83,7 +83,7 @@ namespace pcs {
 					}
 				}
 				for (const auto& t : state.transitions_) {
-					if ((target_map.contains(pair.first)) && (target_map[pair.first].contains(t.label().second.operation().name()))) {
+					if ((target_map.contains(pair.first)) && (target_map[pair.first].contains(t.label().second.operation()))) {
 						os << "	" << "\"" << pair.first << "\"" << " -> " << "\"" << t.to() << "\"" << " [color=\"royalblue4\" penwidth=2.25 label = " << "<";
 						os << t.label() << ">];\n";
 						os << "	" << "\"" << pair.first << "\"" << " [shape=circle, style=filled, fillcolor=dodgerblue2]" << "\n";

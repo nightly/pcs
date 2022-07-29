@@ -18,12 +18,12 @@ TEST(ParameterizedOpParser, ParametersVec) {
 TEST(ParameterizedOpParser, Transition) {
 	std::string label = "drill()";
 	pcs::ParameterizedOp p_op = nightly::ParseTransitionString<pcs::ParameterizedOp>(label);
-	ASSERT_EQ(p_op.operation().name(), "drill");
+	ASSERT_EQ(p_op.operation(), "drill");
 }
 
 TEST(ParameterizedOpParser, TransitionWithParams) {
 	std::string label = "drill(speed=50 rotation=90 magnitude= direction=west)";
 	pcs::ParameterizedOp p_op = nightly::ParseTransitionString<pcs::ParameterizedOp>(label);
-	ASSERT_EQ(p_op.operation().name(), "drill");
+	ASSERT_EQ(p_op.operation(), "drill");
 	ASSERT_EQ(p_op.parameters(), std::vector<pcs::Parameter>({ {"speed", "50"}, {"rotation", "90"}, {"magnitude", ""}, {"direction", "west"} }));
 }

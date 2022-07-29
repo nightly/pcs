@@ -9,17 +9,17 @@
 
 namespace pcs {
 
-	ParameterizedOp::ParameterizedOp(std::unique_ptr<IOperation>&& op, const std::vector<Parameter>& parameters)
-		: operation_(std::move(op)), parameters_(parameters) {}
+	ParameterizedOp::ParameterizedOp(const std::string& op, const std::vector<Parameter>& parameters)
+		: operation_(op), parameters_(parameters) {}
 	
-	ParameterizedOp::ParameterizedOp(std::unique_ptr<IOperation>&& op, std::vector<Parameter>&& parameters)
+	ParameterizedOp::ParameterizedOp(std::string&& op, std::vector<Parameter>&& parameters)
 		: operation_(std::move(op)), parameters_(std::move(parameters)) {}
 
 	ParameterizedOp::ParameterizedOp(const ParameterizedOp& other)
-		: operation_(other.operation_->clone()), parameters_(other.parameters_) {}
+		: operation_(other.operation_), parameters_(other.parameters_) {}
 	
 	ParameterizedOp& ParameterizedOp::operator=(const ParameterizedOp& other) {
-		operation_ = std::unique_ptr<IOperation>(other.operation_->clone());
+		operation_ = other.operation_;
 		parameters_ = other.parameters_;
 		return *this;
 	}
@@ -33,11 +33,15 @@ namespace pcs {
 		return *this;
 	}
 
-	const IOperation& ParameterizedOp::operation() const {
-		return *operation_;
+	const std::string& ParameterizedOp::operation() const {
+		return operation_;
 	}
 
-	void ParameterizedOp::set_operation(std::unique_ptr<IOperation>&& op) {
+	void ParameterizedOp::set_operation(const std::string& op) {
+		operation_ = op;
+	}
+
+	void ParameterizedOp::set_operation(std::string&& op) {
 		operation_ = std::move(op);
 	}
 
@@ -54,11 +58,11 @@ namespace pcs {
 	}
 
 	bool ParameterizedOp::operator==(const ParameterizedOp& other) const {
-		return (operation_.get()->name() == other.operation_.get()->name() && parameters_ == other.parameters_);
+		return (operation_ == other.operation_ && parameters_ == other.parameters_);
 	}
 
 	std::ostream& operator<<(std::ostream& os, const ParameterizedOp& p_op) {
-		os << p_op.operation().name();
+		os << p_op.operation();
 		if (!p_op.parameters_.empty()) {
 			os << "(";
 			for (const auto& p : p_op.parameters()) {
@@ -70,7 +74,7 @@ namespace pcs {
 	}
 
 	std::ofstream& operator<<(std::ofstream& os, const ParameterizedOp& p_op) {
-		os << p_op.operation().name();
+		os << p_op.operation();
 		if (!p_op.parameters_.empty()) {
 			os << "(<I>";
 			for (const auto& p : p_op.parameters()) {
