@@ -11,12 +11,12 @@
 
 namespace pcs {
 
-	TaskExpression::TaskExpression(Observable&& operation, std::unordered_set<std::string>&& input, std::vector<Parameter>&& parameters,
+	TaskExpression::TaskExpression(Observable&& operation, std::unordered_set<std::string>&& input, Parameters&& parameters,
 		                          std::vector<std::string>&& output) 
 		: operation_(std::move(operation)), input_(std::move(input)), parameters_(std::move(parameters)), output_(std::move(output)) {}
 
 	TaskExpression::TaskExpression(const Observable& operation, const std::unordered_set<std::string>& input, 
-		                           const std::vector<Parameter>& parameters, const std::vector<std::string>& output)
+		                           const Parameters& parameters, const std::vector<std::string>& output)
 		: operation_(operation), input_(input), parameters_(parameters), output_(output) {}
 
 	TaskExpression::TaskExpression(TaskExpression&& other) noexcept
@@ -78,15 +78,15 @@ namespace pcs {
 		output_ = output_;
 	}
 
-	const std::vector<Parameter>& TaskExpression::parameters() const {
+	const Parameters& TaskExpression::parameters() const {
 		return parameters_;
 	}
 
-	void TaskExpression::set_parameters(std::vector<Parameter>&& parameters) {
+	void TaskExpression::set_parameters(Parameters&& parameters) {
 		parameters_ = std::move(parameters_);
 	}
 	
-	void TaskExpression::set_parameters(const std::vector<Parameter>& parameters) {
+	void TaskExpression::set_parameters(const Parameters& parameters) {
 		parameters_ = parameters;
 	}
 
@@ -98,9 +98,7 @@ namespace pcs {
 		os << task.operation().name() << "(" << USetToString(task.input()) << ")" << "(" << VectorToString(task.output()) << ")";
 		if (!task.parameters().empty()) {
 			os << " {";
-			for (const auto& p : task.parameters()) {
-				os << p;
-			}
+			os << task.parameters_;
 			os << "}";
 		}
 		return os;
@@ -110,9 +108,7 @@ namespace pcs {
 		os << task.operation().name() << "(" << USetToString(task.input()) << ")" << "(" << VectorToString(task.output()) << ")";
 		if (!task.parameters().empty()) {
 			os << "{<I>";
-			for (const auto& p : task.parameters()) {
-				os << p;
-			}
+			os << task.parameters_;
 			os << "</I>}";
 		}
 		return os;

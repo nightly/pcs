@@ -7,7 +7,7 @@
 #include <fstream>
 
 #include "pcs/operation/observable.h"
-#include "pcs/operation/parameter.h"
+#include "pcs/operation/parameters.h"
 
 namespace pcs {
 
@@ -15,13 +15,13 @@ namespace pcs {
 	private:
 		Observable operation_;
 		std::unordered_set<std::string> input_;
-		std::vector<Parameter> parameters_;
+		Parameters parameters_;
 		std::vector<std::string> output_;
 	public:
 		TaskExpression() = default;
-		TaskExpression(Observable&& operation, std::unordered_set<std::string>&& input, std::vector<Parameter>&& parameters, std::vector<std::string>&& output);
+		TaskExpression(Observable&& operation, std::unordered_set<std::string>&& input, Parameters&& parameters, std::vector<std::string>&& output);
 		TaskExpression(const Observable& operation, const std::unordered_set<std::string>& input, 
-			const std::vector<Parameter>& parameters, const std::vector<std::string>& output);
+			const Parameters& parameters, const std::vector<std::string>& output);
 		TaskExpression(const TaskExpression& other);
 		TaskExpression& operator=(const TaskExpression& other);
 		TaskExpression(TaskExpression&& other) noexcept;
@@ -36,9 +36,9 @@ namespace pcs {
 		void set_input(std::unordered_set<std::string>&& input);
 		void set_input(const std::unordered_set<std::string>& input);
 
-		const std::vector<Parameter>& parameters() const;
-		void set_parameters(std::vector<Parameter>&& parameters);
-		void set_parameters(const std::vector<Parameter>& parameters);
+		const Parameters& parameters() const;
+		void set_parameters(Parameters&& parameters);
+		void set_parameters(const Parameters& parameters);
 
 		const std::vector<std::string>& output() const;
 		void set_output(std::vector<std::string>&& output);

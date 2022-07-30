@@ -7,18 +7,18 @@
 #include <fstream>
 
 #include "pcs/operation/operation.h"
-#include "pcs/operation/parameter.h"
+#include "pcs/operation/parameters.h"
 
 namespace pcs {
 
 	class ParameterizedOp {
 	private:
 		std::string operation_;
-		std::vector<Parameter> parameters_;
+		Parameters parameters_;
 	public:
 		ParameterizedOp() = default;
-		ParameterizedOp(const std::string& op, const std::vector<Parameter>& parameters);
-		ParameterizedOp(std::string&& op, std::vector<Parameter>&& parameters);
+		ParameterizedOp(const std::string& op, const Parameters& parameters);
+		ParameterizedOp(std::string&& op, Parameters&& parameters);
 
 		ParameterizedOp(const ParameterizedOp& other);
 		ParameterizedOp& operator=(const ParameterizedOp& other);
@@ -29,9 +29,9 @@ namespace pcs {
 		void set_operation(const std::string& op);
 		void set_operation(std::string&& op);
 
-		const std::vector<Parameter>& parameters() const;
-		void set_parameters(const std::vector<Parameter>& parameters);
-		void set_parameters(std::vector<Parameter>&& parameters);
+		const Parameters& parameters() const;
+		void set_parameters(const Parameters& parameters);
+		void set_parameters(Parameters&& parameters);
 
 		bool operator==(const ParameterizedOp& other) const;
 

@@ -9,7 +9,7 @@
 #include "pcs/product/recipe.h"
 #include "pcs/operation/guard.h"
 #include "pcs/operation/operation.h"
-#include "pcs/operation/parameter.h"
+#include "pcs/operation/parameters.h"
 
 namespace pcs {
 
@@ -60,13 +60,13 @@ namespace pcs {
 				Observable o;
 				o.name_ = seq_op["name"];
 				std::unordered_set<std::string> input;
-				std::vector<Parameter> parameters;
+				Parameters parameters;
 				std::vector<std::string> output;
 				for (const auto& in : seq_op["input"]) {
 					input.emplace(in);
 				}
 				for (const auto& param : seq_op["parameters"]) {
-					parameters.emplace_back(param["name"], param["value"]);
+					parameters.map().emplace(param["name"], param["value"]);
 				}
 				for (const auto& out : seq_op["output"]) {
 					output.emplace_back(out);
@@ -78,13 +78,13 @@ namespace pcs {
 				Observable o;
 				o.name_ = par_op["name"];
 				std::unordered_set<std::string> input;
-				std::vector<Parameter> parameters;
+				Parameters parameters;
 				std::vector<std::string> output;
 				for (const auto& in : par_op["input"]) {
 					input.emplace(in);
 				}
 				for (const auto& param : par_op["parameters"]) {
-					parameters.emplace_back(param["name"], param["value"]);
+					parameters.map().emplace(param["name"], param["value"]);
 				}
 				for (const auto& out : par_op["output"]) {
 					output.emplace_back(out);

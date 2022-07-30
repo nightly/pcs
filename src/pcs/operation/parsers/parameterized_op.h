@@ -7,11 +7,11 @@
 
 #include "pcs/operation/parameterized_op.h"
 #include "pcs/operation/parsers/label.h"
-#include "pcs/operation/parameter.h"
+#include "pcs/operation/parameters.h"
 
 namespace pcs {
 
-	std::vector<pcs::Parameter> StringToParameters(const std::string& str);
+	pcs::Parameters StringToParameters(const std::string& str);
 	ParameterizedOp StringToParameterizedOp(const std::string& str);
 	
 }

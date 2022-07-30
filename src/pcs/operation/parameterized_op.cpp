@@ -5,14 +5,14 @@
 #include <string>
 
 #include "pcs/operation/operation.h"
-#include "pcs/operation/parameter.h"
+#include "pcs/operation/parameters.h"
 
 namespace pcs {
 
-	ParameterizedOp::ParameterizedOp(const std::string& op, const std::vector<Parameter>& parameters)
+	ParameterizedOp::ParameterizedOp(const std::string& op, const Parameters& parameters)
 		: operation_(op), parameters_(parameters) {}
 	
-	ParameterizedOp::ParameterizedOp(std::string&& op, std::vector<Parameter>&& parameters)
+	ParameterizedOp::ParameterizedOp(std::string&& op, Parameters&& parameters)
 		: operation_(std::move(op)), parameters_(std::move(parameters)) {}
 
 	ParameterizedOp::ParameterizedOp(const ParameterizedOp& other)
@@ -45,15 +45,15 @@ namespace pcs {
 		operation_ = std::move(op);
 	}
 
-	const std::vector<Parameter>& ParameterizedOp::parameters() const {
+	const Parameters& ParameterizedOp::parameters() const {
 		return parameters_;
 	}
 
-	void ParameterizedOp::set_parameters(const std::vector<Parameter>& parameters) {
+	void ParameterizedOp::set_parameters(const Parameters& parameters) {
 		parameters_ = parameters;
 	}
 
-	void ParameterizedOp::set_parameters(std::vector<Parameter>&& parameters) {
+	void ParameterizedOp::set_parameters(Parameters&& parameters) {
 		parameters_ = std::move(parameters);
 	}
 
@@ -65,9 +65,7 @@ namespace pcs {
 		os << p_op.operation();
 		if (!p_op.parameters_.empty()) {
 			os << "(";
-			for (const auto& p : p_op.parameters()) {
-				os << p;
-			}
+			os << p_op.parameters_;
 			os << ")";
 		}
 		return os;
@@ -77,9 +75,7 @@ namespace pcs {
 		os << p_op.operation();
 		if (!p_op.parameters_.empty()) {
 			os << "(<I>";
-			for (const auto& p : p_op.parameters()) {
-				os << p;
-			}
+			os << p_op.parameters_;
 			os << "</I>)";
 		}
 		return os;

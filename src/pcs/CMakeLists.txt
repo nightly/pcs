@@ -13,7 +13,7 @@ set(PCS_SOURCES
 
 "operation/operation.h"  "operation/composite.cpp" "operation/guard.cpp" "operation/task_expression.cpp"
 "operation/observable.cpp" "operation/transfer.cpp" "operation/transfer_hash.h" "operation/nop.cpp"
-"operation/parameter.cpp" "operation/parameterized_op.cpp"
+"operation/parameters.cpp" "operation/parameterized_op.cpp"
 "operation/parsers/label.cpp" "operation/parsers/parameterized_op.cpp"
 
 "environment/environment.cpp" "environment/writers.cpp"

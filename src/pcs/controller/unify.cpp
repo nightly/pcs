@@ -1,6 +1,6 @@
 #include "pcs/controller/unify.h"
 
-#include "pcs/operation/parameter.h"
+#include "pcs/operation/parameters.h"
 #include "pcs/operation/observable.h"
 #include "pcs/common/log.h"
 
@@ -11,47 +11,47 @@ namespace pcs {
 	 * @param operation: only present for logging/additional information
 	 * @return Whether or not unification is successful and also updates resource_params for that operation.
 	 */
-	bool Unify(const std::vector<Parameter>& operation_params, const std::vector<Parameter>& recipe_params,  const pcs::Observable& operation) {
-		if (recipe_params.size() != operation_params.size()) {
+	bool Unify(const Parameters& operation_params, const Parameters& recipe_params, const pcs::Observable& operation) {
+		if (recipe_params.map().size() != operation_params.map().size()) {
 			PCS_INFO(fmt::format(fmt::fg(fmt::color::hot_pink),
 				"Mismatch between number of recipe parameters ({}) and resource parameters ({}) for operation {}",
-				recipe_params.size(), operation_params.size(),
+				recipe_params.map().size(), operation_params.map().size(),
 				operation.name()));
 			return false;
 		}
 
-		for (size_t i = 0; i < recipe_params.size(); ++i) {
-
-			if (recipe_params[i].name() != operation_params[i].name()) { // Ordered assumption
+		for (const auto& [rec_name, rec_value] : recipe_params.map()) {
+			if (!operation_params.map().contains(rec_name)) {
 				PCS_INFO(fmt::format(fmt::fg(fmt::color::hot_pink),
-					"Mismatch between name of recipe parameter and resource parameter for operation {}'s parameter {}",
-					recipe_params[i].name(), operation_params[i].name()));
+					"Parameter variable {} with value {} is present in recipe, but not in the resource parameters for operation {}",
+					rec_name, rec_value, operation.name()));
 				return false;
-			}
+			} 
 
-			if (operation_params[i].value() == "") { 
-				if (recipe_params[i].value() != "") {
+			if (operation_params.map().at(rec_name) == "") {
+				if (rec_value != "") {
 					// Assign operation from recipe
 				} else { // Both non-assigned
 					PCS_INFO(fmt::format(fmt::fg(fmt::color::hot_pink),
 						"Operation parameter is non-assigned variable {} and the recipe parameter is non-assigned variable {}. No assignment possible for operation {}'s parameter {}",
-						operation_params[i].value(), recipe_params[i].value(),
-						operation.name(), operation_params[i].name()));
+						operation_params.map().at(rec_name), rec_value,
+						operation.name(), rec_name));
 					return false;
 				}
 			} else {
-				if (recipe_params[i].value() == "") {
-					// Operation is assigned, recipe isn't - use the value from recipe.
-				} else if (operation_params[i].value() != recipe_params[i].value()) {
+				if (rec_value == "") {
+					// Assign operation from recipe
+				} else if (operation_params.map().at(rec_name) != rec_value) {
 					PCS_INFO(fmt::format(fmt::fg(fmt::color::hot_pink),
 						"Operation parameter is non-constant {} which clashes with the recipe parameter of {} for operation {}'s parameter {}",
-						operation_params[i].value(), recipe_params[i].value(),
-						operation.name(), operation_params[i].name()));
+						operation_params.map().at(rec_name), rec_value,
+						operation.name(), rec_name));
 					return false;
 				}
 			}
 
 		}
+
 		return true;
 	}
 

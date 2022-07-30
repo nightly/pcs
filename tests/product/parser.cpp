@@ -8,7 +8,7 @@
 #include "pcs/operation/composite.h"
 #include "pcs/operation/guard.h"
 #include "lts/writers.h"
-#include "pcs/operation/parameter.h"
+#include "pcs/operation/parameters.h"
 
 using namespace pcs;
 
@@ -20,7 +20,7 @@ TEST(ProductParser, Recipe1) {
 
 	CompositeOperation co1;
 	Observable co1_seq1, co1_seq2, co1_seq3;
-	std::vector<Parameter> empty_parameters;
+	Parameters empty_parameters;
 
 	co1.guard.set_operation(pcs::Observable("check"));
 	co1.guard.set_input(std::unordered_set<std::string>({"c"}));
@@ -42,9 +42,9 @@ TEST(ProductParser, Recipe1) {
 	co2.sequential.emplace_back(co2_seq1, std::unordered_set<std::string>({ "h2" }), empty_parameters, std::vector<std::string>({ "h2" }));
 	
 	co2_par1.name_ = "store";
-	std::vector<Parameter> co2_par1_params;
-	co2_par1_params.emplace_back("parameter1", "constant1");
-	co2_par1_params.emplace_back("parameter2", "");
+	Parameters co2_par1_params;
+	co2_par1_params.map().emplace("parameter1", "constant1");
+	co2_par1_params.map().emplace("parameter2", "");
 	co2.parallel.emplace_back(co2_par1, std::unordered_set<std::string>({ "p0" }), co2_par1_params, std::vector<std::string>());
 	
 	expected.AddTransition("A", co2, "E");

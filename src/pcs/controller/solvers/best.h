@@ -4,6 +4,7 @@
 #include <span>
 #include <string>
 #include <vector>
+#include <queue>
 
 #include <boost/container_hash/hash.hpp>
 

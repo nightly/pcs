@@ -4,9 +4,9 @@ project ("pcs" VERSION 0 LANGUAGES CXX)
 
 option(PCS_RUN_TESTS "Run tests" ON)
 option(PCS_COMPILE_BENCHMARKS "Compile benchmarks" ON)
-option(PCS_VERBOSE_OUTPUT "Verbose output" OFF)
-
 option(PCS_PCH "Use precompiled headers" ON)
+
+option(PCS_VERBOSE_OUTPUT "Verbose output" OFF)
 
 execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})

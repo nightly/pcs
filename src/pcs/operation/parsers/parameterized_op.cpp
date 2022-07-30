@@ -7,12 +7,12 @@
 
 #include "pcs/operation/parameterized_op.h"
 #include "pcs/operation/parsers/label.h"
-#include "pcs/operation/parameter.h"
+#include "pcs/operation/parameters.h"
 
 namespace pcs {
 
-	std::vector<pcs::Parameter> StringToParameters(const std::string& str) {
-		std::vector<pcs::Parameter> ret;
+	pcs::Parameters StringToParameters(const std::string& str) {
+		pcs::Parameters ret;
 		std::stringstream ss(str);
 		std::string line;
 		while (std::getline(ss, line, ' ')) {
@@ -20,7 +20,7 @@ namespace pcs {
 			std::string name, val;
 			std::getline(ss2, name, '=');
 			std::getline(ss2, val);
-			ret.emplace_back(name, val);
+			ret.map().emplace(name, val);
 		}
 		return ret;
 	}
@@ -31,7 +31,7 @@ namespace pcs {
 		std::getline(ss, op_str, '(');
 		std::getline(ss, params_str);
 
-		std::vector<pcs::Parameter> parameters = pcs::StringToParameters(params_str);
+		pcs::Parameters parameters = pcs::StringToParameters(params_str);
 		
 		return pcs::ParameterizedOp(std::move(op_str), std::move(parameters));
 	}
@@ -47,7 +47,7 @@ namespace nightly {
 		std::getline(ss, op_str, '(');
 		std::getline(ss, params_str, ')');
 
-		std::vector<pcs::Parameter> parameters = pcs::StringToParameters(params_str);
+		pcs::Parameters parameters = pcs::StringToParameters(params_str);
 		
 		return pcs::ParameterizedOp(std::move(op_str), std::move(parameters));
 	}
@@ -65,7 +65,7 @@ namespace nightly {
 		std::stringstream action_stream(action);
 		std::getline(action_stream, op_str, '(');
 		std::getline(action_stream, params_str, ')');
-		std::vector<pcs::Parameter> parameters = pcs::StringToParameters(params_str);
+		pcs::Parameters parameters = pcs::StringToParameters(params_str);
 
 		return { stoul(n), pcs::ParameterizedOp(std::move(op_str), std::move(parameters)) };
 	}
