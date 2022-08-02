@@ -52,10 +52,11 @@ namespace pcs {
 
 	/*
 	 * @brief Returns a highlighted topology showing the path the controller took
+	 * @param textless: generates the topology without any text visible. Default = false.
 	 */
 	void Highlighter::HighlightTopology(const nightly::LTS<TopologyState, TopologyTransition, boost::hash<TopologyState>>& topology,
 		                               const nightly::LTS<ControllerState, ControllerTransition, boost::hash<ControllerState>>& controller, 
-		                               const std::filesystem::path& out_path) {
+		                               const std::filesystem::path& out_path, const bool textless) {
 		std::ofstream os;
 		os.exceptions(std::ofstream::badbit);
 		CreateDirectoryForPath(out_path);
@@ -64,8 +65,13 @@ namespace pcs {
 			os.open(out_path, std::ios::out | std::ios::trunc);
 			os << "digraph finite_state_machine {\n";
 			os << "	fontname=\"Helvetica, Arial, sans - serif\"\n";
-			os << "	node [fontname=\"Helvetica, Arial, sans - serif\"]\n";
-			os << "	edge [fontname=\"Helvetica, Arial, sans - serif\"]\n";
+			if (textless) {
+				os << "	node [fontname=\"Helvetica, Arial, sans - serif\" fontcolor=\"white\"]\n";
+				os << "	edge [fontname=\"Helvetica, Arial, sans - serif\" fontcolor=\"white\"]\n";
+			} else {
+				os << "	node [fontname=\"Helvetica, Arial, sans - serif\"]\n";
+				os << "	edge [fontname=\"Helvetica, Arial, sans - serif\"]\n";
+			}
 			os << "	rankdir=LR;\n";
 			os << "	node [shape = doublecircle];\n";
 			os << "	" << "\"" << topology.initial_state() << "\"" << ";\n";
@@ -75,19 +81,26 @@ namespace pcs {
 
 			for (const auto& pair : topology.states()) {
 				auto& state = pair.second;
-				if (state.IsEmpty()) {
-					if (target_map.contains(pair.first)) {
-						os << "	" << "\"" << pair.first << "\"" << " [shape=circle, style=filled, fillcolor=dodgerblue2]" << "\n";
+				if (target_map.contains(pair.first)) {
+					// Color/print states that are part of the topology, even if previously done.
+					if (textless) {
+						os << "	" << "\"" << pair.first << "\"" << " [shape=circle, style=filled, fillcolor=dodgerblue2 fontcolor=dodgerblue2]" << "\n";
 					} else {
+						os << "	" << "\"" << pair.first << "\"" << " [shape=circle, style=filled, fillcolor=dodgerblue2]" << "\n";
+					}
+				} else {
+					// Include empty states
+					if (state.IsEmpty()) {
 						os << "	" << "\"" << pair.first << "\"" << "\n";
 					}
 				}
 				for (const auto& t : state.transitions_) {
 					if ((target_map.contains(pair.first)) && (target_map[pair.first].contains(t.label().second.operation()))) {
+						// Color label
 						os << "	" << "\"" << pair.first << "\"" << " -> " << "\"" << t.to() << "\"" << " [color=\"royalblue4\" penwidth=2.25 label = " << "<";
 						os << t.label() << ">];\n";
-						os << "	" << "\"" << pair.first << "\"" << " [shape=circle, style=filled, fillcolor=dodgerblue2]" << "\n";
 					} else {
+						// Not in target map: print normally.
 						os << "	" << "\"" << pair.first << "\"" << " -> " << "\"" << t.to() << "\"" << " [label = " << "<";
 						os << t.label() << ">];\n";
 					}
@@ -99,13 +112,9 @@ namespace pcs {
 		}
 	}
 
-
 }
 
 
 /*
-	@Note: `  c -> d [color="blue"]`
-
-	@Cleanup: should probably use a functor because this duplicates output/styling code although unimportant 
-	@Cleanup: should use ITopology
+	@Cleanup: should probably use a functor because this duplicates output/styling code
 */

@@ -16,8 +16,4 @@ namespace pcs {
 	std::optional<std::vector<std::string>> MatchingTransfer(const std::vector<nightly::LTS<std::string, ParameterizedOp>>& ltss,
 		                                                    const std::vector<std::string>& states_vec, size_t current_ltss_idx, 
 		                                                    const nightly::Transition<std::string, ParameterizedOp>& current_transition);
-
-	bool NopizeObservable(const std::vector<std::string>& states_vec, size_t resource);
-	bool NopizeSync(const std::vector<std::string>& states_vec, size_t in, size_t out);
-
 }

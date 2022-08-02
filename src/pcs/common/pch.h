@@ -33,6 +33,7 @@
 #include <spdlog/fmt/ostr.h>
 #include <spdlog/fmt/ranges.h>
 #include <spdlog/fmt/bundled/color.h>
+#include "pcs/common/log.h"
 
 // Common
 #include "pcs/common/directory.h"
@@ -45,6 +46,10 @@
 #include "pcs/operation/composite.h"
 #include "pcs/operation/guard.h"
 #include "pcs/operation/task_expression.h"
+#include "pcs/operation/parameters.h"
+#include "pcs/operation/parameterized_op.h"
+
+#include "pcs/operation/parsers/parsers.h"
 
 // Product
 #include "pcs/product/recipe.h"

@@ -30,6 +30,7 @@ target_include_directories(pcs
 )
 
 if (PCS_PCH)
+    message("[PCS] Generating precompiled headers")
     target_precompile_headers(pcs 
         PUBLIC
          "${CMAKE_CURRENT_SOURCE_DIR}/common/pch.h"

@@ -59,7 +59,7 @@ static void IncrementalTopology(pcs::Environment& machine) {
 	machine.Incremental();
 }
 
-static void GraphVizSave(const std::string& export_folder, size_t num_resources, bool only_highlighted_topology) {
+static void GraphVizSave(const std::string& export_folder, size_t num_resources, bool only_highlighted_topology, bool skeleton_topology) {
 	std::filesystem::current_path(export_folder);
 	system("dot -Tpng recipe.gv -o recipe.png");
 	for (size_t i = 1; i <= num_resources; ++i) {
@@ -71,6 +71,9 @@ static void GraphVizSave(const std::string& export_folder, size_t num_resources,
 	system("dot -Tpng highlighted_topology.gv -o highlighted_topology.png");
 	if (!only_highlighted_topology) {
 		system("dot -Tpng topology.gv -o topology.png");
+	}
+	if (skeleton_topology) {
+		system("dot -Tpng highlighted_skeleton_topology.gv -o highlighted_skeleton_topology.png");
 	}
 }
 
@@ -133,7 +136,10 @@ void Run(const std::string& name, const RunnerOpts& opts) {
 
 	if (controller_lts.has_value()) {
 		nightly::ExportToFile(*controller_lts, export_folder + "/controller.gv");
-		pcs::Highlighter::HighlightTopology(machine.topology()->lts(), *controller_lts, export_folder + "/highlighted_topology.gv");
+		pcs::Highlighter::HighlightTopology(machine.topology()->lts(), *controller_lts, export_folder + "/highlighted_topology.gv", false);
+		if (opts.skeleton_topology_image) {
+			pcs::Highlighter::HighlightTopology(machine.topology()->lts(), *controller_lts, export_folder + "/highlighted_skeleton_topology.gv", true);
+		}
 	} else {
 		PCS_WARN("[PAD] No controller generated");
 	}
@@ -143,6 +149,6 @@ void Run(const std::string& name, const RunnerOpts& opts) {
 	PCS_INFO(fmt::format(fmt::fg(fmt::color::white_smoke), "[Topology] Number Of States = {}, Number of Transitions = {}", machine.topology()->lts().NumOfStates(),
 		machine.topology()->lts().NumOfTransitions()));
 	if (opts.generate_images) {
-		GraphVizSave(export_folder, num_resources, opts.only_highlighted_topology_image);
+		GraphVizSave(export_folder, num_resources, opts.only_highlighted_topology_image, opts.skeleton_topology_image);
 	}
 }

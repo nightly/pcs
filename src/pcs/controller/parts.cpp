@@ -7,6 +7,7 @@
 #include "spdlog/fmt/ostr.h"
 
 #include "pcs/common/log.h"
+#include "pcs/common/strings.h"
 #include "pcs/operation/parameterized_op.h"
 
 namespace pcs {
@@ -63,8 +64,8 @@ namespace pcs {
 		
 		for (const auto& p : input) {
 			if (parts_[out].contains(p)) {
-				parts_[out].erase(p);
 				parts_[in].emplace(p);
+				parts_[out].erase(p);
 			}
 		}
 		return true;
@@ -96,9 +97,7 @@ namespace pcs {
 			}
 			os << "Parts at Resource " << (i) << ':';
 			os << "  ";
-			for (const auto& p : parts.parts_[i]) {
-				os << p << " ";
-			}
+			os << USetToString(parts.parts_[i]);
 			os << "\n";
 		}
 		return os;

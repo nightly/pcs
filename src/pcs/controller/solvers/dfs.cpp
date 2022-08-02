@@ -83,7 +83,8 @@ namespace pcs {
 					allocate = true;
 				}
 				bool unify = Unify(transition.label().second.parameters(), parameters, op);
-				if (allocate && unify) {
+				bool nopize = NopizeObservable(machine_->resources(), *topology_state, transition.label().first, op.name());
+				if (allocate && unify && nopize) {
 					std::vector<std::string> label_vec(num_of_resources_, "-");
 					label_vec[transition.label().first] = transition.label().second.operation();
 					plan_transitions.emplace_back(next_recipe_state, topology_state, label_vec, &transition.to());
@@ -115,7 +116,10 @@ namespace pcs {
 				label_vec[std::get<1>(v)->first] = k.name();
 				label_vec[std::get<2>(v)->first] = std::get<2>(v)->second.operation();
 				bool sync = plan_parts.Synchronize(std::get<2>(v)->first, std::get<1>(v)->first, input);
-				if (!sync) {}
+				bool nopize = NopizeSync(machine_->resources(), *topology_state, std::get<1>(v)->first, std::get<2>(v)->first, op.name());
+				if (!nopize) {
+					continue;
+				}
 				plan_transitions.emplace_back(next_recipe_state, topology_state, label_vec, &state_vec);
 				found = DFS(controller, next_recipe_state, &state_vec, plan_parts, basic_plan, plan_transitions, co, seq_id);
 				if (found == true) {

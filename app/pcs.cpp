@@ -15,8 +15,9 @@ int main() {
 	// MergeExample(2);
 
 	RunnerOpts opts{ .solver = SolverOpt::DepthFirst, .incremental_topology = true, 
-		             .generate_images = true, .only_highlighted_topology_image = false, .recipe_name = "recipe_fail.json"};
-	Run("unify", opts);
+		             .generate_images = true, .only_highlighted_topology_image = false, .skeleton_topology_image = true,
+		             .recipe_name = "recipe.json"};
+	Run("pad", opts);
 
 	return 0;
 }

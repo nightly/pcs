@@ -30,4 +30,55 @@ namespace pcs {
 		}
 	}
 
+	/*
+	 * Ensures the rest of the states are in a Nop state when applying an observable (operation/nop) transition.
+	 */
+	bool NopizeObservable(const std::vector<nightly::LTS<std::string, ParameterizedOp>>& ltss,
+		const std::vector<std::string>& states_vec, size_t resource, const std::string& op_str) {
+		for (size_t i = 0; i < states_vec.size(); ++i) {
+			if (i == resource) {
+				continue;
+			}
+			bool found_nop = false;
+			for (const auto& t : ltss[i].at(states_vec[i]).transitions()) {
+				if (t.label().operation() == "nop") {
+					found_nop = true;
+					break;
+				}
+			}
+			if (!found_nop) {
+				PCS_INFO(fmt::format(fmt::fg(fmt::color::fire_brick), "[Nop] Unable to find nop transition at resource {} when processing {}", 
+					i, op_str));
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/*
+	 * Ensures the rest of the states are in a Nop state when applying a transfer transition.
+	 */
+	bool NopizeSync(const std::vector<nightly::LTS<std::string, ParameterizedOp>>& ltss, 
+		            const std::vector<std::string>& states_vec, size_t in, size_t out,
+	                const std::string& op_str) {
+		for (size_t i = 0; i < states_vec.size(); ++i) {
+			if (i == in || i == out) {
+				continue;
+			}
+			bool found_nop = false;
+			for (const auto& t : ltss[i].at(states_vec[i]).transitions()) {
+				if (t.label().operation() == "nop") {
+					found_nop = true;
+					break;
+				}
+			}
+			if (!found_nop) {
+				PCS_INFO(fmt::format(fmt::fg(fmt::color::fire_brick), "[Nop] Unable to find nop transition at resource {} when processing sync({},{}) for {}", 
+					i, in, out, op_str));
+				return false;
+			}
+		}
+		return true;
+	}
+
 }

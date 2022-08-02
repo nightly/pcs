@@ -26,6 +26,7 @@ macro(package_add_benchmark BENCHNAME)
 endmacro()
 
 # Benchmark Suite
+message("[PCS] Compiling benchmarks")
 
 # ==================
 #   Topology

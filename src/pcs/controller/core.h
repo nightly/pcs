@@ -22,4 +22,12 @@ namespace pcs {
 		                    nightly::LTS<std::pair<std::string, std::vector<std::string>>, std::vector<std::string>, 
 		                    boost::hash<std::pair<std::string, std::vector<std::string>>>>& controller);
 
+	bool NopizeObservable(const std::vector<nightly::LTS<std::string, ParameterizedOp>>& ltss,
+		                  const std::vector<std::string>& states_vec, size_t resource,
+						  const std::string& op_str);
+
+	bool NopizeSync(const std::vector<nightly::LTS<std::string, ParameterizedOp>>& ltss,
+		            const std::vector<std::string>& states_vec, size_t in, size_t out,
+				    const std::string& op_str);
+
 }
