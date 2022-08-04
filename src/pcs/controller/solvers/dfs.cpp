@@ -62,7 +62,7 @@ namespace pcs {
 	 */
 	bool Controller::DFS(ControllerType& controller, const std::string& next_recipe_state, const std::vector<std::string>* topology_state, Parts plan_parts,
 		                std::vector<PlanTransition> basic_plan, std::vector<PlanTransition> plan_transitions,
-		                const CompositeOperation& co, size_t seq_id) {
+		                const CompositeOperation& co, size_t seq_id, size_t recursion_level) {
 
 		// 1. Get the current sequential operation to process
 		const TaskExpression& task = co.CurrentTask(seq_id);
@@ -74,19 +74,24 @@ namespace pcs {
 		std::unordered_map<TransferOperation, std::tuple<const TopologyState*, const TopologyTransition*,
 			const TopologyTransition*>> transfers;
 		
+
 		bool found = false;
 		for (const auto& transition : topology_->at(*topology_state).transitions_) {
 			if (op.name() == transition.label().second.operation()) {
 				bool allocate = true;
 				if (!input.empty()) {
 					allocate = plan_parts.Allocate(transition.label(), input);
-					allocate = true;
 				}
 				bool unify = Unify(transition.label().second.parameters(), parameters, op);
 				bool nopize = NopizeObservable(machine_->resources(), *topology_state, transition.label().first, op.name());
 				if (allocate && unify && nopize) {
 					std::vector<std::string> label_vec(num_of_resources_, "-");
 					label_vec[transition.label().first] = transition.label().second.operation();
+					
+					PCS_TRACE(fmt::format(fmt::fg(fmt::color::royal_blue) | fmt::emphasis::bold,
+						"Evaluating controller transition from {} with label ({}) to {}", fmt::join(*topology_state, ","),
+						fmt::join(label_vec, ","), fmt::join(transition.to(), ",")));
+					
 					plan_transitions.emplace_back(next_recipe_state, topology_state, label_vec, &transition.to());
 					plan_parts.Add(transition.label(), output);
 					topology_state = &transition.to();
@@ -111,49 +116,61 @@ namespace pcs {
 		if (!found) {
 			for (const auto& [k, v] : transfers) {
 				// map type - [ TransferOperation key, tuple(end_state, transition, inverse transition) ]
+				// std::get<2>(v) {in} // std::get<1>(v) {out}
 				const TopologyState& state_vec = *std::get<0>(v);
 				std::vector<std::string> label_vec(num_of_resources_, "-");
 				label_vec[std::get<1>(v)->first] = k.name();
 				label_vec[std::get<2>(v)->first] = std::get<2>(v)->second.operation();
-				bool sync = plan_parts.Synchronize(std::get<2>(v)->first, std::get<1>(v)->first, input);
+				Parts next_parts = plan_parts;
+				std::vector<PlanTransition> next_transitions = plan_transitions;
+				bool sync = next_parts.Synchronize(std::get<2>(v)->first, std::get<1>(v)->first, input);
 				bool nopize = NopizeSync(machine_->resources(), *topology_state, std::get<1>(v)->first, std::get<2>(v)->first, op.name());
-				if (!nopize) {
+
+				PCS_TRACE("//---------------------");
+				PCS_TRACE(next_parts);
+				PCS_TRACE(fmt::format(fmt::fg(fmt::color::royal_blue) | fmt::emphasis::bold,
+					"Evaluating controller transition from {} with label ({}) to {}. For {}. At recursion level = {}", fmt::join(*topology_state, ","),
+					fmt::join(label_vec, ","), fmt::join(state_vec, ","), op.name(), recursion_level));
+				PCS_TRACE(next_parts);
+				PCS_TRACE("---------------------//");
+				
+				if (!nopize || !sync) {
 					continue;
 				}
-				plan_transitions.emplace_back(next_recipe_state, topology_state, label_vec, &state_vec);
-				found = DFS(controller, next_recipe_state, &state_vec, plan_parts, basic_plan, plan_transitions, co, seq_id);
-				if (found == true) {
-					break;
+				next_transitions.emplace_back(next_recipe_state, topology_state, label_vec, &state_vec);
+				found = DFS(controller, next_recipe_state, &state_vec, std::move(next_parts), basic_plan,
+					std::move(next_transitions), co, seq_id, ++recursion_level);
+				if (found) {
+					return true;
 				}
 			}
 			return found;
-		}
-
-		// 4. Process the next operation
-		seq_id++;
-		if (seq_id < (co.HasGuard() ? (co.sequential.size() + 1) : co.sequential.size())) [[Likely]] {
-			PCS_INFO(fmt::format(fmt::fg(fmt::color::lavender), "[DFS] Processed Operation = \"{}\" with input parts [{}] and output parts [{}]",
-				op.name(), fmt::join(input, ","), fmt::join(output, ",")));
-			return DFS(controller, next_recipe_state, topology_state, plan_parts, basic_plan, plan_transitions, co, seq_id);
 		} else {
-			ApplyAllTransitions(plan_transitions, controller);
-			basic_plan.insert(std::end(basic_plan), std::begin(plan_transitions), std::end(plan_transitions));
-			plan_transitions.clear();
-			PCS_INFO(fmt::format(fmt::fg(fmt::color::lavender), "[DFS] Processed Composite Operation at Recipe State {}. Last operation = \"{}\" with input parts [{}] and output parts [{}]",
-				next_recipe_state, op.name(), fmt::join(input, ","), fmt::join(output, ",")));
+			// 4. Process the next operation
+			seq_id++;
+			if (seq_id < (co.HasGuard() ? (co.sequential.size() + 1) : co.sequential.size())) [[Likely]] {
+				PCS_INFO(fmt::format(fmt::fg(fmt::color::lavender), "[DFS] Processed Operation = \"{}\" with input parts [{}] and output parts [{}]",
+					op.name(), fmt::join(input, ","), fmt::join(output, ",")));
+				return DFS(controller, next_recipe_state, topology_state, plan_parts, basic_plan, plan_transitions, co, seq_id);
+			} else {
+				ApplyAllTransitions(plan_transitions, controller);
+				basic_plan.insert(std::end(basic_plan), std::begin(plan_transitions), std::end(plan_transitions));
+				plan_transitions.clear();
+				PCS_INFO(fmt::format(fmt::fg(fmt::color::lavender), "[DFS] Processed Composite Operation at Recipe State {}. Last operation = \"{}\" with input parts [{}] and output parts [{}]",
+					next_recipe_state, op.name(), fmt::join(input, ","), fmt::join(output, ",")));
 
-			for (const auto& rec_transition : recipe_->lts()[next_recipe_state].transitions_) {
-				PCS_INFO(fmt::format(fmt::fg(fmt::color::gold) | fmt::emphasis::bold, "Processing recipe transition to: {}",
-					rec_transition.to()));
-				bool realise = DFS(controller, rec_transition.to(), topology_state, plan_parts,
-					               basic_plan, plan_transitions, rec_transition.label(), 0);
-				if (realise == false) {
-					return false;
+				for (const auto& rec_transition : recipe_->lts()[next_recipe_state].transitions_) {
+					PCS_INFO(fmt::format(fmt::fg(fmt::color::gold) | fmt::emphasis::bold, "Processing recipe transition to: {}",
+						rec_transition.to()));
+					bool realise = DFS(controller, rec_transition.to(), topology_state, plan_parts,
+						basic_plan, plan_transitions, rec_transition.label(), 0);
+					if (realise == false) {
+						return false;
+					}
 				}
+				return true;
 			}
-			return true;
 		}
-
 	}
 
 }

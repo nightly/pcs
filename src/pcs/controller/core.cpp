@@ -47,8 +47,8 @@ namespace pcs {
 				}
 			}
 			if (!found_nop) {
-				PCS_INFO(fmt::format(fmt::fg(fmt::color::fire_brick), "[Nop] Unable to find nop transition at resource {} when processing {}", 
-					i, op_str));
+				PCS_DEBUG(fmt::format(fmt::fg(fmt::color::slate_blue), "[Nop] Unable to find nop transition at resource {} when processing {}. States vec = {}", 
+					i, op_str, fmt::join(states_vec, ",")));
 				return false;
 			}
 		}
@@ -73,8 +73,8 @@ namespace pcs {
 				}
 			}
 			if (!found_nop) {
-				PCS_INFO(fmt::format(fmt::fg(fmt::color::fire_brick), "[Nop] Unable to find nop transition at resource {} when processing sync({},{}) for {}", 
-					i, in, out, op_str));
+				PCS_DEBUG(fmt::format(fmt::fg(fmt::color::slate_blue), "[Nop] Unable to find nop transition at resource {} when processing sync({},{}) for {}. States vec = {}", 
+					i, in, out, op_str, fmt::join(states_vec, ",")));
 				return false;
 			}
 		}

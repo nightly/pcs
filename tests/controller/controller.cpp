@@ -20,7 +20,7 @@ static pcs::Environment LoadPadMachine() {
 	return machine;
 }
 
-TEST(Controller, Pad) {
+TEST(Controller, DISABLED_Pad) {
 	nightly::LTS<std::pair<std::string, std::vector<std::string>>, std::vector<std::string>, 
 		     boost::hash<std::pair<std::string,std::vector<std::string>>>> expected;
 	nightly::ReadFromFile(expected, "../../tests/controller/testdata/pad/controller.txt");
@@ -42,7 +42,7 @@ TEST(Controller, Pad) {
 	ASSERT_EQ(got, expected);
 }
 
-TEST(Controller, Pad_Incremental) {
+TEST(Controller, DISABLED_Pad_Incremental) {
 	nightly::LTS<std::pair<std::string, std::vector<std::string>>, std::vector<std::string>,
 		boost::hash<std::pair<std::string, std::vector<std::string>>>> expected;
 	nightly::ReadFromFile(expected, "../../tests/controller/testdata/pad/controller.txt");

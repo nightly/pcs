@@ -35,6 +35,6 @@ namespace pcs {
 		std::optional<ControllerType> Generate();
 	private:
 		bool DFS(ControllerType& controller, const std::string& recipe_state, const std::vector<std::string>* topology_state, Parts plan_parts,
-			std::vector<PlanTransition> basic_plan, std::vector<PlanTransition> plan_transitions, const CompositeOperation& co, size_t seq_id);
+			std::vector<PlanTransition> basic_plan, std::vector<PlanTransition> plan_transitions, const CompositeOperation& co, size_t seq_id, size_t recursion_level = 0);
 	};
 }

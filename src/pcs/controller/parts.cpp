@@ -4,8 +4,6 @@
 #include <string>
 #include <algorithm>
 
-#include "spdlog/fmt/ostr.h"
-
 #include "pcs/common/log.h"
 #include "pcs/common/strings.h"
 #include "pcs/operation/parameterized_op.h"
@@ -59,16 +57,18 @@ namespace pcs {
 	// Move all parts from the operation input possible to the [in] transition
 	bool Parts::Synchronize(size_t in, size_t out, const std::unordered_set<std::string>& input) {
 		if (parts_[out].empty()) {
-			return false; // No parts present at the resource
+			return false; // No parts present at the out resource: no synchronization can occur
 		}
-		
+		bool move = false; // Determines whether or not any target part was actually moved
+
 		for (const auto& p : input) {
 			if (parts_[out].contains(p)) {
 				parts_[in].emplace(p);
 				parts_[out].erase(p);
+				move = true;
 			}
 		}
-		return true;
+		return move;
 	}
 
 	// Consume parts at the resource from the operation input set at the specified resource
@@ -91,15 +91,16 @@ namespace pcs {
 	}
 
 	std::ostream& operator<<(std::ostream& os, const Parts& parts) {
+		os << "Parts = [";
 		for (size_t i = 0; i < parts.parts_.size(); ++i) {
-			if (parts.parts_[i].empty()) {
-				continue;
-			}
-			os << "Parts at Resource " << (i) << ':';
-			os << "  ";
+			os << "{";
 			os << USetToString(parts.parts_[i]);
-			os << "\n";
+			os << "}";
+			if (i != parts.parts_.size() - 1) {
+				os << ", ";
+			}
 		}
+		os << "]";
 		return os;
 	}
 
