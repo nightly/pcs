@@ -4,4 +4,3 @@ s0. nop. s0.
 s0. in:4. s1.
 s1. takeImages. s2.
 s2. out:4. s0.
-s3. out:4. s0.
