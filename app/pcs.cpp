@@ -14,10 +14,10 @@ int main() {
 
 	// MergeExample(2);
 
-	RunnerOpts opts{ .solver = SolverOpt::DepthFirst, .incremental_topology = true, 
+	RunnerOpts opts{ .solver = SolverOpt::DepthFirst, .incremental_topology = false, 
 		             .generate_images = true, .only_highlighted_topology_image = false, .skeleton_topology_image = true,
 		             .recipe_name = "recipe.json"};
-	Run("hinge", opts);
+	Run("pad", opts);
 
 	return 0;
 }

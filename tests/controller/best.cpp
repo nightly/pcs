@@ -19,7 +19,7 @@ static pcs::Environment LoadPadMachine() {
 }
 
 // First test output of DFS, which should result in a larger controller
-TEST(Best_Controller, DISABLED_DFS) {
+TEST(Best_Controller, DFS) {
 	nightly::LTS<std::pair<std::string, std::vector<std::string>>, std::vector<std::string>,
 		boost::hash<std::pair<std::string, std::vector<std::string>>>> expected;
 	nightly::ReadFromFile(expected, "../../tests/controller/testdata/best/dfs.txt");

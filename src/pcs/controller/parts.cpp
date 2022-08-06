@@ -56,6 +56,11 @@ namespace pcs {
 
 	// Move all parts from the operation input possible to the [in] transition
 	bool Parts::Synchronize(size_t in, size_t out, const std::unordered_set<std::string>& input) {
+		// Possible assumptions:
+		//		1. Move all parts from the operation input to the out resource.
+		//		2. Move all parts at the resource to the in resource.
+		//		3. Move all combinations of parts at the resource to the in resource. Which involves 2^{n} - 1 possible routes.
+
 		if (parts_[out].empty()) {
 			return false; // No parts present at the out resource: no synchronization can occur
 		}
