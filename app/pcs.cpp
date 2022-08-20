@@ -17,7 +17,7 @@ int main() {
 	RunnerOpts opts{ .solver = SolverOpt::DepthFirst, .incremental_topology = false, 
 		             .generate_images = true, .only_highlighted_topology_image = false, .skeleton_topology_image = true,
 		             .recipe_name = "recipe.json"};
-	Run("pad", opts);
+	Run("hinge", opts);
 
 	return 0;
 }

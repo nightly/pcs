@@ -177,7 +177,7 @@ namespace pcs {
 					 label_vec[std::get<2>(v)->first] = std::get<2>(v)->second.operation();
 					 bool sync = next_stage.parts.Synchronize(std::get<2>(v)->first, std::get<1>(v)->first, input);
 					 bool nopize = NopizeSync(machine_->resources(), *next_stage.topology_state, std::get<1>(v)->first, std::get<2>(v)->first, op.name());
-					 if (!nopize) {
+					 if (!nopize || !sync) {
 						 continue;
 					 }
 					
@@ -211,6 +211,8 @@ namespace pcs {
 				 cand.descendants.pop();
 				 if (cand.descendants.empty()) {
 					 first_generated = true;
+				 } else {
+					 pq.push(cand);
 				 }
 			 }
 		}

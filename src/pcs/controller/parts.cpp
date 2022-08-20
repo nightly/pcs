@@ -54,12 +54,48 @@ namespace pcs {
 		}
 	}
 
-	// Move all parts from the operation input possible to the [in] transition
+	// Consume parts at the resource from the operation input set at the specified resource
+	bool Parts::Allocate(const TopologyTransition& transition, const std::unordered_set<std::string>& input) {
+		for (const auto& p : input) {
+			if (parts_[transition.first].contains(p)) {
+				parts_[transition.first].erase(p);
+			} else {
+				PCS_TRACE(fmt::format(fmt::fg(fmt::color::coral), "[Parts] Unable to consume part {}, expected at resource {} for operation {}",
+					p, transition.first, transition.second));
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	// ============================================================================
+	//						Synchronizations
+	//-----------------------------------------------------------------------------
+	// 		Possible assumptions:
+	//		1. Move all parts from the operation input to the out resource.
+	//		2. Move all parts at the resource to the in resource.
+	//		3. Move all combinations of parts at the resource to the in resource. 
+	//			Which involves 2^{n} - 1 possible routes.
+	// ============================================================================
+
+	// Synchronize anything possible (A2)
 	bool Parts::Synchronize(size_t in, size_t out, const std::unordered_set<std::string>& input) {
-		// Possible assumptions:
-		//		1. Move all parts from the operation input to the out resource.
-		//		2. Move all parts at the resource to the in resource.
-		//		3. Move all combinations of parts at the resource to the in resource. Which involves 2^{n} - 1 possible routes.
+
+		if (parts_[out].empty()) {
+			return false; // No parts present at the out resource: no synchronization can occur
+		}
+
+		for (const auto& p : parts_[out]) {
+			parts_[in].emplace(p);
+		}
+		parts_[out].clear();
+
+		return true;
+	}
+
+	// Move all parts from the operation input possible to the [in] transition (A1)
+	bool Parts::SynchronizeInput(size_t in, size_t out, const std::unordered_set<std::string>& input) {
 
 		if (parts_[out].empty()) {
 			return false; // No parts present at the out resource: no synchronization can occur
@@ -76,20 +112,10 @@ namespace pcs {
 		return move;
 	}
 
-	// Consume parts at the resource from the operation input set at the specified resource
-	bool Parts::Allocate(const TopologyTransition& transition, const std::unordered_set<std::string>& input) {
-		for (const auto& p : input) {
-			if (parts_[transition.first].contains(p)) {
-				parts_[transition.first].erase(p);
-			} else {
-				PCS_TRACE(fmt::format(fmt::fg(fmt::color::coral), "[Parts] Unable to consume part {}, expected at resource {} for operation {}",
-					p, transition.first, transition.second));
-				return false;
-			}
-		}
 
-		return true;
-	}
+	// ===========================================================================
+	//						Operator overloads
+	// ===========================================================================
 
 	bool Parts::operator==(const Parts& other) const {
 		return parts_ == other.parts_;
