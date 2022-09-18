@@ -9,6 +9,7 @@
 #include <unordered_set>
 #include <limits>
 #include <queue>
+#include <stdexcept>
 
 #include <spdlog/fmt/bundled/color.h>
 #include <spdlog/fmt/ranges.h>
@@ -19,6 +20,7 @@
 #include "pcs/common/strings.h"
 #include "pcs/operation/parsers/label.h"
 #include "pcs/controller/unify.h"
+#include "pcs/controller/solvers/parse_costs.h"
 
 namespace pcs {
 
@@ -31,7 +33,8 @@ namespace pcs {
 		                       boost::hash<std::pair<std::string, std::vector<std::string>>>>;
 
 	BestController::BestController(const Environment* machine, ITopology* topology, const Recipe* recipe) 
-		: machine_(machine), recipe_(recipe), topology_(topology), num_of_resources_(machine_->NumOfResources()) {}
+		: machine_(machine), recipe_(recipe), topology_(topology), num_of_resources_(machine_->NumOfResources()) {
+	}
 
 	struct Stage {
 		const TopologyState* topology_state;
@@ -87,15 +90,43 @@ namespace pcs {
 		}
 	}
 
-	void ResourcesUpdate(std::unordered_set<size_t>& used_resources, const TopologyTransition& transition, size_t& num) {
-		if (!used_resources.contains(transition.first)) {
-			used_resources.emplace(transition.first);
+	void BestController::SetCosts(std::optional<std::filesystem::path> path) {
+		if (path.has_value()) {
+			try {
+				costs_ = ParseCosts(path.value(), num_of_resources_);
+			} catch (std::ifstream::failure& e) {
+				throw;
+			}
+			PCS_INFO(fmt::format(fmt::fg(fmt::color::white_smoke) | fmt::emphasis::bold,
+				"Using cost objective with the following costs [{}]", fmt::join(costs_, ",")));
+		} else {
+			PCS_CRITICAL("Specified to use cost objective but did not provide any filepath to costs");
+		}
+	}
+
+	void BestController::CostsUpdate(MinimizeOpt opt, std::unordered_set<size_t>& used_resources,
+		                            const TopologyTransition& transition, size_t& num) {
+		switch (opt) {
+		case MinimizeOpt::Transitions:
 			num++;
+			break;
+		case MinimizeOpt::Resources:
+			if (!used_resources.contains(transition.first)) {
+				used_resources.emplace(transition.first);
+				num++;
+			}
+			break;
+		case MinimizeOpt::Cost:
+			if (!used_resources.contains(transition.first)) {
+				used_resources.emplace(transition.first);
+				num+= costs_[transition.first];
+			}
+			break;
 		}
 	}
 
 
-	std::optional<ControllerType> BestController::Generate(MinimizeOpt opt) {
+	std::optional<ControllerType> BestController::Generate(MinimizeOpt opt, std::optional<std::filesystem::path> costs_path) {
 		bool first_generated = false;
 		Candidate best_candidate;
 		best_candidate.num = std::numeric_limits<size_t>::max();
@@ -108,6 +139,13 @@ namespace pcs {
 		Candidate initial_candidate(initial_descendant);
 		initial_candidate.controller.set_initial_state({first_transition.to(), topology_->initial_state()});
 		pq.push(initial_candidate);
+
+		if (opt == MinimizeOpt::Cost) {
+			SetCosts(costs_path);
+			if (costs_.empty()) {
+				return {};
+			}
+		}
 
 		while (!pq.empty() && (best_candidate.num >= pq.top().num || !first_generated)) {
 			 Candidate cand = pq.top();
@@ -141,11 +179,8 @@ namespace pcs {
 						 stage.topology_state = &transition.to();
 						 found = true;
 
-						 if (opt == MinimizeOpt::Transitions) {
-							 cand.num++;
-						 } else {
-							 ResourcesUpdate(cand.used_resources, transition.label(), cand.num);
-						 }
+						 CostsUpdate(opt, cand.used_resources, transition.label(), cand.num);
+
 						 cand.complete_ops++;
 						 break;
 					 }
@@ -184,11 +219,9 @@ namespace pcs {
                      PlanTransition plan_t(*next_stage.to_recipe_state, next_stage.topology_state, label_vec, &state_vec);
 					 next_stage.topology_state = &state_vec;
 					 ApplyTransition(plan_t, next_candidate.controller);
-					 if (opt == MinimizeOpt::Transitions) {
-						 next_candidate.num++;
-					 } else {
-						 ResourcesUpdate(next_candidate.used_resources, *std::get<1>(v), next_candidate.num);
-					 }
+
+					 CostsUpdate(opt, next_candidate.used_resources, *std::get<1>(v), next_candidate.num);
+					 
 					 pq.push(next_candidate);
 				 }
 				 continue;
@@ -216,6 +249,9 @@ namespace pcs {
 				 }
 			 }
 		}
+
+		PCS_INFO(fmt::format(fmt::fg(fmt::color::gold) | fmt::emphasis::bold,
+			"Final cost = {}", best_candidate.num));
 
 		return { best_candidate.controller };
 	}

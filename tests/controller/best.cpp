@@ -40,7 +40,7 @@ TEST(Best_Controller, DFS) {
 	ASSERT_EQ(got, expected);
 }
 
-TEST(Best_Controller, BreadthFirst) {
+TEST(Best_Controller, Best) {
 	nightly::LTS<std::pair<std::string, std::vector<std::string>>, std::vector<std::string>,
 		boost::hash<std::pair<std::string, std::vector<std::string>>>> expected;
 	nightly::ReadFromFile(expected, "../../tests/controller/testdata/best/best.txt");
@@ -57,11 +57,14 @@ TEST(Best_Controller, BreadthFirst) {
 	pcs::BestController bc(&machine, machine.topology(), &recipe);
 	auto lts_min_sync = bc.Generate(pcs::MinimizeOpt::Transitions);
 	auto lts_min_resources = bc.Generate(pcs::MinimizeOpt::Resources);
+	auto lts_min_cost = bc.Generate(pcs::MinimizeOpt::Cost, "../../tests/controller/testdata/best/costs_3.txt");
 
 	ASSERT_EQ(lts_min_sync.has_value(), true);
 	ASSERT_EQ(lts_min_resources.has_value(), true);
+	ASSERT_EQ(lts_min_cost.has_value(), true);
 
-	// Minimizing the number of transitions and resources results in the same controller for this simple example
+	// Minimizing the number of transitions, resources and costs results in the same controller for this simple example
 	ASSERT_EQ(*lts_min_sync, expected);
 	ASSERT_EQ(*lts_min_resources, expected);
+	ASSERT_EQ(*lts_min_cost, expected);
 }

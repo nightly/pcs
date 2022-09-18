@@ -8,6 +8,7 @@ set(PCS_SOURCES
 "controller/solvers/dfs.cpp" "controller/solvers/best.cpp" 
 "controller/core.cpp" "controller/plan_transition.cpp" "controller/parts.cpp"
 "controller/unify.cpp" "controller/highlighter.cpp"
+"controller/solvers/parse_costs.cpp"
 
 "product/recipe.cpp"  "product/parsers/recipe.cpp"
 

@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <queue>
+#include <filesystem>
 
 #include <boost/container_hash/hash.hpp>
 
@@ -23,7 +24,9 @@ namespace pcs {
 	 */
 	enum class MinimizeOpt {
 		Transitions,
-		Resources
+		Resources,
+		Cost
+		// Multi Objective
 	};
 
 	class BestController {
@@ -41,9 +44,14 @@ namespace pcs {
 		ITopology* topology_;
 
 		size_t num_of_resources_;
+		std::vector<double> costs_;
+		MinimizeOpt objective_;
 	public:
 		BestController(const Environment* machine, ITopology* topology, const Recipe* recipe);
-		std::optional<ControllerType> Generate(MinimizeOpt opt);
+		std::optional<ControllerType> Generate(MinimizeOpt opt, std::optional<std::filesystem::path> costs_path = std::nullopt);
+	private:
+		void SetCosts(std::optional<std::filesystem::path> path);
+		void CostsUpdate(MinimizeOpt opt, std::unordered_set<size_t>& used_resources, const TopologyTransition& transition, size_t& num);
 	};
 
 }

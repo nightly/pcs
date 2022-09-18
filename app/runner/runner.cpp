@@ -89,7 +89,7 @@ using ControllerType = nightly::LTS<std::pair<std::string, std::vector<std::stri
 void Run(const std::string& name, const RunnerOpts& opts) {
 
 	/* Determine number of resources and set data/export folder paths */
-	PCS_INFO(fmt::format(fmt::fg(fmt::color::white_smoke), "Using {} Example", name));
+	PCS_INFO(fmt::format(fmt::fg(fmt::color::white_smoke), "Using {} model", name));
 	std::string data_folder = "../../data/" + name + '/';
 
 	std::string type;
@@ -97,11 +97,14 @@ void Run(const std::string& name, const RunnerOpts& opts) {
 	case SolverOpt::DepthFirst:
 		type = "/dfs/";
 		break;
-	case SolverOpt::BestFirstTransitions:
+	case SolverOpt::BestTransitions:
 		type = "/best-transitions/";
 		break;
-	case SolverOpt::BestFirstResources:
+	case SolverOpt::BestResources:
 		type = "/best-resources/";
+		break;
+	case SolverOpt::BestCost:
+		type = "/best-cost/";
 		break;
 	}
 
@@ -126,12 +129,16 @@ void Run(const std::string& name, const RunnerOpts& opts) {
 	if (opts.solver == SolverOpt::DepthFirst) {
 		pcs::Controller con(&machine, machine.topology(), &recipe);
 		controller_lts = con.Generate();
-	} else if (opts.solver == SolverOpt::BestFirstTransitions) {
+	} else if (opts.solver == SolverOpt::BestTransitions) {
 		pcs::BestController con(&machine, machine.topology(), &recipe);
 		controller_lts = con.Generate(pcs::MinimizeOpt::Transitions);
-	} else if (opts.solver == SolverOpt::BestFirstResources) {
+	} else if (opts.solver == SolverOpt::BestResources) {
 		pcs::BestController con(&machine, machine.topology(), &recipe);
 		controller_lts = con.Generate(pcs::MinimizeOpt::Resources);
+	} else if (opts.solver == SolverOpt::BestCost) {
+		// Assumes the file containing costs is in same dir and is called costs.txt
+		pcs::BestController con(&machine, machine.topology(), &recipe);
+		controller_lts = con.Generate(pcs::MinimizeOpt::Cost, (data_folder + "costs.txt"));
 	}
 
 	if (controller_lts.has_value()) {

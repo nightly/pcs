@@ -35,6 +35,7 @@ package_add_test("controller" "controller/controller.cpp")
 package_add_test("unify" "controller/unify.cpp")
 package_add_test("best-controller" "controller/best.cpp")
 package_add_test("controller-parts" "controller/parts.cpp")
+package_add_test("controller-parse-costs" "controller/parse_costs.cpp")
 
 package_add_test("composite-operation" "operation/composite.cpp")
 package_add_test("operation-label-parse" "operation/parsers/label.cpp")

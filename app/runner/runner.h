@@ -9,8 +9,10 @@
 
 enum SolverOpt {
 	DepthFirst,
-	BestFirstTransitions,
-	BestFirstResources,
+	BestTransitions,
+	BestResources,
+	BestCost,
+	// Multi-Objective
 };
 
 struct RunnerOpts {
