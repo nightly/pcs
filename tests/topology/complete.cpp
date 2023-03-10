@@ -19,8 +19,8 @@ TEST(CompleteTopology, IterativeRecursive) {
 	nightly::ReadFromFile(ltss[3], "../../data/pad/Resource4.txt");
 	nightly::ReadFromFile(ltss[4], "../../data/pad/Resource5.txt");
 
-	pcs::CompleteTopology it(ltss);
-	pcs::CompleteTopology rt(ltss);
+	pcs::CompleteTopology it(ltss, false);
+	pcs::CompleteTopology rt(ltss, true);
 	const auto& iterative = it.lts();
 	const auto& recursive = rt.lts();
 
