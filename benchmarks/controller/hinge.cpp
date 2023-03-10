@@ -28,7 +28,7 @@ static void HingeCompleteTopology(benchmark::State& state) {
 
 BENCHMARK(HingeCompleteTopology)->Unit(benchmark::kMillisecond);
 
-static void HingeControllerUsingComplete(benchmark::State& state) {
+static void HingeControllerUsingCompleteTopology(benchmark::State& state) {
 	// First generate the topology, then time how long the controller takes
 	pcs::Environment machine;
 	try {
@@ -58,10 +58,10 @@ static void HingeControllerUsingComplete(benchmark::State& state) {
 	}
 }
 
-BENCHMARK(HingeControllerUsingComplete)->Unit(benchmark::kMillisecond);
+BENCHMARK(HingeControllerUsingCompleteTopology)->Unit(benchmark::kMillisecond);
 
 
-static void HingeCompleteWithController(benchmark::State& state) {
+static void HingeCompleteTopologyWithController(benchmark::State& state) {
 	// Times complete + controller total time
 	pcs::Environment machine;
 	try {
@@ -90,10 +90,10 @@ static void HingeCompleteWithController(benchmark::State& state) {
 	}
 }
 
-BENCHMARK(HingeCompleteWithController)->Unit(benchmark::kMillisecond);
+BENCHMARK(HingeCompleteTopologyWithController)->Unit(benchmark::kMillisecond);
 
 
-static void HingeIncrementalWithController(benchmark::State& state) {
+static void HingeIncrementaTopologylWithController(benchmark::State& state) {
 	// Controller generation time with incremental topology
 	pcs::Environment machine;
 	try {
@@ -122,6 +122,6 @@ static void HingeIncrementalWithController(benchmark::State& state) {
 	}
 }
 
-BENCHMARK(HingeIncrementalWithController)->Unit(benchmark::kMillisecond);
+BENCHMARK(HingeIncrementaTopologylWithController)->Unit(benchmark::kMillisecond);
 
 
