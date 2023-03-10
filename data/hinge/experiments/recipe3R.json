@@ -9,6 +9,7 @@
           {
             "name": "load",
             "input": [],
+			"parameters": [],
             "output": [
               "d",
               "s"
@@ -20,6 +21,7 @@
               "d",
               "s"
             ],
+			"parameters": [],
             "output": [
               "h"
             ]
@@ -39,6 +41,7 @@
             "input": [
               "h"
             ],
+			"parameters": [],
             "output": [
               "h"
             ]
@@ -58,6 +61,7 @@
             "input": [
               "h"
             ],
+			"parameters": [],
             "output": [
               "h"
             ]
