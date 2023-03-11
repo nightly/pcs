@@ -6,6 +6,7 @@
 #include <set>
 #include <utility>
 #include <unordered_set>
+#include <stack>
 
 #include <boost/container_hash/hash.hpp>
 
@@ -33,7 +34,7 @@ namespace pcs {
 		if (recursive) {
 			CombineRecursive(initial_key);
 		} else {
-			CombineRecursive(initial_key); // ...
+			CombineIterative(initial_key); // ...
 		}
 	}
 
@@ -79,4 +80,38 @@ namespace pcs {
 		}
 	}
 
+	void CompleteTopology::CombineIterative(std::vector<std::string>& states_vec) {
+		std::stack<std::vector<std::string>> stack;
+		stack.push(states_vec);
+
+		while (!stack.empty())
+		{
+			std::vector<std::string> states_vec = stack.top();
+			stack.pop();
+
+			if (visited_.contains(states_vec) == true) {
+				continue;
+			}
+			visited_.insert(states_vec);
+
+			for (size_t i = 0; i < ltss_.size(); ++i) {
+				for (const auto& transition : ltss_[i].states().at(states_vec[i]).transitions_) {
+					if ((transition.label().operation().find("in:") != std::string::npos) || (transition.label().operation().find("out:") != std::string::npos)) {
+						std::optional<std::vector<std::string>> transfer_state = MatchingTransfer(ltss_, states_vec, i, transition);
+						if (!transfer_state.has_value()) {
+							continue;
+						}
+						topology_.AddTransition(states_vec, std::make_pair(i, transition.label()), *transfer_state);
+						stack.push(*transfer_state);
+					}
+					else {
+						std::vector<std::string> next_states = states_vec;
+						next_states[i] = transition.to();
+						topology_.AddTransition(states_vec, std::make_pair(i, transition.label()), next_states);
+						stack.push(next_states);
+					}
+				}
+			}
+		}
+	}
 }

@@ -20,8 +20,8 @@ static void HingeController2R(benchmark::State& state) {
 	machine.Complete();
 
 	for (auto _ : state) {
-		pcs::Controller con(&machine, machine.topology(), &recipe);
-		auto controller_lts = con.Generate();
+		pcs::BestController con(&machine, machine.topology(), &recipe);
+		auto controller_lts = con.Generate(pcs::MinimizeOpt::Resources);
 		benchmark::DoNotOptimize(controller_lts);
 		benchmark::ClobberMemory();
 	}
@@ -44,8 +44,8 @@ static void HingeController3R(benchmark::State& state) {
 	machine.Complete();
 
 	for (auto _ : state) {
-		pcs::Controller con(&machine, machine.topology(), &recipe);
-		auto controller_lts = con.Generate();
+		pcs::BestController con(&machine, machine.topology(), &recipe);
+		auto controller_lts = con.Generate(pcs::MinimizeOpt::Resources);
 		benchmark::DoNotOptimize(controller_lts);
 		benchmark::ClobberMemory();
 	}
@@ -69,8 +69,8 @@ static void HingeController4R(benchmark::State& state) {
 	machine.Complete();
 
 	for (auto _ : state) {
-		pcs::Controller con(&machine, machine.topology(), &recipe);
-		auto controller_lts = con.Generate();
+		pcs::BestController con(&machine, machine.topology(), &recipe);
+		auto controller_lts = con.Generate(pcs::MinimizeOpt::Resources);
 		benchmark::DoNotOptimize(controller_lts);
 		benchmark::ClobberMemory();
 	}
@@ -105,8 +105,8 @@ static void HingeController(benchmark::State& state) {
 	machine.Complete();
 
 	for (auto _ : state) {
-		pcs::Controller con(&machine, machine.topology(), &recipe);
-		auto controller_lts = con.Generate();
+		pcs::BestController con(&machine, machine.topology(), &recipe);
+		auto controller_lts = con.Generate(pcs::MinimizeOpt::Resources);
 		benchmark::DoNotOptimize(controller_lts);
 		benchmark::ClobberMemory();
 	}
