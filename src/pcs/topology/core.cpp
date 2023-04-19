@@ -31,7 +31,7 @@ namespace pcs {
 				continue;
 			}
 			for (const auto& t : ltss[i].states().at(states_vec[i]).transitions_) {
-				if (t.label().operation().find(inverse.name()) != std::string::npos) {
+				if (t.label().operation() == inverse.name()) {
 					std::vector<std::string> resulting_state = states_vec;
 					resulting_state[current_ltss_idx] = current_transition.to();
 					resulting_state[i] = t.to();
