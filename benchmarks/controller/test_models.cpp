@@ -7,12 +7,20 @@
 #include "pcs/topology/topology.h"
 #include "lts/parsers/parsers.h"
 
-static const std::string machine_name = "model1";
-static const std::string machine_dir = "../../data/" + machine_name;
-static const std::string resource_file_prefix = machine_dir + "/Resource";
-static const std::string recipe_dir = machine_dir + "/experiments/";
+static std::string machine_name = "small_test_model";
+static std::string machine_dir = "../../data/" + machine_name;
+static std::string resource_file_prefix = machine_dir + "/Resource";
+static std::string recipe_dir = machine_dir + "/experiments/";
 
-static const int num_resources = 10;
+static const int num_resources = 15;
+
+enum ModelSize {
+	small,
+	medium,
+	big
+};
+
+static enum ModelSize model_size = ModelSize::small;
 
 static bool resources_created = true;
 static bool recipes_created = true;
@@ -27,18 +35,36 @@ static void CreateResource(int i) {
 
 		stream << "s0\n";
 		stream << "s0. nop. s0.\n";
-		stream << "s1. nop. s1.\n";
-		stream << "s2. nop. s2.\n";
+		stream << "s1. nop. s1.\n";		
 
 		if (i == 1) {
-			stream << "s0. o11. s1.\n";
-			stream << "s0. o1. s1.\n";
-			stream << "s1. out:1. s0.\n";
-			stream << "s1. rem. s0.\n";
-			stream << "s1. o12. s2.\n";
-			stream << "s1. o13. s2.\n";
-			stream << "s2. out:1. s0.\n";
-			stream << "s2. rem. s0.\n";
+			if (model_size == ModelSize::small)
+			{
+				stream << "s0. o11. s1.\n";
+				stream << "s0. o1. s1.\n";
+				stream << "s1. out:1. s0.\n";
+				stream << "s1. rem. s0.\n";
+			}
+			else if (model_size == ModelSize::medium || model_size == ModelSize::big)
+			{
+				stream << "s2. nop. s2.\n";
+				stream << "s0. o11. s1.\n";
+				stream << "s0. o1. s1.\n";
+				stream << "s1. out:1. s0.\n";
+				stream << "s1. rem. s0.\n";
+				stream << "s1. o12. s2.\n";
+				stream << "s1. o1a. s2.\n";
+				stream << "s2. out:1. s0.\n";
+				stream << "s2. rem. s0.\n";
+
+				if (model_size == ModelSize::big)
+				{
+					stream << "s2. o13. s3.\n";
+					stream << "s2. o1b. s3.\n";
+					stream << "s3. out:1. s0.\n";
+					stream << "s3. rem. s0.\n";
+				}
+			}
 		} else {
 			stream << "s0. o" + std::to_string(i) + "1. s1.\n";
 			stream << "s0. in:" + std::to_string(i) + ". s1.\n";
@@ -48,6 +74,22 @@ static void CreateResource(int i) {
 			stream << "s1. o" + std::to_string(i) + ". s2.\n";
 			stream << "s2. out:" + std::to_string(i) + ". s0.\n";
 			stream << "s2. rem. s0.\n";
+
+			if (model_size == ModelSize::medium || model_size == ModelSize::big)
+			{
+				stream << "s2. o" + std::to_string(i) + "3. s3.\n";
+				stream << "s2. o" + std::to_string(i) + "a. s3.\n";
+				stream << "s3. out:" + std::to_string(i) + ". s0.\n";
+				stream << "s3. rem. s0.\n";
+
+				if (model_size == ModelSize::big)
+				{
+					stream << "s3. o" + std::to_string(i) + "4. s4.\n";
+					stream << "s3. o" + std::to_string(i) + "b. s4.\n";
+					stream << "s4. out:" + std::to_string(i) + ". s0.\n";
+					stream << "s4. rem. s0.\n";
+				}
+			}
 		}
 	}
 	catch (const std::ofstream::failure& e) {
@@ -113,7 +155,6 @@ static void CreateRecipe(int r) {
 
 		for (int i = 1; i <= r; i++) {
 			stream << "    {\n";
-
 			stream << "      \"startState\": \"A" + std::to_string(i) + "\",\n";
 			stream << "      \"label\": {\n";
 			stream << "        \"guard\": {},\n";
@@ -126,21 +167,97 @@ static void CreateRecipe(int r) {
 				stream << "\"p" + std::to_string(i - 1) + "\"";
 			}
 
-			stream << "],\n";			
+			stream << "],\n";
 			stream << "            \"parameters\": [],\n";
-			stream << "            \"output\": [\"p" + std::to_string(i) + "\"]\n";
+			stream << "            \"output\": [\"p" + std::to_string(i) + "\'\"]\n";
 			stream << "          }\n";
 			stream << "        ],\n";
 			stream << "        \"parallel\": []\n";
 			stream << "      },\n";
-			stream << "      \"endState\": \"A" + std::to_string(i + 1) + "\"\n";
-			stream << "    }";
 
-			if (i < r) {
-				stream << ",";
+			if (model_size == ModelSize::small)
+			{
+				stream << "      \"endState\": \"A" + std::to_string(i + 1) + "\"\n";
+				stream << "    }";
+
+				if (i < r) {
+					stream << ",";
+				}
+
+				stream << "\n";
 			}
+			else if (model_size == ModelSize::medium || model_size == ModelSize::big)
+			{
+				stream << "      \"endState\": \"A" + std::to_string(i) + "\'\"\n";
+				stream << "    },\n";
 
-			stream << "\n";
+				stream << "    {\n";
+				stream << "      \"startState\": \"A" + std::to_string(i) + "\'\",\n";
+				stream << "      \"label\": {\n";
+				stream << "        \"guard\": {},\n";
+				stream << "        \"sequential\": [\n";
+				stream << "          {\n";
+				stream << "            \"name\": \"o" + std::to_string(i) + "a\",\n";
+				stream << "            \"input\": [\"p" + std::to_string(i) + "\'\"";
+				stream << "],\n";
+				stream << "            \"parameters\": [],\n";
+
+				if (model_size == ModelSize::medium)
+				{
+					stream << "            \"output\": [\"p" + std::to_string(i) + "\"]\n";
+				}
+				else if (model_size == ModelSize::big)
+				{
+					stream << "            \"output\": [\"p" + std::to_string(i) + "\'\'\"]\n";
+				}
+				
+				stream << "          }\n";
+				stream << "        ],\n";
+				stream << "        \"parallel\": []\n";
+				stream << "      },\n";
+
+				if (model_size == ModelSize::medium)
+				{
+					stream << "      \"endState\": \"A" + std::to_string(i + 1) + "\"\n";
+					stream << "    }";
+
+					if (i < r) {
+						stream << ",";
+					}
+
+					stream << "\n";
+				}
+				else if (model_size == ModelSize::big)
+				{
+					stream << "      \"endState\": \"A" + std::to_string(i) + "\'\'\"\n";
+					stream << "    },\n";
+
+					stream << "    {\n";
+					stream << "      \"startState\": \"A" + std::to_string(i) + "\'\'\",\n";
+					stream << "      \"label\": {\n";
+					stream << "        \"guard\": {},\n";
+					stream << "        \"sequential\": [\n";
+					stream << "          {\n";
+					stream << "            \"name\": \"o" + std::to_string(i) + "b\",\n";
+					stream << "            \"input\": [\"p" + std::to_string(i) + "\'\'\"";
+					stream << "],\n";
+					stream << "            \"parameters\": [],\n";
+					stream << "            \"output\": [\"p" + std::to_string(i) + "\"]\n";
+					stream << "          }\n";
+					stream << "        ],\n";
+					stream << "        \"parallel\": []\n";
+					stream << "      },\n";
+
+					stream << "      \"endState\": \"A" + std::to_string(i + 1) + "\"\n";
+					stream << "    }";
+
+					if (i < r) {
+						stream << ",";
+					}
+
+					stream << "\n";
+				}
+			}
 		}
 
 		stream << "  ]\n";
@@ -223,34 +340,167 @@ static void IncrementalTopologyWithController(benchmark::State& state, int n, in
 	}
 }
 
-static void CompleteTopology(benchmark::State& state) {
+static void CompleteTopology1(benchmark::State& state) {
+	model_size = ModelSize::small;
+	machine_name = "small_test_model";
+	machine_dir = "../../data/" + machine_name;
+	resource_file_prefix = machine_dir + "/Resource";
+	
 	for (size_t i = 2; i <= state.range(0); ++i) {
 		CompleteTopology(state, i, num_resources);
 	}
 }
 
-BENCHMARK(CompleteTopology)->DenseRange(2, num_resources, 1)->Unit(benchmark::kMillisecond);
+//BENCHMARK(CompleteTopology1)->DenseRange(2, num_resources, 1)->Unit(benchmark::kMillisecond);
 
-static void ControllerUsingCompleteTopology(benchmark::State& state) {
+static void ControllerUsingCompleteTopology1(benchmark::State& state) {
+	model_size = ModelSize::small;
+	machine_name = "small_test_model";
+	machine_dir = "../../data/" + machine_name;
+	resource_file_prefix = machine_dir + "/Resource";
+	recipe_dir = machine_dir + "/experiments/";
+
 	for (size_t i = 2; i <= state.range(0); ++i) {
 		ControllerUsingCompleteTopology(state, i, num_resources);
 	}
 }
 
-BENCHMARK(ControllerUsingCompleteTopology)->DenseRange(2, num_resources, 1)->Unit(benchmark::kMillisecond);
+//BENCHMARK(ControllerUsingCompleteTopology1)->DenseRange(2, num_resources, 1)->Unit(benchmark::kMillisecond);
 
-static void CompleteTopologyWithController(benchmark::State& state) {
+static void CompleteTopologyWithController1(benchmark::State& state) {
+	model_size = ModelSize::small;
+	machine_name = "small_test_model";
+	machine_dir = "../../data/" + machine_name;
+	resource_file_prefix = machine_dir + "/Resource";
+	recipe_dir = machine_dir + "/experiments/";
+
 	for (size_t i = 2; i <= state.range(0); ++i) {
 		CompleteTopologyWithController(state, i, num_resources);
 	}
 }
 
-BENCHMARK(CompleteTopologyWithController)->DenseRange(2, num_resources, 1)->Unit(benchmark::kMillisecond);
+//BENCHMARK(CompleteTopologyWithController1)->DenseRange(2, num_resources, 1)->Unit(benchmark::kMillisecond);
 
-static void IncrementalTopologyWithController(benchmark::State& state) {
+static void IncrementalTopologyWithController1(benchmark::State& state) {
+	model_size = ModelSize::small;
+	machine_name = "small_test_model";
+	machine_dir = "../../data/" + machine_name;
+	resource_file_prefix = machine_dir + "/Resource";
+	recipe_dir = machine_dir + "/experiments/";
+
 	for (size_t i = 2; i <= state.range(0); ++i) {
 		IncrementalTopologyWithController(state, i, num_resources);
 	}
 }
 
-BENCHMARK(IncrementalTopologyWithController)->DenseRange(2, num_resources, 1)->Unit(benchmark::kMillisecond);
+BENCHMARK(IncrementalTopologyWithController1)->DenseRange(2, num_resources, 1)->Unit(benchmark::kMillisecond);
+
+static void CompleteTopology2(benchmark::State& state) {
+	model_size = ModelSize::medium;
+	machine_name = "medium_test_model";
+	machine_dir = "../../data/" + machine_name;
+	resource_file_prefix = machine_dir + "/Resource";
+
+	for (size_t i = 2; i <= state.range(0); ++i) {
+		CompleteTopology(state, i, num_resources);
+	}
+}
+
+//BENCHMARK(CompleteTopology2)->DenseRange(2, num_resources - 3, 1)->Unit(benchmark::kMillisecond);
+
+static void ControllerUsingCompleteTopology2(benchmark::State& state) {
+	model_size = ModelSize::medium;
+	machine_name = "medium_test_model";
+	machine_dir = "../../data/" + machine_name;
+	resource_file_prefix = machine_dir + "/Resource";
+	recipe_dir = machine_dir + "/experiments/";
+
+	for (size_t i = 2; i <= state.range(0); ++i) {
+		ControllerUsingCompleteTopology(state, i, num_resources);
+	}
+}
+
+//BENCHMARK(ControllerUsingCompleteTopology2)->DenseRange(2, num_resources - 3, 1)->Unit(benchmark::kMillisecond);
+
+static void CompleteTopologyWithController2(benchmark::State& state) {
+	model_size = ModelSize::medium;
+	machine_name = "medium_test_model";
+	machine_dir = "../../data/" + machine_name;
+	resource_file_prefix = machine_dir + "/Resource";
+	recipe_dir = machine_dir + "/experiments/";
+
+	for (size_t i = 2; i <= state.range(0); ++i) {
+		CompleteTopologyWithController(state, i, num_resources);
+	}
+}
+
+//BENCHMARK(CompleteTopologyWithController2)->DenseRange(2, num_resources - 3, 1)->Unit(benchmark::kMillisecond);
+
+static void IncrementalTopologyWithController2(benchmark::State& state) {
+	model_size = ModelSize::medium;
+	machine_name = "medium_test_model";
+	machine_dir = "../../data/" + machine_name;
+	resource_file_prefix = machine_dir + "/Resource";
+	recipe_dir = machine_dir + "/experiments/";
+
+	for (size_t i = 2; i <= state.range(0); ++i) {
+		IncrementalTopologyWithController(state, i, num_resources);
+	}
+}
+
+BENCHMARK(IncrementalTopologyWithController2)->DenseRange(2, num_resources, 1)->Unit(benchmark::kMillisecond);
+
+static void CompleteTopology3(benchmark::State& state) {
+	model_size = ModelSize::big;
+	machine_name = "big_test_model";
+	machine_dir = "../../data/" + machine_name;
+	resource_file_prefix = machine_dir + "/Resource";
+
+	for (size_t i = 2; i <= state.range(0); ++i) {
+		CompleteTopology(state, i, num_resources);
+	}
+}
+
+//BENCHMARK(CompleteTopology3)->DenseRange(2, num_resources - 3, 1)->Unit(benchmark::kMillisecond);
+
+static void ControllerUsingCompleteTopology3(benchmark::State& state) {
+	model_size = ModelSize::big;
+	machine_name = "big_test_model";
+	machine_dir = "../../data/" + machine_name;
+	resource_file_prefix = machine_dir + "/Resource";
+	recipe_dir = machine_dir + "/experiments/";
+
+	for (size_t i = 2; i <= state.range(0); ++i) {
+		ControllerUsingCompleteTopology(state, i, num_resources);
+	}
+}
+
+//BENCHMARK(ControllerUsingCompleteTopology3)->DenseRange(2, num_resources - 3, 1)->Unit(benchmark::kMillisecond);
+
+static void CompleteTopologyWithController3(benchmark::State& state) {
+	model_size = ModelSize::big;
+	machine_name = "big_test_model";
+	machine_dir = "../../data/" + machine_name;
+	resource_file_prefix = machine_dir + "/Resource";
+	recipe_dir = machine_dir + "/experiments/";
+
+	for (size_t i = 2; i <= state.range(0); ++i) {
+		CompleteTopologyWithController(state, i, num_resources);
+	}
+}
+
+//BENCHMARK(CompleteTopologyWithController3)->DenseRange(2, num_resources - 3, 1)->Unit(benchmark::kMillisecond);
+
+static void IncrementalTopologyWithController3(benchmark::State& state) {
+	model_size = ModelSize::big;
+	machine_name = "big_test_model";
+	machine_dir = "../../data/" + machine_name;
+	resource_file_prefix = machine_dir + "/Resource";
+	recipe_dir = machine_dir + "/experiments/";
+
+	for (size_t i = 2; i <= state.range(0); ++i) {
+		IncrementalTopologyWithController(state, i, num_resources);
+	}
+}
+
+BENCHMARK(IncrementalTopologyWithController3)->DenseRange(2, num_resources, 1)->Unit(benchmark::kMillisecond);
