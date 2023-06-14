@@ -1,0 +1,14 @@
+Running C:\Users\dscrimie\OneDrive - University of Bradford\research\src\pcs\bin\Release\controller-hinge.exe
+Run on (12 X 2627.92 MHz CPU s)
+CPU Caches:
+  L1 Data 32 KiB (x6)
+  L1 Instruction 32 KiB (x6)
+  L2 Unified 256 KiB (x6)
+  L3 Unified 12288 KiB (x1)
+---------------------------------------------------------------------------------
+Benchmark                                       Time             CPU   Iterations
+---------------------------------------------------------------------------------
+HingeCompleteTopology                        1.62 ms         1.60 ms          448
+HingeControllerUsingCompleteTopology        0.160 ms        0.161 ms         4073
+HingeCompleteTopologyWithController          1.37 ms         1.36 ms          448
+HingeIncrementaTopologylWithController      0.371 ms        0.369 ms         1948

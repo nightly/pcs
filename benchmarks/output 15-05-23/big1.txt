@@ -1,0 +1,31 @@
+Running C:\Users\dscrimie\OneDrive - University of Bradford\research\src\pcs\bin\Release\controller-test-models.exe
+Run on (12 X 2593 MHz CPU s)
+CPU Caches:
+  L1 Data 32 KiB (x6)
+  L1 Instruction 32 KiB (x6)
+  L2 Unified 256 KiB (x6)
+  L3 Unified 12288 KiB (x1)
+-----------------------------------------------------------------------------
+Benchmark                                   Time             CPU   Iterations
+-----------------------------------------------------------------------------
+CompleteTopology3/2                     0.104 ms        0.103 ms         8960
+CompleteTopology3/3                     0.922 ms        0.899 ms          747
+CompleteTopology3/4                      8.42 ms         8.54 ms           75
+CompleteTopology3/5                      78.7 ms         78.1 ms            7
+CompleteTopology3/6                       617 ms          625 ms            1
+CompleteTopology3/7                      4095 ms         4109 ms            1
+CompleteTopology3/8                     26596 ms        26594 ms            1
+ControllerUsingCompleteTopology3/2      0.016 ms        0.015 ms        64000
+ControllerUsingCompleteTopology3/3      0.047 ms        0.047 ms        11200
+ControllerUsingCompleteTopology3/4      0.133 ms        0.134 ms         5600
+ControllerUsingCompleteTopology3/5      0.325 ms        0.324 ms         2987
+ControllerUsingCompleteTopology3/6      0.376 ms        0.381 ms         1930
+ControllerUsingCompleteTopology3/7      0.630 ms        0.628 ms          896
+ControllerUsingCompleteTopology3/8      0.844 ms        0.837 ms          896
+CompleteTopologyWithController3/2       0.055 ms        0.056 ms        11200
+CompleteTopologyWithController3/3       0.795 ms        0.785 ms          896
+CompleteTopologyWithController3/4        6.51 ms         6.42 ms          112
+CompleteTopologyWithController3/5        60.8 ms         61.1 ms           11
+CompleteTopologyWithController3/6         487 ms          500 ms            1
+CompleteTopologyWithController3/7        3761 ms         3734 ms            1
+CompleteTopologyWithController3/8       29282 ms        29266 ms            1

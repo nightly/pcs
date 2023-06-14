@@ -1,0 +1,21 @@
+Running C:\Users\dscrimie\OneDrive - University of Bradford\research\src\pcs\bin\Release\controller-hinge-resources.exe
+Run on (12 X 2616.31 MHz CPU s)
+CPU Caches:
+  L1 Data 32 KiB (x6)
+  L1 Instruction 32 KiB (x6)
+  L2 Unified 256 KiB (x6)
+  L3 Unified 12288 KiB (x1)
+-------------------------------------------------------------
+Benchmark                   Time             CPU   Iterations
+-------------------------------------------------------------
+HingeController2R       0.023 ms        0.023 ms        26353
+HingeController3R       0.219 ms        0.218 ms         3446
+HingeController4R        1.00 ms         1.00 ms          640
+HingeController5R        1.47 ms         1.46 ms          448
+HingeController/6        7.99 ms         7.95 ms          112
+HingeController/7        24.3 ms         24.0 ms           26
+HingeController/8         100 ms         99.0 ms            6
+HingeController/9         358 ms          359 ms            2
+HingeController/10       1242 ms         1234 ms            1
+HingeController/11       4327 ms         4328 ms            1
+HingeController/12      15021 ms        15016 ms            1

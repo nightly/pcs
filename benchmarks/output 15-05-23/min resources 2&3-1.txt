@@ -1,0 +1,26 @@
+Running C:\Users\dscrimie\OneDrive - University of Bradford\research\src\pcs\bin\Release\controller-test-models.exe
+Run on (12 X 2596.84 MHz CPU s)
+CPU Caches:
+  L1 Data 32 KiB (x6)
+  L1 Instruction 32 KiB (x6)
+  L2 Unified 256 KiB (x6)
+  L3 Unified 12288 KiB (x1)
+--------------------------------------------------------------------------------
+Benchmark                                      Time             CPU   Iterations
+--------------------------------------------------------------------------------
+IncrementalTopologyWithController2/2       0.067 ms        0.066 ms        11200
+IncrementalTopologyWithController2/4        1.19 ms         1.00 ms          560
+IncrementalTopologyWithController2/6        2.58 ms         2.58 ms          236
+IncrementalTopologyWithController2/8        6.76 ms         6.70 ms          112
+IncrementalTopologyWithController2/10       14.3 ms         14.5 ms           56
+IncrementalTopologyWithController2/12       41.7 ms         40.6 ms           15
+IncrementalTopologyWithController2/14       1256 ms         1266 ms            1
+IncrementalTopologyWithController2/16      44757 ms        44781 ms            1
+IncrementalTopologyWithController3/2       0.093 ms        0.093 ms         6400
+IncrementalTopologyWithController3/4        1.31 ms         1.27 ms          640
+IncrementalTopologyWithController3/6        3.69 ms         3.72 ms          172
+IncrementalTopologyWithController3/8        7.88 ms         7.99 ms           90
+IncrementalTopologyWithController3/10       22.8 ms         21.5 ms           45
+IncrementalTopologyWithController3/12       58.5 ms         59.4 ms           10
+IncrementalTopologyWithController3/14       1414 ms         1422 ms            1
+IncrementalTopologyWithController3/16      53719 ms        53734 ms            1

@@ -1,0 +1,34 @@
+Running C:\Users\dscrimie\OneDrive - University of Bradford\research\src\pcs\bin\Release\controller-test-models.exe
+Run on (12 X 2594.55 MHz CPU s)
+CPU Caches:
+  L1 Data 32 KiB (x6)
+  L1 Instruction 32 KiB (x6)
+  L2 Unified 256 KiB (x6)
+  L3 Unified 12288 KiB (x1)
+-----------------------------------------------------------------------------
+Benchmark                                   Time             CPU   Iterations
+-----------------------------------------------------------------------------
+CompleteTopology2/2                     0.036 ms        0.036 ms        17920
+CompleteTopology2/3                     0.394 ms        0.399 ms         1723
+CompleteTopology2/4                      3.10 ms         3.07 ms          224
+CompleteTopology2/5                      23.1 ms         22.9 ms           30
+CompleteTopology2/6                       159 ms          156 ms            5
+CompleteTopology2/7                       865 ms          891 ms            1
+CompleteTopology2/8                      4869 ms         4875 ms            1
+CompleteTopology2/9                     27956 ms        27969 ms            1
+ControllerUsingCompleteTopology2/2      0.013 ms        0.013 ms        74667
+ControllerUsingCompleteTopology2/3      0.041 ms        0.040 ms        17231
+ControllerUsingCompleteTopology2/4      0.087 ms        0.086 ms         7467
+ControllerUsingCompleteTopology2/5      0.161 ms        0.159 ms         3733
+ControllerUsingCompleteTopology2/6      0.291 ms        0.298 ms         2358
+ControllerUsingCompleteTopology2/7      0.450 ms        0.454 ms         1445
+ControllerUsingCompleteTopology2/8      0.690 ms        0.688 ms         1000
+ControllerUsingCompleteTopology2/9      0.854 ms        0.879 ms          640
+CompleteTopologyWithController2/2       0.048 ms        0.047 ms        16593
+CompleteTopologyWithController2/3       0.431 ms        0.435 ms         1545
+CompleteTopologyWithController2/4        3.16 ms         3.11 ms          236
+CompleteTopologyWithController2/5        22.5 ms         22.5 ms           32
+CompleteTopologyWithController2/6         150 ms          147 ms            5
+CompleteTopologyWithController2/7         872 ms          859 ms            1
+CompleteTopologyWithController2/8        5035 ms         5031 ms            1
+CompleteTopologyWithController2/9       31554 ms        31547 ms            1

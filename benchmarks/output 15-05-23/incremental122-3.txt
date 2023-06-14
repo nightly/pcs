@@ -1,0 +1,50 @@
+
+Running C:\Users\dscrimie\OneDrive - University of Bradford\research\src\pcs\bin\Release\controller-test-models.exe
+Run on (12 X 2593.61 MHz CPU s)
+CPU Caches:
+  L1 Data 32 KiB (x6)
+  L1 Instruction 32 KiB (x6)
+  L2 Unified 256 KiB (x6)
+  L3 Unified 12288 KiB (x1)
+---------------------------------------------------------------------------------
+Benchmark                                       Time             CPU   Iterations
+---------------------------------------------------------------------------------
+IncrementalTopologyWithController1/2        0.023 ms        0.023 ms        23579
+IncrementalTopologyWithController1/12        7.87 ms         7.67 ms          112
+IncrementalTopologyWithController1/22        48.7 ms         54.7 ms           10
+IncrementalTopologyWithController1/32         169 ms          176 ms            4
+IncrementalTopologyWithController1/42         422 ms          414 ms            2
+IncrementalTopologyWithController1/52         855 ms          891 ms            1
+IncrementalTopologyWithController1/62        1579 ms         1547 ms            1
+IncrementalTopologyWithController1/72        2829 ms         2828 ms            1
+IncrementalTopologyWithController1/82        4529 ms         4453 ms            1
+IncrementalTopologyWithController1/92        6783 ms         6844 ms            1
+IncrementalTopologyWithController1/102       9780 ms         9781 ms            1
+IncrementalTopologyWithController1/112      14227 ms        14266 ms            1
+IncrementalTopologyWithController1/122      19176 ms        19188 ms            1
+IncrementalTopologyWithController2/2        0.050 ms        0.050 ms        10000
+IncrementalTopologyWithController2/12        17.1 ms         17.3 ms           37
+IncrementalTopologyWithController2/22         118 ms          112 ms            6
+IncrementalTopologyWithController2/32         392 ms          375 ms            2
+IncrementalTopologyWithController2/42         943 ms          891 ms            1
+IncrementalTopologyWithController2/52        2088 ms         2094 ms            1
+IncrementalTopologyWithController2/62        3563 ms         3516 ms            1
+IncrementalTopologyWithController2/72        6216 ms         6188 ms            1
+IncrementalTopologyWithController2/82       10167 ms        10109 ms            1
+IncrementalTopologyWithController2/92       15076 ms        15094 ms            1
+IncrementalTopologyWithController2/102      22410 ms        22234 ms            1
+IncrementalTopologyWithController2/112      32995 ms        32969 ms            1
+IncrementalTopologyWithController2/122      43961 ms        43938 ms            1
+IncrementalTopologyWithController3/2        0.078 ms        0.078 ms         8960
+IncrementalTopologyWithController3/12        22.6 ms         22.7 ms           33
+IncrementalTopologyWithController3/22         147 ms          151 ms            6
+IncrementalTopologyWithController3/32         510 ms          500 ms            1
+IncrementalTopologyWithController3/42        1169 ms         1188 ms            1
+IncrementalTopologyWithController3/52        2441 ms         2344 ms            1
+IncrementalTopologyWithController3/62        4524 ms         4625 ms            1
+IncrementalTopologyWithController3/72        7672 ms         7641 ms            1
+IncrementalTopologyWithController3/82       12835 ms        12875 ms            1
+IncrementalTopologyWithController3/92       19183 ms        19172 ms            1
+IncrementalTopologyWithController3/102      28135 ms        28047 ms            1
+IncrementalTopologyWithController3/112      41283 ms        41125 ms            1
+IncrementalTopologyWithController3/122      57993 ms        57969 ms            1
