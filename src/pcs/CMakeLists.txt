@@ -5,7 +5,7 @@ set(PCS_SOURCES
 "topology/topology.h" "topology/core.cpp" "topology/complete.cpp" "topology/incremental.cpp" 
  "topology/stitch.cpp" 
 
-"controller/solvers/dfs.cpp" "controller/solvers/best.cpp" 
+"controller/solvers/dfs.cpp" "controller/solvers/best.cpp" "controller/solvers/local_best.cpp"
 "controller/core.cpp" "controller/plan_transition.cpp" "controller/parts.cpp"
 "controller/unify.cpp" "controller/highlighter.cpp"
 "controller/solvers/parse_costs.cpp"

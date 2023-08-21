@@ -43,6 +43,8 @@ package_add_benchmark("controller-hinge" "controller/hinge.cpp")
 package_add_benchmark("controller-hinge-resources" "controller/hinge_resources.cpp")
 package_add_benchmark("controller-hinge-resources-best" "controller/hinge_resources_best.cpp")
 package_add_benchmark("controller-test-models" "controller/test_models.cpp")
+package_add_benchmark("controller-test-models2" "controller/test_models2.cpp")
+package_add_benchmark("controller-test-models3" "controller/test_models3.cpp")
 
 # ==================
 #   Experimental

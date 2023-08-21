@@ -253,6 +253,10 @@ namespace pcs {
 		PCS_INFO(fmt::format(fmt::fg(fmt::color::gold) | fmt::emphasis::bold,
 			"Final cost = {}", best_candidate.num));
 
+#ifdef PRINT_COST
+		std::cout << "Final cost = {" + std::to_string(best_candidate.num) + "}" << std::endl;
+#endif
+
 		return { best_candidate.controller };
 	}
 
