@@ -1,3 +1,7 @@
+// Generates a recipe, a number of resources and runs various benchmarks
+// Size of recipe and resources can be small, medium or big
+// Benchmarks include controller synthesis with complete or incremental topology
+
 #include <benchmark/benchmark.h>
 #include "pcs/controller/controller.h"
 
@@ -12,7 +16,7 @@ static std::string machine_dir = "../../data/" + machine_name;
 static std::string resource_file_prefix = machine_dir + "/Resource";
 static std::string recipe_dir = machine_dir + "/experiments/";
 
-static const int num_resources = 15;
+static const int num_resources = 14;
 
 enum ModelSize {
 	small,
@@ -126,7 +130,7 @@ static void LoadResources(pcs::Environment& machine, int n, int transport) {
 			CreateResource(i);
 		}
 
-		CreateTransportResource(num_resources, num_resources);
+		CreateTransportResource(transport, num_resources);
 		resources_created = true;
 	}
 
@@ -169,7 +173,16 @@ static void CreateRecipe(int r) {
 
 			stream << "],\n";
 			stream << "            \"parameters\": [],\n";
-			stream << "            \"output\": [\"p" + std::to_string(i) + "\'\"]\n";
+
+			if (model_size == ModelSize::small)
+			{
+				stream << "            \"output\": [\"p" + std::to_string(i) + "\"]\n";
+			}
+			else if (model_size == ModelSize::medium || model_size == ModelSize::big)
+			{
+				stream << "            \"output\": [\"p" + std::to_string(i) + "\'\"]\n";
+			}
+
 			stream << "          }\n";
 			stream << "        ],\n";
 			stream << "        \"parallel\": []\n";
@@ -346,12 +359,8 @@ static void CompleteTopology1(benchmark::State& state) {
 	machine_dir = "../../data/" + machine_name;
 	resource_file_prefix = machine_dir + "/Resource";
 	
-	for (size_t i = 2; i <= state.range(0); ++i) {
-		CompleteTopology(state, i, num_resources);
-	}
+	CompleteTopology(state, state.range(0), num_resources);
 }
-
-//BENCHMARK(CompleteTopology1)->DenseRange(2, num_resources, 1)->Unit(benchmark::kMillisecond);
 
 static void ControllerUsingCompleteTopology1(benchmark::State& state) {
 	model_size = ModelSize::small;
@@ -360,12 +369,8 @@ static void ControllerUsingCompleteTopology1(benchmark::State& state) {
 	resource_file_prefix = machine_dir + "/Resource";
 	recipe_dir = machine_dir + "/experiments/";
 
-	for (size_t i = 2; i <= state.range(0); ++i) {
-		ControllerUsingCompleteTopology(state, i, num_resources);
-	}
+	ControllerUsingCompleteTopology(state, state.range(0), num_resources);
 }
-
-//BENCHMARK(ControllerUsingCompleteTopology1)->DenseRange(2, num_resources, 1)->Unit(benchmark::kMillisecond);
 
 static void CompleteTopologyWithController1(benchmark::State& state) {
 	model_size = ModelSize::small;
@@ -374,12 +379,8 @@ static void CompleteTopologyWithController1(benchmark::State& state) {
 	resource_file_prefix = machine_dir + "/Resource";
 	recipe_dir = machine_dir + "/experiments/";
 
-	for (size_t i = 2; i <= state.range(0); ++i) {
-		CompleteTopologyWithController(state, i, num_resources);
-	}
+	CompleteTopologyWithController(state, state.range(0), num_resources);
 }
-
-//BENCHMARK(CompleteTopologyWithController1)->DenseRange(2, num_resources, 1)->Unit(benchmark::kMillisecond);
 
 static void IncrementalTopologyWithController1(benchmark::State& state) {
 	model_size = ModelSize::small;
@@ -388,12 +389,8 @@ static void IncrementalTopologyWithController1(benchmark::State& state) {
 	resource_file_prefix = machine_dir + "/Resource";
 	recipe_dir = machine_dir + "/experiments/";
 
-	for (size_t i = 2; i <= state.range(0); ++i) {
-		IncrementalTopologyWithController(state, i, num_resources);
-	}
+	IncrementalTopologyWithController(state, state.range(0), num_resources);
 }
-
-BENCHMARK(IncrementalTopologyWithController1)->DenseRange(2, num_resources, 1)->Unit(benchmark::kMillisecond);
 
 static void CompleteTopology2(benchmark::State& state) {
 	model_size = ModelSize::medium;
@@ -401,12 +398,8 @@ static void CompleteTopology2(benchmark::State& state) {
 	machine_dir = "../../data/" + machine_name;
 	resource_file_prefix = machine_dir + "/Resource";
 
-	for (size_t i = 2; i <= state.range(0); ++i) {
-		CompleteTopology(state, i, num_resources);
-	}
+	CompleteTopology(state, state.range(0), num_resources);
 }
-
-//BENCHMARK(CompleteTopology2)->DenseRange(2, num_resources - 3, 1)->Unit(benchmark::kMillisecond);
 
 static void ControllerUsingCompleteTopology2(benchmark::State& state) {
 	model_size = ModelSize::medium;
@@ -415,12 +408,8 @@ static void ControllerUsingCompleteTopology2(benchmark::State& state) {
 	resource_file_prefix = machine_dir + "/Resource";
 	recipe_dir = machine_dir + "/experiments/";
 
-	for (size_t i = 2; i <= state.range(0); ++i) {
-		ControllerUsingCompleteTopology(state, i, num_resources);
-	}
+	ControllerUsingCompleteTopology(state, state.range(0), num_resources);
 }
-
-//BENCHMARK(ControllerUsingCompleteTopology2)->DenseRange(2, num_resources - 3, 1)->Unit(benchmark::kMillisecond);
 
 static void CompleteTopologyWithController2(benchmark::State& state) {
 	model_size = ModelSize::medium;
@@ -429,12 +418,8 @@ static void CompleteTopologyWithController2(benchmark::State& state) {
 	resource_file_prefix = machine_dir + "/Resource";
 	recipe_dir = machine_dir + "/experiments/";
 
-	for (size_t i = 2; i <= state.range(0); ++i) {
-		CompleteTopologyWithController(state, i, num_resources);
-	}
+	CompleteTopologyWithController(state, state.range(0), num_resources);
 }
-
-//BENCHMARK(CompleteTopologyWithController2)->DenseRange(2, num_resources - 3, 1)->Unit(benchmark::kMillisecond);
 
 static void IncrementalTopologyWithController2(benchmark::State& state) {
 	model_size = ModelSize::medium;
@@ -443,12 +428,8 @@ static void IncrementalTopologyWithController2(benchmark::State& state) {
 	resource_file_prefix = machine_dir + "/Resource";
 	recipe_dir = machine_dir + "/experiments/";
 
-	for (size_t i = 2; i <= state.range(0); ++i) {
-		IncrementalTopologyWithController(state, i, num_resources);
-	}
+	IncrementalTopologyWithController(state, state.range(0), num_resources);
 }
-
-BENCHMARK(IncrementalTopologyWithController2)->DenseRange(2, num_resources, 1)->Unit(benchmark::kMillisecond);
 
 static void CompleteTopology3(benchmark::State& state) {
 	model_size = ModelSize::big;
@@ -456,12 +437,8 @@ static void CompleteTopology3(benchmark::State& state) {
 	machine_dir = "../../data/" + machine_name;
 	resource_file_prefix = machine_dir + "/Resource";
 
-	for (size_t i = 2; i <= state.range(0); ++i) {
-		CompleteTopology(state, i, num_resources);
-	}
+	CompleteTopology(state, state.range(0), num_resources);
 }
-
-//BENCHMARK(CompleteTopology3)->DenseRange(2, num_resources - 3, 1)->Unit(benchmark::kMillisecond);
 
 static void ControllerUsingCompleteTopology3(benchmark::State& state) {
 	model_size = ModelSize::big;
@@ -470,12 +447,8 @@ static void ControllerUsingCompleteTopology3(benchmark::State& state) {
 	resource_file_prefix = machine_dir + "/Resource";
 	recipe_dir = machine_dir + "/experiments/";
 
-	for (size_t i = 2; i <= state.range(0); ++i) {
-		ControllerUsingCompleteTopology(state, i, num_resources);
-	}
+	ControllerUsingCompleteTopology(state, state.range(0), num_resources);
 }
-
-//BENCHMARK(ControllerUsingCompleteTopology3)->DenseRange(2, num_resources - 3, 1)->Unit(benchmark::kMillisecond);
 
 static void CompleteTopologyWithController3(benchmark::State& state) {
 	model_size = ModelSize::big;
@@ -484,12 +457,8 @@ static void CompleteTopologyWithController3(benchmark::State& state) {
 	resource_file_prefix = machine_dir + "/Resource";
 	recipe_dir = machine_dir + "/experiments/";
 
-	for (size_t i = 2; i <= state.range(0); ++i) {
-		CompleteTopologyWithController(state, i, num_resources);
-	}
+	CompleteTopologyWithController(state, state.range(0), num_resources);
 }
-
-//BENCHMARK(CompleteTopologyWithController3)->DenseRange(2, num_resources - 3, 1)->Unit(benchmark::kMillisecond);
 
 static void IncrementalTopologyWithController3(benchmark::State& state) {
 	model_size = ModelSize::big;
@@ -498,9 +467,18 @@ static void IncrementalTopologyWithController3(benchmark::State& state) {
 	resource_file_prefix = machine_dir + "/Resource";
 	recipe_dir = machine_dir + "/experiments/";
 
-	for (size_t i = 2; i <= state.range(0); ++i) {
-		IncrementalTopologyWithController(state, i, num_resources);
-	}
+	IncrementalTopologyWithController(state, state.range(0), num_resources);
 }
 
-BENCHMARK(IncrementalTopologyWithController3)->DenseRange(2, num_resources, 1)->Unit(benchmark::kMillisecond);
+//BENCHMARK(CompleteTopology1)->DenseRange(2, num_resources, 1)->Unit(benchmark::kMillisecond);
+//BENCHMARK(ControllerUsingCompleteTopology1)->DenseRange(2, num_resources, 1)->Unit(benchmark::kMillisecond);
+//BENCHMARK(CompleteTopologyWithController1)->DenseRange(2, num_resources, 1)->Unit(benchmark::kMillisecond);
+BENCHMARK(IncrementalTopologyWithController1)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
+//BENCHMARK(CompleteTopology2)->DenseRange(2, num_resources, 1)->Unit(benchmark::kMillisecond);
+//BENCHMARK(ControllerUsingCompleteTopology2)->DenseRange(2, num_resources, 1)->Unit(benchmark::kMillisecond);
+//BENCHMARK(CompleteTopologyWithController2)->DenseRange(2, num_resources, 1)->Unit(benchmark::kMillisecond);
+BENCHMARK(IncrementalTopologyWithController2)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
+//BENCHMARK(CompleteTopology3)->DenseRange(2, num_resources, 1)->Unit(benchmark::kMillisecond);
+//BENCHMARK(ControllerUsingCompleteTopology3)->DenseRange(2, num_resources, 1)->Unit(benchmark::kMillisecond);
+//BENCHMARK(CompleteTopologyWithController3)->DenseRange(2, num_resources, 1)->Unit(benchmark::kMillisecond);
+BENCHMARK(IncrementalTopologyWithController3)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
