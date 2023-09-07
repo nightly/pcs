@@ -25,7 +25,8 @@ namespace pcs {
 	enum class MinimizeOpt {
 		Transitions,
 		Resources,
-		Cost
+		Cost,
+		CostEstimate
 		// Multi Objective
 	};
 
@@ -41,17 +42,63 @@ namespace pcs {
 	private:
 		const Environment* machine_;
 		const Recipe* recipe_;
+		size_t composite_ops_;
 		ITopology* topology_;
 
 		size_t num_of_resources_;
 		std::vector<double> costs_;
-		MinimizeOpt objective_;
+
+		struct Stage {
+			const TopologyState* topology_state;
+			Parts parts;
+			const std::string* start_recipe_state;
+			const std::string* to_recipe_state;
+			size_t seq_id;
+		public:
+			Stage() = delete;
+
+			Stage(const TopologyState& topology_state, const Parts& parts,
+				const std::string& start_recipe_state, const std::string& to_recipe_state, size_t seq_id)
+				: topology_state(&topology_state), parts(parts), start_recipe_state(&start_recipe_state),
+				to_recipe_state(&to_recipe_state), seq_id(seq_id) {}
+
+		};
+
+		struct Candidate {
+		public:
+			ControllerType controller;
+			size_t path_cost; // cost of the current controller (used by A*)
+			size_t cost; // (estimated) cost of the (complete) controller
+			size_t complete_ops; // tracks how many recipe operations a candidate has completed
+			size_t complete_composite_ops; // tracks how many recipe composite operations a candidate has completed
+			std::queue<Stage> descendants; // what needs to be processed. A controller is complete when there are no more descendants to process.
+
+			std::unordered_set<size_t> used_resources; // If minimizing the number of resources, this is used.
+		public:
+			Candidate() = default;
+
+			Candidate(const Stage& descendant)
+				: path_cost(0), cost(0), complete_ops(0), complete_composite_ops(0) {
+				descendants.push(descendant);
+			}
+		};
+
+		// Min order comparator for Candidates
+		struct CandidateComparator {
+		public:
+			CandidateComparator() {}
+
+			bool operator () (const Candidate& a, const Candidate& b) {
+				return a.cost > b.cost;
+			}
+		};
 	public:
 		BestController(const Environment* machine, ITopology* topology, const Recipe* recipe);
 		std::optional<ControllerType> Generate(MinimizeOpt opt, std::optional<std::filesystem::path> costs_path = std::nullopt);
 	private:
 		void SetCosts(std::optional<std::filesystem::path> path);
-		void CostsUpdate(MinimizeOpt opt, std::unordered_set<size_t>& used_resources, const TopologyTransition& transition, size_t& num);
+		void UpdateCost(Candidate& cand, MinimizeOpt opt, const TopologyTransition& transition);
+		const CompositeOperation& GetComposite(const Stage& stage, const Recipe& recipe);
 	};
 
 }

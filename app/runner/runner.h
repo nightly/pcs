@@ -12,6 +12,7 @@ enum SolverOpt {
 	BestTransitions,
 	BestResources,
 	BestCost,
+	BestCostEstimate,
 	LocalBestResources,
 	LocalBestCost,
 	// Multi-Objective

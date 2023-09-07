@@ -106,6 +106,9 @@ void Run(const std::string& name, const RunnerOpts& opts) {
 	case SolverOpt::BestCost:
 		type = "/best-cost/";
 		break;
+	case SolverOpt::BestCostEstimate:
+		type = "/best-cost-estimate/";
+		break;
 	case SolverOpt::LocalBestResources:
 		type = "/local-best-resources/";
 		break;
@@ -145,6 +148,10 @@ void Run(const std::string& name, const RunnerOpts& opts) {
 		// Assumes the file containing costs is in same dir and is called costs.txt
 		pcs::BestController con(&machine, machine.topology(), &recipe);
 		controller_lts = con.Generate(pcs::MinimizeOpt::Cost, (data_folder + "costs.txt"));
+	} else if (opts.solver == SolverOpt::BestCostEstimate) {
+		// Assumes the file containing costs is in same dir and is called costs.txt
+		pcs::BestController con(&machine, machine.topology(), &recipe);
+		controller_lts = con.Generate(pcs::MinimizeOpt::CostEstimate, (data_folder + "costs.txt"));
 	} else if (opts.solver == SolverOpt::LocalBestResources) {
 		pcs::LocalBestController con(&machine, machine.topology(), &recipe);
 		controller_lts = con.Generate(pcs::MinimizeOpt::Resources);
