@@ -504,6 +504,8 @@ static void CreateFilenames(ModelSize size) {
 	case ModelSize::big:
 		machine_name = machine_name_big;
 		break;
+	default:
+		assert(false);
 	}
 
 	machine_dir = "../../data/" + machine_name;

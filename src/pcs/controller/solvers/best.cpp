@@ -76,12 +76,15 @@ namespace pcs {
 			cand.path_cost += costs_[transition.first];
 			cand.cost = cand.path_cost + composite_ops_ - cand.complete_composite_ops;
 			break;
+		default:
+			assert(false);
 		}
 	}
 
 	bool BestController::AdvanceStage(Candidate& cand, TransferMap& transfers, MinimizeOpt opt)
 	{
 		bool found = false;
+
 		Stage& stage = cand.descendants.front();
 		const CompositeOperation& co = GetComposite(stage, *recipe_);
 		const TaskExpression& task = co.CurrentTask(stage.seq_id);
