@@ -92,6 +92,9 @@ namespace pcs {
 				return a.cost > b.cost;
 			}
 		};
+
+		using TransferMap = std::unordered_map<TransferOperation, std::tuple<const TopologyState*, const TopologyTransition*,
+			const TopologyTransition*>>;
 	public:
 		BestController(const Environment* machine, ITopology* topology, const Recipe* recipe);
 		std::optional<ControllerType> Generate(MinimizeOpt opt, std::optional<std::filesystem::path> costs_path = std::nullopt);
@@ -99,6 +102,7 @@ namespace pcs {
 		void SetCosts(std::optional<std::filesystem::path> path);
 		void UpdateCost(Candidate& cand, MinimizeOpt opt, const TopologyTransition& transition);
 		const CompositeOperation& GetComposite(const Stage& stage, const Recipe& recipe);
+		bool AdvanceStage(Candidate& cand, TransferMap& transfers, MinimizeOpt opt);
 	};
 
 }

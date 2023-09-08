@@ -79,10 +79,60 @@ namespace pcs {
 		}
 	}
 
+	bool BestController::AdvanceStage(Candidate& cand, TransferMap& transfers, MinimizeOpt opt)
+	{
+		bool found = false;
+		Stage& stage = cand.descendants.front();
+		const CompositeOperation& co = GetComposite(stage, *recipe_);
+		const TaskExpression& task = co.CurrentTask(stage.seq_id);
+		const auto& [op, input, parameters, output] = task;
+
+		for (const auto& transition : topology_->at(*stage.topology_state).transitions_) {
+			if (op.name() == transition.label().second.operation()) {
+				bool allocate = true;
+				if (!input.empty()) {
+					allocate = stage.parts.Allocate(transition.label(), input);
+					allocate = true;
+				}
+				bool unify = Unify(transition.label().second.parameters(), parameters, op);
+				bool nopize = NopizeObservable(machine_->resources(), *stage.topology_state, transition.label().first, op.name());
+				if (allocate && unify && nopize) {
+					std::vector<std::string> label_vec(num_of_resources_, "-");
+					label_vec[transition.label().first] = transition.label().second.operation();
+
+					PlanTransition plan_t(*stage.to_recipe_state, stage.topology_state, label_vec, &transition.to());
+					ApplyTransition(plan_t, cand.controller);
+
+					stage.parts.Add(transition.label(), output);
+					stage.topology_state = &transition.to();
+
+					cand.complete_ops++;
+					UpdateCost(cand, opt, transition.label());
+
+					found = true;
+					break;
+				}
+			}
+			else {
+				std::optional<TransferOperation> opt = StringToTransfer(transition.label().second.operation());
+				if (opt.has_value()) {
+					if (opt->IsOut()) {
+						std::get<0>(transfers[*opt]) = &(transition.to());
+						std::get<1>(transfers[*opt]) = &(transition.label());
+					}
+					else {
+						TransferOperation inverse = opt->Inverse(); // The associated map key is the inverse
+						std::get<2>(transfers[inverse]) = &(transition.label());
+					}
+				}
+			}
+		}
+
+		return found;
+	}
+
 	std::optional<ControllerType> BestController::Generate(MinimizeOpt opt, std::optional<std::filesystem::path> costs_path) {
-		bool first_generated = false;
 		Candidate best_candidate;
-		best_candidate.cost = std::numeric_limits<size_t>::max();
 		std::priority_queue<Candidate, std::vector<Candidate>, CandidateComparator> pq;
 
 		Parts initial_parts(num_of_resources_);
@@ -100,58 +150,22 @@ namespace pcs {
 			}
 		}
 
-		while (!pq.empty() && (best_candidate.cost >= pq.top().cost || !first_generated)) {
+		while (!pq.empty()) {
 			Candidate cand = pq.top();
 			pq.pop();
+
+			if (cand.descendants.empty()) { // Found solution
+				best_candidate = cand;
+				break;
+			}
 
 			Stage& stage = cand.descendants.front();
 			const CompositeOperation& co = GetComposite(stage, *recipe_);
 			const TaskExpression& task = co.CurrentTask(stage.seq_id);
 			const auto& [op, input, parameters, output] = task;
+			TransferMap transfers;
 
-			std::unordered_map<TransferOperation, std::tuple<const TopologyState*, const TopologyTransition*,
-				const TopologyTransition*>> transfers;
-
-			bool found = false;
-			for (const auto& transition : topology_->at(*stage.topology_state).transitions_) {
-				if (op.name() == transition.label().second.operation()) {
-					bool allocate = true;
-					if (!input.empty()) {
-						allocate = stage.parts.Allocate(transition.label(), input);
-						allocate = true;
-					}
-					bool unify = Unify(transition.label().second.parameters(), parameters, op);
-					bool nopize = NopizeObservable(machine_->resources(), *stage.topology_state, transition.label().first, op.name());
-					if (allocate && unify && nopize) {
-						std::vector<std::string> label_vec(num_of_resources_, "-");
-						label_vec[transition.label().first] = transition.label().second.operation();
-
-						PlanTransition plan_t(*stage.to_recipe_state, stage.topology_state, label_vec, &transition.to());
-						ApplyTransition(plan_t, cand.controller);
-
-						stage.parts.Add(transition.label(), output);
-						stage.topology_state = &transition.to();
-
-						cand.complete_ops++;
-						UpdateCost(cand, opt, transition.label());
-
-						found = true;
-						break;
-					}
-				} else {
-					std::optional<TransferOperation> opt = StringToTransfer(transition.label().second.operation());
-					if (opt.has_value()) {
-						if (opt->IsOut()) {
-							std::get<0>(transfers[*opt]) = &(transition.to());
-							std::get<1>(transfers[*opt]) = &(transition.label());
-						}
-						else {
-							TransferOperation inverse = opt->Inverse(); // The associated map key is the inverse
-							std::get<2>(transfers[inverse]) = &(transition.label());
-						}
-					}
-				}
-			}
+			bool found = AdvanceStage(cand, transfers, opt);
 
 			// Handle case where the target operation is not found
 			if (!found) {
@@ -182,26 +196,18 @@ namespace pcs {
 			}
 
 			// Operation was found			
-			if (cand.cost < best_candidate.cost || cand.complete_ops > best_candidate.complete_ops) {
-				best_candidate = cand;
-			}
-
-			stage.seq_id++;
-			if (stage.seq_id < (co.HasGuard() ? (co.sequential.size() + 1) : co.sequential.size())) [[Likely]] { // Process next sequential operation
-				pq.push(cand);
-			} else { // Process recipe transitions
+			stage.seq_id++;			
+			if (stage.seq_id >= (co.HasGuard() ? (co.sequential.size() + 1) : co.sequential.size())) [[Likely]] {
+				// Composite operation complete, process recipe transitions
 				cand.complete_composite_ops++;
 				for (const auto& rec_transition : recipe_->lts()[*stage.to_recipe_state].transitions_) {
 					Stage next_stage(*stage.topology_state, stage.parts, *stage.to_recipe_state, rec_transition.to(), 0);
 					cand.descendants.push(next_stage);
 				}
 				cand.descendants.pop();
-				if (cand.descendants.empty()) {
-					first_generated = true;
-				} else {
-					pq.push(cand);
-				}
 			}
+
+			pq.push(cand);
 		}
 
 		if (opt == MinimizeOpt::CostEstimate) {
