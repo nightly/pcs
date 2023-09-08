@@ -25,6 +25,8 @@ namespace pcs {
 		using ControllerState = std::pair<std::string, std::vector<std::string>>;
 		using ControllerType = nightly::LTS<std::pair<std::string, std::vector<std::string>>, std::vector<std::string>,
 			                                boost::hash<std::pair<std::string, std::vector<std::string>>>>;
+		// map type - [ TransferOperation key, tuple(end_state, transition, inverse transition) ]
+		using TransferMap = std::unordered_map<TransferOperation, std::tuple<const TopologyState*, const TopologyTransition*, const TopologyTransition*>>;
 	private:
 		const Environment* machine_;
 		const Recipe* recipe_;
@@ -35,15 +37,47 @@ namespace pcs {
 		std::vector<double> costs_;
 		std::unordered_set<size_t> used_resources_;
 		size_t final_cost_;
+
+		struct LocalCandidate {
+		public:
+			using TopologyState = std::vector<std::string>;
+
+			TopologyState state_vec_;
+			Parts next_parts_;
+			std::vector<PlanTransition> next_transitions_;
+			size_t cost_; // number of resources used or cost
+			std::unordered_set<size_t> used_resources_; // If minimizing the number of resources, this is used.
+		public:
+			LocalCandidate()
+				: cost_(0)
+			{}
+
+			LocalCandidate(const TopologyState& state_vec, const Parts& next_parts, const std::vector<PlanTransition>& next_transitions,
+				const std::unordered_set<size_t>& used_resources, size_t cost)
+				: state_vec_(state_vec), next_parts_(next_parts), next_transitions_(next_transitions), used_resources_(used_resources), cost_(cost)
+			{}
+		};
+
+		// Min order comparator for LocalCandidates
+		struct LocalCandidateComparator {
+		public:
+			LocalCandidateComparator() {}
+
+			bool operator () (const LocalCandidate& a, const LocalCandidate& b) {
+				return a.cost_ > b.cost_;
+			}
+		};
 	public:
 		LocalBestController(const Environment* machine, ITopology* topology, const Recipe* recipe);
 		std::optional<ControllerType> Generate(MinimizeOpt opt, std::optional<std::filesystem::path> costs_path = std::nullopt);
 	private:
+		bool Advance(const TaskExpression& task, std::vector<PlanTransition>& plan_transitions, Parts& plan_parts, const std::string& next_recipe_state,
+			const std::vector<std::string>*& topology_state, TransferMap& transfers, MinimizeOpt opt);
 		bool DFS(ControllerType& controller, const std::string& recipe_state, const std::vector<std::string>* topology_state, Parts plan_parts,
 			std::vector<PlanTransition> basic_plan, std::vector<PlanTransition> plan_transitions,
 			const CompositeOperation& co, size_t seq_id, std::unordered_set<size_t> used_resources, size_t cost, size_t recursion_level = 0);
 		void SetCosts(std::optional<std::filesystem::path> path);
-		void UpdateCost(MinimizeOpt opt, std::unordered_set<size_t>& used_resources, const TopologyTransition& transition, size_t& cost);
-		void UpdateCost(MinimizeOpt opt, std::unordered_set<size_t>& used_resources, const std::unordered_set<size_t>& resources, size_t& cost);
+		void UpdateCost(LocalCandidate& cand, const TopologyTransition& transition, MinimizeOpt opt);
+		void UpdateCost(size_t& cost, std::unordered_set<size_t>& used_resources, const std::unordered_set<size_t>& resources, MinimizeOpt opt);
 	};
 }

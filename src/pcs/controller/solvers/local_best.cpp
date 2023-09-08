@@ -26,36 +26,6 @@ namespace pcs {
 	LocalBestController::LocalBestController(const Environment* machine, ITopology* topology, const Recipe* recipe)
 		: machine_(machine), recipe_(recipe), topology_(topology), num_of_resources_(machine_->NumOfResources()), final_cost_(0) {}
 
-	struct LocalCandidate {
-	public:
-		using TopologyState = std::vector<std::string>;
-
-		TopologyState state_vec_;
-		Parts next_parts_;
-		std::vector<PlanTransition> next_transitions_;
-		size_t cost_; // number of resources used or cost
-		std::unordered_set<size_t> used_resources_; // If minimizing the number of resources, this is used.
-	public:
-		LocalCandidate()
-			: cost_(0)
-		{}
-
-		LocalCandidate(const TopologyState& state_vec, const Parts& next_parts, const std::vector<PlanTransition>& next_transitions,
-			const std::unordered_set<size_t>& used_resources, size_t cost)
-			: state_vec_(state_vec), next_parts_(next_parts), next_transitions_(next_transitions), used_resources_(used_resources), cost_(cost)
-		{}
-	};
-
-	// Min order comparator for LocalCandidates
-	struct LocalCandidateComparator {
-	public:
-		LocalCandidateComparator() {}
-
-		bool operator () (const LocalCandidate& a, const LocalCandidate& b) {
-			return a.cost_ > b.cost_;
-		}
-	};
-
 	void LocalBestController::SetCosts(std::optional<std::filesystem::path> path) {
 		if (path.has_value()) {
 			try {
@@ -72,26 +42,23 @@ namespace pcs {
 		}
 	}
 
-	void LocalBestController::UpdateCost(MinimizeOpt opt, std::unordered_set<size_t>& used_resources, const TopologyTransition& transition, size_t& cost) {
+	void LocalBestController::UpdateCost(LocalCandidate& cand, const TopologyTransition& transition, MinimizeOpt opt) {
 		switch (opt) {
 		case MinimizeOpt::Resources:
-			if (!used_resources.contains(transition.first)) {
-				used_resources.emplace(transition.first);
-				cost++;
+			if (!cand.used_resources_.contains(transition.first)) {
+				cand.used_resources_.emplace(transition.first);
+				cand.cost_++;
 			}
 			break;
 		case MinimizeOpt::Cost:
-			if (!used_resources.contains(transition.first)) {
-				used_resources.emplace(transition.first);
-				cost += costs_[transition.first];
-			}
+			cand.cost_ += costs_[transition.first];
 			break;
 		default:
 			assert(false);
 		}
 	}
 
-	void LocalBestController::UpdateCost(MinimizeOpt opt, std::unordered_set<size_t>& used_resources, const std::unordered_set<size_t>& resources, size_t& cost) {
+	void LocalBestController::UpdateCost(size_t& cost, std::unordered_set<size_t>& used_resources, const std::unordered_set<size_t>& resources, MinimizeOpt opt) {
 		switch (opt) {
 		case MinimizeOpt::Resources:
 			for (auto it = resources.begin(); it != resources.end(); ++it)
@@ -105,10 +72,8 @@ namespace pcs {
 		case MinimizeOpt::Cost:
 			for (auto it = resources.begin(); it != resources.end(); ++it)
 			{
-				if (!used_resources.contains(*it)) {
-					used_resources.emplace(*it);
-					cost += costs_[*it];
-				}
+				used_resources.emplace(*it);
+				cost += costs_[*it];
 			}
 			break;
 		default:
@@ -170,28 +135,12 @@ namespace pcs {
 		return { controller };
 	}
 
-	/*
-	 * @brief Recursively processes and realises the recipe.
-	 *
-	 * Recursive backtracking DFS.
-	 *
-	 */
-	bool LocalBestController::DFS(ControllerType& controller, const std::string& next_recipe_state, const std::vector<std::string>* topology_state, Parts plan_parts,
-		                std::vector<PlanTransition> basic_plan, std::vector<PlanTransition> plan_transitions,
-		                const CompositeOperation& co, size_t seq_id, std::unordered_set<size_t> used_resources, size_t cost, size_t recursion_level) {
+	bool LocalBestController::Advance(const TaskExpression& task, std::vector<PlanTransition>& plan_transitions, Parts& plan_parts, const std::string& next_recipe_state,
+			const std::vector<std::string>*& topology_state, TransferMap& transfers, MinimizeOpt opt) {
+		bool found = false;
 
-		// 1. Get the current sequential operation to process
-		const TaskExpression& task = co.CurrentTask(seq_id);
 		const auto& [op, input, parameters, output] = task;
 
-		// 2. Realise the sequential operation by trying to directly reach it whilst collecting synchronization operations.
-
-		// map type - [ TransferOperation key, tuple(end_state, transition, inverse transition) ]
-		std::unordered_map<TransferOperation, std::tuple<const TopologyState*, const TopologyTransition*,
-			const TopologyTransition*>> transfers;
-		
-
-		bool found = false;
 		for (const auto& transition : topology_->at(*topology_state).transitions_) {
 			if (op.name() == transition.label().second.operation()) {
 				bool allocate = true;
@@ -203,11 +152,11 @@ namespace pcs {
 				if (allocate && unify && nopize) {
 					std::vector<std::string> label_vec(num_of_resources_, "-");
 					label_vec[transition.label().first] = transition.label().second.operation();
-					
+
 					PCS_TRACE(fmt::format(fmt::fg(fmt::color::royal_blue) | fmt::emphasis::bold,
 						"Evaluating controller transition from {} with label ({}) to {}", fmt::join(*topology_state, ","),
 						fmt::join(label_vec, ","), fmt::join(transition.to(), ",")));
-					
+
 					plan_transitions.emplace_back(next_recipe_state, topology_state, label_vec, &transition.to());
 					plan_parts.Add(transition.label(), output);
 					topology_state = &transition.to();
@@ -228,6 +177,28 @@ namespace pcs {
 			}
 		}
 
+		return found;
+	}
+
+	/*
+	 * @brief Recursively processes and realises the recipe.
+	 *
+	 * Recursive backtracking DFS.
+	 *
+	 */
+	bool LocalBestController::DFS(ControllerType& controller, const std::string& next_recipe_state, const std::vector<std::string>* topology_state, Parts plan_parts,
+		                std::vector<PlanTransition> basic_plan, std::vector<PlanTransition> plan_transitions,
+		                const CompositeOperation& co, size_t seq_id, std::unordered_set<size_t> used_resources, size_t cost, size_t recursion_level) {
+
+		// 1. Get the current sequential operation to process
+		const TaskExpression& task = co.CurrentTask(seq_id);
+		const auto& [op, input, parameters, output] = task;
+
+		// 2. Realise the sequential operation by trying to directly reach it whilst collecting synchronization operations.
+
+		TransferMap transfers;
+		bool found = Advance(task, plan_transitions, plan_parts, next_recipe_state, topology_state, transfers, opt_);
+		
 		// 3. Since the sequential operation hasn't been reached, begin iterating over synchronization transitions.
 		if (!found) {
 			std::priority_queue<LocalCandidate, std::vector<LocalCandidate>, LocalCandidateComparator> pq;
@@ -258,7 +229,7 @@ namespace pcs {
 				next_transitions.emplace_back(next_recipe_state, topology_state, label_vec, &state_vec);
 				
 				LocalCandidate cand(state_vec, next_parts, next_transitions, used_resources, cost);
-				UpdateCost(opt_, cand.used_resources_, *std::get<1>(v), cand.cost_);				
+				UpdateCost(cand, *std::get<1>(v), opt_);
 				pq.push(cand);
 			}
 
@@ -287,7 +258,7 @@ namespace pcs {
 				plan_transitions.clear();
 				PCS_INFO(fmt::format(fmt::fg(fmt::color::lavender), "[DFS] Processed Composite Operation at Recipe State {}. Last operation = \"{}\" with input parts [{}] and output parts [{}]",
 					next_recipe_state, op.name(), fmt::join(input, ","), fmt::join(output, ",")));
-				UpdateCost(opt_, used_resources_, used_resources, final_cost_);
+				UpdateCost(final_cost_, used_resources_, used_resources, opt_);
 
 				for (const auto& rec_transition : recipe_->lts()[next_recipe_state].transitions_) {
 					PCS_INFO(fmt::format(fmt::fg(fmt::color::gold) | fmt::emphasis::bold, "Processing recipe transition to: {}",
