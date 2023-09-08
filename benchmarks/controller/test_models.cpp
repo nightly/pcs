@@ -474,10 +474,12 @@ static void IncrementalTopologyWithController3(benchmark::State& state) {
 //BENCHMARK(ControllerUsingCompleteTopology1)->DenseRange(2, num_resources, 1)->Unit(benchmark::kMillisecond);
 //BENCHMARK(CompleteTopologyWithController1)->DenseRange(2, num_resources, 1)->Unit(benchmark::kMillisecond);
 BENCHMARK(IncrementalTopologyWithController1)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
+
 //BENCHMARK(CompleteTopology2)->DenseRange(2, num_resources, 1)->Unit(benchmark::kMillisecond);
 //BENCHMARK(ControllerUsingCompleteTopology2)->DenseRange(2, num_resources, 1)->Unit(benchmark::kMillisecond);
 //BENCHMARK(CompleteTopologyWithController2)->DenseRange(2, num_resources, 1)->Unit(benchmark::kMillisecond);
 BENCHMARK(IncrementalTopologyWithController2)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
+
 //BENCHMARK(CompleteTopology3)->DenseRange(2, num_resources, 1)->Unit(benchmark::kMillisecond);
 //BENCHMARK(ControllerUsingCompleteTopology3)->DenseRange(2, num_resources, 1)->Unit(benchmark::kMillisecond);
 //BENCHMARK(CompleteTopologyWithController3)->DenseRange(2, num_resources, 1)->Unit(benchmark::kMillisecond);

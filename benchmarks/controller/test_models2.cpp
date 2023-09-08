@@ -15,10 +15,15 @@
 #include "pcs/topology/topology.h"
 #include "lts/parsers/parsers.h"
 
-static std::string machine_name = "small_test_model2";
+const static std::string machine_name_small = "small_test_model2";
+const static std::string machine_name_medium = "medium_test_model2";
+const static std::string machine_name_big = "big_test_model2";
+
+static std::string machine_name = machine_name_small;
 static std::string machine_dir = "../../data/" + machine_name;
 static std::string resource_file_prefix = machine_dir + "/Resource";
 static std::string recipe_dir = machine_dir + "/experiments/";
+static std::string costs_file = machine_dir + "/costs.txt";
 
 static const int num_resources = 22;
 
@@ -310,6 +315,23 @@ static void LoadRecipe(pcs::Recipe& recipe, int n) {
 	recipe.set_recipe(recipe_dir + "recipe" + std::to_string(n - 1) + "R.json");
 }
 
+static void CreateCostsFile() {
+	std::ofstream stream;
+	stream.exceptions(std::ofstream::badbit);
+
+	try {
+		stream.open(costs_file, std::ios::out | std::ios::trunc);
+
+		for (int i = 0; i < num_resources; i++)
+		{
+			stream << "1\n";
+		}
+	}
+	catch (const std::ofstream::failure& e) {
+		throw;
+	}
+}
+
 static void OutputStats(const pcs::Environment& machine)
 {
 	std::ofstream stats("stats.txt", std::ios::out | std::ios::app);
@@ -369,6 +391,42 @@ static void CreateBestControllerMinTrans(benchmark::State& state, int n, int tra
 	OutputStats(machine);
 }
 
+static void CreateBestControllerMinCost(benchmark::State& state, int n, int transport) {
+	pcs::Environment machine;
+	LoadResources(machine, n, transport);
+	pcs::Recipe recipe;
+	LoadRecipe(recipe, n);
+	CreateCostsFile();
+
+	for (auto _ : state) {
+		machine.Incremental();
+		pcs::BestController con(&machine, machine.topology(), &recipe);
+		auto controller_lts = con.Generate(pcs::MinimizeOpt::Cost, costs_file);
+		benchmark::DoNotOptimize(controller_lts);
+		benchmark::ClobberMemory();
+	}
+
+	OutputStats(machine);
+}
+
+static void CreateBestControllerMinCostEstimate(benchmark::State& state, int n, int transport) {
+	pcs::Environment machine;
+	LoadResources(machine, n, transport);
+	pcs::Recipe recipe;
+	LoadRecipe(recipe, n);
+	CreateCostsFile();
+
+	for (auto _ : state) {
+		machine.Incremental();
+		pcs::BestController con(&machine, machine.topology(), &recipe);
+		auto controller_lts = con.Generate(pcs::MinimizeOpt::CostEstimate, costs_file);
+		benchmark::DoNotOptimize(controller_lts);
+		benchmark::ClobberMemory();
+	}
+
+	OutputStats(machine);
+}
+
 static void CreateLocalBestController(benchmark::State& state, int n, int transport) {
 	pcs::Environment machine;
 	LoadResources(machine, n, transport);
@@ -386,123 +444,114 @@ static void CreateLocalBestController(benchmark::State& state, int n, int transp
 	OutputStats(machine);
 }
 
-static void CreateController1(benchmark::State& state) {
-	model_size = ModelSize::small;
-	machine_name = "small_test_model2";
+static void CreateFilenames(ModelSize size) {
+	model_size = size;
+
+	switch (model_size) {
+	case ModelSize::small:
+		machine_name = machine_name_small;
+		break;
+	case ModelSize::medium:
+		machine_name = machine_name_medium;
+		break;
+	case ModelSize::big:
+		machine_name = machine_name_big;
+		break;
+	}
+
 	machine_dir = "../../data/" + machine_name;
 	resource_file_prefix = machine_dir + "/Resource";
 	recipe_dir = machine_dir + "/experiments/";
+	costs_file = machine_dir + "/costs.txt";
+}
 
+static void CreateController1(benchmark::State& state) {
+	CreateFilenames(ModelSize::small);
 	CreateController(state, state.range(0), num_resources);
 }
 
 static void CreateBestControllerMinRes1(benchmark::State& state) {
-	model_size = ModelSize::small;
-	machine_name = "small_test_model2";
-	machine_dir = "../../data/" + machine_name;
-	resource_file_prefix = machine_dir + "/Resource";
-	recipe_dir = machine_dir + "/experiments/";
-
+	CreateFilenames(ModelSize::small);
 	CreateBestControllerMinRes(state, state.range(0), num_resources);
 }
 
 static void CreateBestControllerMinTrans1(benchmark::State& state) {
-	model_size = ModelSize::small;
-	machine_name = "small_test_model2";
-	machine_dir = "../../data/" + machine_name;
-	resource_file_prefix = machine_dir + "/Resource";
-	recipe_dir = machine_dir + "/experiments/";
-
+	CreateFilenames(ModelSize::small);
 	CreateBestControllerMinTrans(state, state.range(0), num_resources);
 }
 
-static void CreateLocalBestController1(benchmark::State& state) {
-	model_size = ModelSize::small;
-	machine_name = "small_test_model2";
-	machine_dir = "../../data/" + machine_name;
-	resource_file_prefix = machine_dir + "/Resource";
-	recipe_dir = machine_dir + "/experiments/";
+static void CreateBestControllerMinCost1(benchmark::State& state) {
+	CreateFilenames(ModelSize::small);
+	CreateBestControllerMinCost(state, state.range(0), num_resources);
+}
 
+static void CreateBestControllerMinCostEstimate1(benchmark::State& state) {
+	CreateFilenames(ModelSize::small);
+	CreateBestControllerMinCostEstimate(state, state.range(0), num_resources);
+}
+
+static void CreateLocalBestController1(benchmark::State& state) {
+	CreateFilenames(ModelSize::small);
 	CreateLocalBestController(state, state.range(0), num_resources);
 }
 
 static void CreateController2(benchmark::State& state) {
-	model_size = ModelSize::medium;
-	machine_name = "medium_test_model2";
-	machine_dir = "../../data/" + machine_name;
-	resource_file_prefix = machine_dir + "/Resource";
-	recipe_dir = machine_dir + "/experiments/";
-
+	CreateFilenames(ModelSize::medium);
 	CreateController(state, state.range(0), num_resources);
 }
 
 static void CreateBestControllerMinRes2(benchmark::State& state) {
-	model_size = ModelSize::medium;
-	machine_name = "medium_test_model2";
-	machine_dir = "../../data/" + machine_name;
-	resource_file_prefix = machine_dir + "/Resource";
-	recipe_dir = machine_dir + "/experiments/";
-
+	CreateFilenames(ModelSize::medium);
 	CreateBestControllerMinRes(state, state.range(0), num_resources);
 }
 
 static void CreateBestControllerMinTrans2(benchmark::State& state) {
-	model_size = ModelSize::medium;
-	machine_name = "medium_test_model2";
-	machine_dir = "../../data/" + machine_name;
-	resource_file_prefix = machine_dir + "/Resource";
-	recipe_dir = machine_dir + "/experiments/";
-
+	CreateFilenames(ModelSize::medium);
 	CreateBestControllerMinTrans(state, state.range(0), num_resources);
 }
 
-static void CreateLocalBestController2(benchmark::State& state) {
-	model_size = ModelSize::medium;
-	machine_name = "medium_test_model2";
-	machine_dir = "../../data/" + machine_name;
-	resource_file_prefix = machine_dir + "/Resource";
-	recipe_dir = machine_dir + "/experiments/";
+static void CreateBestControllerMinCost2(benchmark::State& state) {
+	CreateFilenames(ModelSize::medium);
+	CreateBestControllerMinCost(state, state.range(0), num_resources);
+}
 
+static void CreateBestControllerMinCostEstimate2(benchmark::State& state) {
+	CreateFilenames(ModelSize::medium);
+	CreateBestControllerMinCostEstimate(state, state.range(0), num_resources);
+}
+
+static void CreateLocalBestController2(benchmark::State& state) {
+	CreateFilenames(ModelSize::medium);
 	CreateLocalBestController(state, state.range(0), num_resources);
 }
 
 static void CreateController3(benchmark::State& state) {
-	model_size = ModelSize::big;
-	machine_name = "big_test_model2";
-	machine_dir = "../../data/" + machine_name;
-	resource_file_prefix = machine_dir + "/Resource";
-	recipe_dir = machine_dir + "/experiments/";
-
+	CreateFilenames(ModelSize::big);
 	CreateController(state, state.range(0), num_resources);
 }
 
 static void CreateBestControllerMinRes3(benchmark::State& state) {
-	model_size = ModelSize::big;
-	machine_name = "big_test_model2";
-	machine_dir = "../../data/" + machine_name;
-	resource_file_prefix = machine_dir + "/Resource";
-	recipe_dir = machine_dir + "/experiments/";
-
+	CreateFilenames(ModelSize::big);
 	CreateBestControllerMinRes(state, state.range(0), num_resources);
 }
 
 static void CreateBestControllerMinTrans3(benchmark::State& state) {
-	model_size = ModelSize::big;
-	machine_name = "big_test_model2";
-	machine_dir = "../../data/" + machine_name;
-	resource_file_prefix = machine_dir + "/Resource";
-	recipe_dir = machine_dir + "/experiments/";
-
+	CreateFilenames(ModelSize::big);
 	CreateBestControllerMinTrans(state, state.range(0), num_resources);
 }
 
-static void CreateLocalBestController3(benchmark::State& state) {
-	model_size = ModelSize::big;
-	machine_name = "big_test_model2";
-	machine_dir = "../../data/" + machine_name;
-	resource_file_prefix = machine_dir + "/Resource";
-	recipe_dir = machine_dir + "/experiments/";
+static void CreateBestControllerMinCost3(benchmark::State& state) {
+	CreateFilenames(ModelSize::big);
+	CreateBestControllerMinCost(state, state.range(0), num_resources);
+}
 
+static void CreateBestControllerMinCostEstimate3(benchmark::State& state) {
+	CreateFilenames(ModelSize::big);
+	CreateBestControllerMinCostEstimate(state, state.range(0), num_resources);
+}
+
+static void CreateLocalBestController3(benchmark::State& state) {
+	CreateFilenames(ModelSize::big);
 	CreateLocalBestController(state, state.range(0), num_resources);
 }
 
@@ -510,10 +559,12 @@ static void CreateLocalBestController3(benchmark::State& state) {
 BENCHMARK(CreateBestControllerMinRes1)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
 //BENCHMARK(CreateBestControllerMinTrans1)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
 BENCHMARK(CreateLocalBestController1)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
+
 //BENCHMARK(CreateController2)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
 BENCHMARK(CreateBestControllerMinRes2)->DenseRange(2, 16, 2)->Unit(benchmark::kMillisecond);
 //BENCHMARK(CreateBestControllerMinTrans2)->DenseRange(2, 16, 2)->Unit(benchmark::kMillisecond);
 BENCHMARK(CreateLocalBestController2)->DenseRange(2, 16, 2)->Unit(benchmark::kMillisecond);
+
 //BENCHMARK(CreateController3)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
 BENCHMARK(CreateBestControllerMinRes3)->DenseRange(2, 16, 2)->Unit(benchmark::kMillisecond);
 //BENCHMARK(CreateBestControllerMinTrans3)->DenseRange(2, 16, 2)->Unit(benchmark::kMillisecond);
