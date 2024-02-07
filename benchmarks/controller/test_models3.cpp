@@ -201,11 +201,9 @@ static void LoadResources(pcs::Environment& machine, int n, int transport) {
 	}
 
 	try {
-		for (int i = 1; i < n; i++) {
+		for (int i = 1; i < num_resources * 2 - 2; i++) {
 			machine.AddResource(resource_file_prefix + std::to_string(i) + ".txt", false);
 		}
-
-		machine.AddResource(resource_file_prefix + std::to_string(transport) + ".txt", false);
 	}
 	catch (const std::ifstream::failure& e) {
 		throw;
@@ -369,9 +367,10 @@ static void CreateCostsFile() {
 	try {
 		stream.open(costs_file, std::ios::out | std::ios::trunc);
 		
-		for (int i = 0; i < num_resources; i++)
+		for (int i = num_resources * 2 - 2; i >= 1; i--)
 		{
-			stream << "1\n";
+			int cost = ceil((float)i / (num_resources * 2 - 2) * 10);
+			stream << std::to_string(cost) + "\n";
 		}
 	}
 	catch (const std::ofstream::failure& e) {
