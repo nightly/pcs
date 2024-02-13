@@ -1,0 +1,75 @@
+{
+  "initialState": "A",
+  "transitions": [
+    {
+      "startState": "A",
+      "label": {
+        "guard": {},
+        "sequential": [
+          {
+            "name": "load",
+            "input": [],
+			"parameters": [],
+            "output": [
+              "d",
+              "s"
+            ]
+          },
+          {
+            "name": "join",
+            "input": [
+              "d",
+              "s"
+            ],
+			"parameters": [],
+            "output": [
+              "h"
+            ]
+          }
+        ],
+        "parallel": []
+      },
+      "endState": "B"
+    },
+    {
+      "startState": "B",
+      "label": {
+        "guard": {},
+        "sequential": [
+          {
+            "name": "remove",
+            "input": [
+              "h"
+            ],
+			"parameters": [],
+            "output": [
+              "h"
+            ]
+          }
+        ],
+        "parallel": []
+      },
+      "endState": "C"
+    },
+    {
+      "startState": "B",
+      "label": {
+        "guard": {},
+        "sequential": [
+          {
+            "name": "store",
+            "input": [
+              "h"
+            ],
+			"parameters": [],
+            "output": [
+              "h"
+            ]
+          }
+        ],
+        "parallel": []
+      },
+      "endState": "D"
+    }
+  ]
+}

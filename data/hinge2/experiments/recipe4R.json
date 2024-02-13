@@ -1,0 +1,178 @@
+{
+  "initialState": "A",
+  "transitions": [
+    {
+      "startState": "A",
+      "label": {
+        "guard": {},
+        "sequential": [
+          {
+            "name": "load",
+            "input": [],
+			"parameters": [],
+            "output": [
+              "d",
+              "s"
+            ]
+          },
+          {
+            "name": "join",
+            "input": [
+              "d",
+              "s"
+            ],
+			"parameters": [],
+            "output": [
+              "h"
+            ]
+          }
+        ],
+        "parallel": []
+      },
+      "endState": "B"
+    },
+    {
+      "startState": "B",
+      "label": {
+        "guard": {},
+        "sequential": [
+          {
+            "name": "load",
+            "input": [],
+			"parameters": [],
+            "output": [
+              "balls",
+              "spring"
+            ]
+          },
+          {
+            "name": "attach",
+            "input": [
+              "h",
+              "balls",
+              "spring"
+            ],
+			"parameters": [],
+            "output": [
+              "h1"
+            ]
+          }
+        ],
+        "parallel": []
+      },
+      "endState": "C"
+    },
+    {
+      "startState": "B",
+      "label": {
+        "guard": {},
+        "sequential": [
+          {
+            "name": "remove",
+            "input": [
+              "h"
+            ],
+			"parameters": [],
+            "output": [
+              "h"
+            ]
+          }
+        ],
+        "parallel": []
+      },
+      "endState": "E"
+    },
+    {
+      "startState": "C",
+      "label": {
+        "guard": {},
+        "sequential": [
+          {
+            "name": "load",
+            "input": [],
+			"parameters": [],
+            "output": [
+              "tube",
+              "retainer"
+            ]
+          },
+          {
+            "name": "press",
+            "input": [
+              "h1",
+              "tube",
+              "retainer"
+            ],
+			"parameters": [],
+            "output": [
+              "h2"
+            ]
+          }
+        ],
+        "parallel": []
+      },
+      "endState": "D"
+    },
+    {
+      "startState": "C",
+      "label": {
+        "guard": {},
+        "sequential": [
+          {
+            "name": "remove",
+            "input": [
+              "h1"
+            ],
+			"parameters": [],
+            "output": [
+              "h1"
+            ]
+          }
+        ],
+        "parallel": []
+      },
+      "endState": "F"
+    },
+    {
+      "startState": "F",
+      "label": {
+        "guard": {},
+        "sequential": [
+          {
+            "name": "store",
+            "input": [
+              "h2"
+            ],
+			"parameters": [],
+            "output": [
+              "h2"
+            ]
+          }
+        ],
+        "parallel": []
+      },
+      "endState": "G"
+    },
+
+    {
+      "startState": "F",
+      "label": {
+        "guard": {},
+        "sequential": [
+          {
+            "name": "remove",
+            "input": [
+              "h2"
+            ],
+			"parameters": [],
+            "output": [
+              "h2"
+            ]
+          }
+        ],
+        "parallel": []
+      },
+      "endState": "H"
+    }
+  ]
+}
