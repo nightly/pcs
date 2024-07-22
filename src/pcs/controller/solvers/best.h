@@ -74,6 +74,7 @@ namespace pcs {
 			std::queue<Stage> descendants; // what needs to be processed. A controller is complete when there are no more descendants to process.
 
 			std::unordered_set<size_t> used_resources; // If minimizing the number of resources, this is used.
+			std::list<size_t> list_used_resources;
 		public:
 			Candidate() = default;
 
@@ -82,6 +83,8 @@ namespace pcs {
 				descendants.push(descendant);
 			}
 		};
+
+		Candidate best_candidate_;
 
 		// Min order comparator for Candidates
 		struct CandidateComparator {
@@ -98,11 +101,14 @@ namespace pcs {
 	public:
 		BestController(const Environment* machine, ITopology* topology, const Recipe* recipe);
 		std::optional<ControllerType> Generate(MinimizeOpt opt, std::optional<std::filesystem::path> costs_path = std::nullopt);
+		size_t GetCost();
+		std::unordered_set<size_t> GetResources();
+		std::list<size_t> GetResourceList();
 	private:
 		void SetCosts(std::optional<std::filesystem::path> path);
 		void UpdateCost(Candidate& cand, MinimizeOpt opt, const TopologyTransition& transition);
 		const CompositeOperation& GetComposite(const Stage& stage, const Recipe& recipe);
-		bool AdvanceStage(Candidate& cand, TransferMap& transfers, MinimizeOpt opt);
+		bool AdvanceStage(Candidate& cand, TransferMap& transfers, MinimizeOpt opt);	
 	};
 
 }

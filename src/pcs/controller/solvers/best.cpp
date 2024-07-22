@@ -71,10 +71,12 @@ namespace pcs {
 			break;
 		case MinimizeOpt::Cost:
 			cand.cost += costs_[transition.first];
+			cand.list_used_resources.emplace_back(transition.first);
 			break;
 		case MinimizeOpt::CostEstimate:
 			cand.path_cost += costs_[transition.first];
 			cand.cost = cand.path_cost + composite_ops_ - cand.complete_composite_ops;
+			cand.list_used_resources.emplace_back(transition.first);
 			break;
 		default:
 			assert(false);
@@ -224,7 +226,6 @@ namespace pcs {
 				"Final cost = {}", best_candidate.cost));
 		}
 
-
 #ifdef PRINT_COST
 		if (opt == MinimizeOpt::CostEstimate) {
 			std::cout << "Final estimated cost = {" + std::to_string(best_candidate.cost) + "}" << std::endl;
@@ -235,7 +236,23 @@ namespace pcs {
 		}
 #endif
 
+		best_candidate_ = best_candidate;
+
 		return { best_candidate.controller };
 	}
 
+	size_t BestController::GetCost()
+	{
+		return best_candidate_.cost;
+	}
+
+	std::unordered_set<size_t> BestController::GetResources()
+	{
+		return best_candidate_.used_resources;
+	}
+
+	std::list<size_t> BestController::GetResourceList()
+	{
+		return best_candidate_.list_used_resources;
+	}
 }
