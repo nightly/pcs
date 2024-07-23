@@ -51,6 +51,7 @@ namespace pcs {
 			}
 			break;
 		case MinimizeOpt::Cost:
+			cand.list_used_resources_.emplace_back(transition.first);
 			cand.cost_ += costs_[transition.first];
 			break;
 		default:
@@ -58,7 +59,7 @@ namespace pcs {
 		}
 	}
 
-	void LocalBestController::UpdateCost(size_t& cost, std::unordered_set<size_t>& used_resources, const std::unordered_set<size_t>& resources, MinimizeOpt opt) {
+	void LocalBestController::UpdateCost(size_t& cost, std::unordered_set<size_t>& used_resources, const std::unordered_set<size_t>& resources, std::list<size_t>& list_used_resources, const std::list<size_t>& list_resources, MinimizeOpt opt) {
 		switch (opt) {
 		case MinimizeOpt::Resources:
 			for (auto it = resources.begin(); it != resources.end(); ++it)
@@ -70,9 +71,9 @@ namespace pcs {
 			}
 			break;
 		case MinimizeOpt::Cost:
-			for (auto it = resources.begin(); it != resources.end(); ++it)
+			for (auto it = list_resources.begin(); it != list_resources.end(); ++it)
 			{
-				used_resources.emplace(*it);
+				list_used_resources.emplace_back(*it);
 				cost += costs_[*it];
 			}
 			break;
@@ -102,24 +103,37 @@ namespace pcs {
 		}
 
 		used_resources_ = std::unordered_set<size_t>();
+		list_used_resources_ = std::list<size_t>();
 		final_cost_ = 0;
 		std::unordered_set<size_t> used_resources;
+		std::list<size_t> list_used_resources;
 
 		// The first transition of the recipe does not have a guard associated with it
 		bool generated = DFS(controller, first_transition.to(), &topology_->initial_state(),
-			plan_parts, basic_plan, plan_transitions, first_transition.label(), 0, used_resources, 0);
+			plan_parts, basic_plan, plan_transitions, first_transition.label(), 0, used_resources, list_used_resources, 0);
 
 		PCS_INFO(fmt::format(fmt::fg(fmt::color::light_green), "Controller generation completed: realisability = {}", generated));
 
 #ifdef PRINT_COST
-		std::cout << "Final cost = {" + std::to_string(final_cost_) + "}" << std::endl;
+		if (opt_ == MinimizeOpt::Resources) {
+			std::cout << "Final cost = {" + std::to_string(final_cost_) + "}" << std::endl;
 
-		std::cout << "Used resources = {";
-		for (auto it = used_resources_.begin(); it != used_resources_.end(); ++it)
-		{
-			std::cout << *it << " ";
+			std::cout << "Used resources = {";
+			for (auto it = used_resources_.begin(); it != used_resources_.end(); ++it)
+			{
+				std::cout << *it << " ";
+			}
+			std::cout << "}" << std::endl;
+		} else if (opt_ == MinimizeOpt::Cost) {
+			std::cout << "Final cost = {" + std::to_string(final_cost_) + "}" << std::endl;
+
+			std::cout << "List used resources = {";
+			for (auto it = list_used_resources_.begin(); it != list_used_resources_.end(); ++it)
+			{
+				std::cout << *it << " ";
+			}
+			std::cout << "}" << std::endl;
 		}
-		std::cout << "}" << std::endl;
 #endif
 		
 		/* ******************************************************************************************* /
@@ -188,7 +202,7 @@ namespace pcs {
 	 */
 	bool LocalBestController::DFS(ControllerType& controller, const std::string& next_recipe_state, const std::vector<std::string>* topology_state, Parts plan_parts,
 		                std::vector<PlanTransition> basic_plan, std::vector<PlanTransition> plan_transitions,
-		                const CompositeOperation& co, size_t seq_id, std::unordered_set<size_t> used_resources, size_t cost, size_t recursion_level) {
+		                const CompositeOperation& co, size_t seq_id, std::unordered_set<size_t> used_resources, std::list<size_t> list_used_resources, size_t cost, size_t recursion_level) {
 
 		// 1. Get the current sequential operation to process
 		const TaskExpression& task = co.CurrentTask(seq_id);
@@ -228,7 +242,7 @@ namespace pcs {
 				}
 				next_transitions.emplace_back(next_recipe_state, topology_state, label_vec, &state_vec);
 				
-				LocalCandidate cand(state_vec, next_parts, next_transitions, used_resources, cost);
+				LocalCandidate cand(state_vec, next_parts, next_transitions, used_resources, list_used_resources, cost);
 				UpdateCost(cand, *std::get<1>(v), opt_);
 				pq.push(cand);
 			}
@@ -237,7 +251,7 @@ namespace pcs {
 				LocalCandidate cand = pq.top();
 				pq.pop();
 				found = DFS(controller, next_recipe_state, &cand.state_vec_, std::move(cand.next_parts_),
-					basic_plan, std::move(cand.next_transitions_), co, seq_id, cand.used_resources_, cand.cost_, ++recursion_level);
+					basic_plan, std::move(cand.next_transitions_), co, seq_id, cand.used_resources_, cand.list_used_resources_, cand.cost_, ++recursion_level);
 				if (found) {
 					return true;
 				}
@@ -251,20 +265,20 @@ namespace pcs {
 				PCS_INFO(fmt::format(fmt::fg(fmt::color::lavender), "[DFS] Processed Operation = \"{}\" with input parts [{}] and output parts [{}]",
 					op.name(), fmt::join(input, ","), fmt::join(output, ",")));
 				return DFS(controller, next_recipe_state, topology_state, plan_parts,
-					basic_plan, plan_transitions, co, seq_id, used_resources, cost);
+					basic_plan, plan_transitions, co, seq_id, used_resources, list_used_resources, cost);
 			} else {
 				ApplyAllTransitions(plan_transitions, controller);
 				basic_plan.insert(std::end(basic_plan), std::begin(plan_transitions), std::end(plan_transitions));
 				plan_transitions.clear();
 				PCS_INFO(fmt::format(fmt::fg(fmt::color::lavender), "[DFS] Processed Composite Operation at Recipe State {}. Last operation = \"{}\" with input parts [{}] and output parts [{}]",
 					next_recipe_state, op.name(), fmt::join(input, ","), fmt::join(output, ",")));
-				UpdateCost(final_cost_, used_resources_, used_resources, opt_);
+				UpdateCost(final_cost_, used_resources_, used_resources, list_used_resources_, list_used_resources, opt_);
 
 				for (const auto& rec_transition : recipe_->lts()[next_recipe_state].transitions_) {
 					PCS_INFO(fmt::format(fmt::fg(fmt::color::gold) | fmt::emphasis::bold, "Processing recipe transition to: {}",
 						rec_transition.to()));
 					bool realise = DFS(controller, rec_transition.to(), topology_state, plan_parts,
-						basic_plan, plan_transitions, rec_transition.label(), 0, used_resources, cost);
+						basic_plan, plan_transitions, rec_transition.label(), 0, used_resources, list_used_resources, cost);
 					if (realise == false) {
 						return false;
 					}
@@ -272,6 +286,21 @@ namespace pcs {
 				return true;
 			}
 		}
+	}
+
+	size_t LocalBestController::GetCost()
+	{
+		return final_cost_;
+	}
+
+	std::unordered_set<size_t> LocalBestController::GetResources()
+	{
+		return used_resources_;
+	}
+
+	std::list<size_t> LocalBestController::GetResourceList()
+	{
+		return list_used_resources_;
 	}
 
 }

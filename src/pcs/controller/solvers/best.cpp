@@ -70,7 +70,7 @@ namespace pcs {
 			}
 			break;
 		case MinimizeOpt::Cost:
-			cand.cost += costs_[transition.first];
+				cand.cost += costs_[transition.first];
 			cand.list_used_resources.emplace_back(transition.first);
 			break;
 		case MinimizeOpt::CostEstimate:
@@ -255,4 +255,5 @@ namespace pcs {
 	{
 		return best_candidate_.list_used_resources;
 	}
+
 }

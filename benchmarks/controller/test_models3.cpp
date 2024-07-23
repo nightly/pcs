@@ -386,7 +386,7 @@ static void OutputStats(const pcs::Environment& machine)
 		+ ", Number of Transitions = " + std::to_string(machine.topology()->lts().NumOfTransitions()) << std::endl;
 }
 
-static void OutputStats(size_t cost, const std::unordered_set<size_t>& resources, const pcs::Environment& machine)
+static void OutputStats(size_t cost, const std::list<size_t>& resources, const pcs::Environment& machine)
 {
 	std::ofstream stats("stats.txt", std::ios::out | std::ios::app);
 
@@ -401,19 +401,10 @@ static void OutputStats(size_t cost, const std::unordered_set<size_t>& resources
 	OutputStats(machine);
 }
 
-static void OutputStats(size_t cost, const std::list<size_t>& resources, const pcs::Environment& machine)
+static void OutputStats(size_t cost, const std::unordered_set<size_t>& resources, const pcs::Environment& machine)
 {
-	std::ofstream stats("stats.txt", std::ios::out | std::ios::app);
-
-	stats << "Cost = " + std::to_string(cost) + ", Resources = {";
-
-	for (auto& r : resources) {
-		stats << std::to_string(r) + ", ";
-	}
-
-	stats << "} ";
-
-	OutputStats(machine);
+	std::list<size_t> resource_list = std::list(resources.begin(), resources.end());
+	OutputStats(cost, resource_list, machine);
 }
 
 static void CreateController(benchmark::State& state, int n, int transport) {
@@ -523,21 +514,49 @@ static void CreateBestControllerMinCostEstimate(benchmark::State& state, int n, 
 	OutputStats(cost, resources, machine);
 }
 
-static void CreateLocalBestController(benchmark::State& state, int n, int transport) {
+static void CreateLocalBestControllerMinRes(benchmark::State& state, int n, int transport) {
 	pcs::Environment machine;
 	LoadResources(machine, n, transport);
 	pcs::Recipe recipe;
 	LoadRecipe(recipe, n);
 
+	size_t cost = 0;
+	std::unordered_set<size_t> resources;
+
 	for (auto _ : state) {
 		machine.Incremental();
 		pcs::LocalBestController con(&machine, machine.topology(), &recipe);
 		auto controller_lts = con.Generate(pcs::MinimizeOpt::Resources);
+		cost = con.GetCost();
+		resources = con.GetResources();
 		benchmark::DoNotOptimize(controller_lts);
 		benchmark::ClobberMemory();
 	}
 
-	OutputStats(machine);
+	OutputStats(cost, resources, machine);
+}
+
+static void CreateLocalBestControllerMinCost(benchmark::State& state, int n, int transport) {
+	pcs::Environment machine;
+	LoadResources(machine, n, transport);
+	pcs::Recipe recipe;
+	LoadRecipe(recipe, n);
+	CreateCostsFile();
+
+	size_t cost = 0;
+	std::list<size_t> resources;
+
+	for (auto _ : state) {
+		machine.Incremental();
+		pcs::LocalBestController con(&machine, machine.topology(), &recipe);
+		auto controller_lts = con.Generate(pcs::MinimizeOpt::Cost, costs_file);
+		cost = con.GetCost();
+		resources = con.GetResourceList();
+		benchmark::DoNotOptimize(controller_lts);
+		benchmark::ClobberMemory();
+	}
+
+	OutputStats(cost, resources, machine);
 }
 
 static void CreateFilenames(ModelSize size) {
@@ -588,9 +607,14 @@ static void CreateBestControllerMinCostEstimate1(benchmark::State& state) {
 	CreateBestControllerMinCostEstimate(state, state.range(0), num_resources);
 }
 
-static void CreateLocalBestController1(benchmark::State& state) {
+static void CreateLocalBestControllerMinRes1(benchmark::State& state) {
 	CreateFilenames(ModelSize::small);
-	CreateLocalBestController(state, state.range(0), num_resources);
+	CreateLocalBestControllerMinRes(state, state.range(0), num_resources);
+}
+
+static void CreateLocalBestControllerMinCost1(benchmark::State& state) {
+	CreateFilenames(ModelSize::small);
+	CreateLocalBestControllerMinCost(state, state.range(0), num_resources);
 }
 
 static void CreateController2(benchmark::State& state) {
@@ -618,9 +642,14 @@ static void CreateBestControllerMinCostEstimate2(benchmark::State& state) {
 	CreateBestControllerMinCostEstimate(state, state.range(0), num_resources);
 }
 
-static void CreateLocalBestController2(benchmark::State& state) {
+static void CreateLocalBestControllerMinRes2(benchmark::State& state) {
 	CreateFilenames(ModelSize::medium);
-	CreateLocalBestController(state, state.range(0), num_resources);
+	CreateLocalBestControllerMinRes(state, state.range(0), num_resources);
+}
+
+static void CreateLocalBestControllerMinCost2(benchmark::State& state) {
+	CreateFilenames(ModelSize::medium);
+	CreateLocalBestControllerMinCost(state, state.range(0), num_resources);
 }
 
 static void CreateController3(benchmark::State& state) {
@@ -648,9 +677,14 @@ static void CreateBestControllerMinCostEstimate3(benchmark::State& state) {
 	CreateBestControllerMinCostEstimate(state, state.range(0), num_resources);
 }
 
-static void CreateLocalBestController3(benchmark::State& state) {
+static void CreateLocalBestControllerMinRes3(benchmark::State& state) {
 	CreateFilenames(ModelSize::big);
-	CreateLocalBestController(state, state.range(0), num_resources);
+	CreateLocalBestControllerMinRes(state, state.range(0), num_resources);
+}
+
+static void CreateLocalBestControllerMinCost3(benchmark::State& state) {
+	CreateFilenames(ModelSize::big);
+	CreateLocalBestControllerMinCost(state, state.range(0), num_resources);
 }
 
 //BENCHMARK(CreateController1)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
@@ -658,18 +692,21 @@ static void CreateLocalBestController3(benchmark::State& state) {
 //BENCHMARK(CreateBestControllerMinTrans1)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
 //BENCHMARK(CreateBestControllerMinCost1)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
 BENCHMARK(CreateBestControllerMinCostEstimate1)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
-//BENCHMARK(CreateLocalBestController1)->DenseRange(2, num_resources, 20)->Unit(benchmark::kMillisecond);
+//BENCHMARK(CreateLocalBestControllerMinRes1)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
+//BENCHMARK(CreateLocalBestControllerMinCost1)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
 
 //BENCHMARK(CreateController2)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
 //BENCHMARK(CreateBestControllerMinRes2)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
 //BENCHMARK(CreateBestControllerMinTrans2)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
 //BENCHMARK(CreateBestControllerMinCost2)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
 //BENCHMARK(CreateBestControllerMinCostEstimate2)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
-//BENCHMARK(CreateLocalBestController2)->DenseRange(2, num_resources, 20)->Unit(benchmark::kMillisecond);
+//BENCHMARK(CreateLocalBestControllerMinRes2)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
+//BENCHMARK(CreateLocalBestControllerMinCost2)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
 
 //BENCHMARK(CreateController3)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
 //BENCHMARK(CreateBestControllerMinRes3)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
 //BENCHMARK(CreateBestControllerMinTrans3)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
 //BENCHMARK(CreateBestControllerMinCost3)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
 //BENCHMARK(CreateBestControllerMinCostEstimate3)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
-//BENCHMARK(CreateLocalBestController3)->DenseRange(2, num_resources, 20)->Unit(benchmark::kMillisecond);
+//BENCHMARK(CreateLocalBestControllerMinRes3)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
+//BENCHMARK(CreateLocalBestControllerMinCost3)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
