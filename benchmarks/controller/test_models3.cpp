@@ -367,8 +367,7 @@ static void CreateCostsFile() {
 	try {
 		stream.open(costs_file, std::ios::out | std::ios::trunc);
 		
-			for (int i = num_resources * 2 - 2; i >= 1; i--)
-		{
+		for (int i = num_resources * 2 - 2; i >= 1; i--) {
 			int cost = ceil((float)i / (num_resources * 2 - 2) * 10);
 			stream << std::to_string(cost) + "\n";
 		}

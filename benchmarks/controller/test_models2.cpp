@@ -322,7 +322,7 @@ static void CreateCostsFile() {
 	try {
 		stream.open(costs_file, std::ios::out | std::ios::trunc);
 
-		for (int i = 0; i < num_resources; i++)
+		for (int i = 0; i < num_resources; i++) {
 		{
 			stream << "1\n";
 		}

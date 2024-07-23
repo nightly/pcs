@@ -243,7 +243,7 @@ namespace pcs {
 				next_transitions.emplace_back(next_recipe_state, topology_state, label_vec, &state_vec);
 				
 				LocalCandidate cand(state_vec, next_parts, next_transitions, used_resources, list_used_resources, cost);
-				UpdateCost(cand, *std::get<1>(v), opt_);
+				UpdateCost(cand, *std::get<2>(v), opt_);
 				pq.push(cand);
 			}
 
