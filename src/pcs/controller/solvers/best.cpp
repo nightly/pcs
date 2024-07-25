@@ -70,7 +70,7 @@ namespace pcs {
 			}
 			break;
 		case MinimizeOpt::Cost:
-				cand.cost += costs_[transition.first];
+			cand.cost += costs_[transition.first];
 			cand.list_used_resources.emplace_back(transition.first);
 			break;
 		case MinimizeOpt::CostEstimate:
@@ -80,6 +80,12 @@ namespace pcs {
 			break;
 		default:
 			assert(false);
+		}
+	}
+
+	void BestController::UpdateCost(Candidate& cand, MinimizeOpt opt) {
+		if (opt == MinimizeOpt::CostEstimate) {
+			cand.cost = cand.path_cost + composite_ops_ - cand.complete_composite_ops;
 		}
 	}
 
@@ -193,7 +199,7 @@ namespace pcs {
 					next_stage.topology_state = &state_vec;
 					ApplyTransition(plan_t, next_candidate.controller);
 
-					UpdateCost(next_candidate, opt, *std::get<1>(v));
+					UpdateCost(next_candidate, opt, *std::get<2>(v));
 
 					pq.push(next_candidate);
 				}
@@ -205,6 +211,7 @@ namespace pcs {
 			if (stage.seq_id >= (co.HasGuard() ? (co.sequential.size() + 1) : co.sequential.size())) [[Likely]] {
 				// Composite operation complete, process recipe transitions
 				cand.complete_composite_ops++;
+				UpdateCost(cand, opt);
 				for (const auto& rec_transition : recipe_->lts()[*stage.to_recipe_state].transitions_) {
 					Stage next_stage(*stage.topology_state, stage.parts, *stage.to_recipe_state, rec_transition.to(), 0);
 					cand.descendants.push(next_stage);

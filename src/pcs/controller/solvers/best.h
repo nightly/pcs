@@ -107,6 +107,7 @@ namespace pcs {
 	private:
 		void SetCosts(std::optional<std::filesystem::path> path);
 		void UpdateCost(Candidate& cand, MinimizeOpt opt, const TopologyTransition& transition);
+		void UpdateCost(Candidate& cand, MinimizeOpt opt);
 		const CompositeOperation& GetComposite(const Stage& stage, const Recipe& recipe);
 		bool AdvanceStage(Candidate& cand, TransferMap& transfers, MinimizeOpt opt);	
 	};
