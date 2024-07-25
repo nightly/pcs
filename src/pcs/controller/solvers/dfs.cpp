@@ -151,10 +151,12 @@ namespace pcs {
 			if (seq_id < (co.HasGuard() ? (co.sequential.size() + 1) : co.sequential.size())) [[Likely]] {
 				PCS_INFO(fmt::format(fmt::fg(fmt::color::lavender), "[DFS] Processed Operation = \"{}\" with input parts [{}] and output parts [{}]",
 					op.name(), fmt::join(input, ","), fmt::join(output, ",")));
-				return DFS(controller, next_recipe_state, topology_state, plan_parts, basic_plan, plan_transitions, co, seq_id);
+				return DFS(controller, next_recipe_state, topology_state, plan_parts, basic_plan, plan_transitions, co, seq_id, ++recursion_level);
 			} else {
-				ApplyAllTransitions(plan_transitions, controller);
-				basic_plan.insert(std::end(basic_plan), std::begin(plan_transitions), std::end(plan_transitions));
+				ControllerType rec_controller = controller;
+				ApplyAllTransitions(plan_transitions, rec_controller);
+				std::vector<PlanTransition> rec_basic_plan = basic_plan;
+				rec_basic_plan.insert(std::end(rec_basic_plan), std::begin(plan_transitions), std::end(plan_transitions));
 				plan_transitions.clear();
 				PCS_INFO(fmt::format(fmt::fg(fmt::color::lavender), "[DFS] Processed Composite Operation at Recipe State {}. Last operation = \"{}\" with input parts [{}] and output parts [{}]",
 					next_recipe_state, op.name(), fmt::join(input, ","), fmt::join(output, ",")));
@@ -162,12 +164,15 @@ namespace pcs {
 				for (const auto& rec_transition : recipe_->lts()[next_recipe_state].transitions_) {
 					PCS_INFO(fmt::format(fmt::fg(fmt::color::gold) | fmt::emphasis::bold, "Processing recipe transition to: {}",
 						rec_transition.to()));
-					bool realise = DFS(controller, rec_transition.to(), topology_state, plan_parts,
-						basic_plan, plan_transitions, rec_transition.label(), 0);
+					bool realise = DFS(rec_controller, rec_transition.to(), topology_state, plan_parts,
+						rec_basic_plan, plan_transitions, rec_transition.label(), 0, ++recursion_level);
 					if (realise == false) {
 						return false;
 					}
 				}
+
+				controller = rec_controller;
+				basic_plan = rec_basic_plan;
 				return true;
 			}
 		}
