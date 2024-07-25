@@ -15,7 +15,7 @@ And *optionally*:
 ### Cloning & updating
 Clone the repository alongside its submodules (shallow submodule cloning is optional).
 ```
-git clone --recurse-submodules --shallow-submodules https://github.com/nightly/pcs
+git clone --recurse-submodules --shallow-submodules https://github.com/dscrimieri/pcs
 ```
 To correctly pull any newly added Git submodules to your local repository (`git pull` alone doesn't suffice):
 ```
