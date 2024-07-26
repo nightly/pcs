@@ -1,5 +1,5 @@
 // Generates a recipe, a number of resources and runs various benchmarks
-// Like test_models.cpp, but with two solutions (with different cost)
+// Like test_models.cpp, but with three solutions (with different cost)
 // Size of recipe and resources can be small, medium or big
 // Benchmarks include global and local best controller synthesis
 
@@ -15,9 +15,9 @@
 #include "pcs/topology/topology.h"
 #include "lts/parsers/parsers.h"
 
-const static std::string machine_name_small = "small_test_model3";
-const static std::string machine_name_medium = "medium_test_model3";
-const static std::string machine_name_big = "big_test_model3";
+const static std::string machine_name_small = "small_test_model4";
+const static std::string machine_name_medium = "medium_test_model4";
+const static std::string machine_name_big = "big_test_model4";
 
 static std::string machine_name = machine_name_small;
 static std::string machine_dir = "../../data/" + machine_name;
@@ -122,8 +122,6 @@ static void CreateAlternativeResource(int i, int j) {
 		stream << "s0. nop. s0.\n";
 		stream << "s1. nop. s1.\n";
 
-		assert((j > 1));
-
 		stream << "s0. o" + std::to_string(j) + "1. s1.\n";
 		stream << "s0. in:" + std::to_string(i) + ". s1.\n";
 		stream << "s1. out:" + std::to_string(i) + ". s0.\n";
@@ -165,17 +163,24 @@ static void CreateTransportResource(int t, int n) {
 		stream << "s0. nop. s0.\n";
 		stream << "s0a. nop. s0a.\n";
 		stream << "s0b. nop. s0b.\n";
+		stream << "s0c. nop. s0c.\n";
 
 		stream << "s0. in:1. s1.\n";
 		stream << "s1. out:2. s0a.\n";
-		stream << "s1. out:" + std::to_string(n - 1 + 2) + ". s0b.\n";		
+		stream << "s1. out:" + std::to_string(n) + ". s0b.\n";
+		stream << "s1. out:" + std::to_string(n + n - 2) + ". s0c.\n";
 
 		for (int i = 1; i < n; i++) {
 			stream << "s0a. in:" + std::to_string(i) + ". s" + std::to_string(i) + ".\n";
 			stream << "s" + std::to_string(i) + ". out:" + std::to_string(i + 1) + ". s0a.\n";
+		}
 
+		for (int i = 1; i < n - 1; i++) {
 			stream << "s0b. in:" + std::to_string(n - 1 + i) + ". s" + std::to_string(n - 1 + i) + ".\n";
 			stream << "s" + std::to_string(n - 1 + i) + ". out:" + std::to_string(n - 1 + i + 1) + ". s0b.\n";
+
+			stream << "s0c. in:" + std::to_string(2 * n - 3 + i) + ". s" + std::to_string(2 * n - 3 + i) + ".\n";
+			stream << "s" + std::to_string(2 * n - 3 + i) + ". out:" + std::to_string(2 * n - 2 + i) + ". s0c.\n";
 		}
 	}
 	catch (const std::ofstream::failure& e) {
@@ -187,21 +192,26 @@ static void LoadResources(pcs::Environment& machine, int n, int transport) {
 	resources_created = std::filesystem::is_directory(machine_dir);
 	if (!resources_created) {
 		std::filesystem::create_directory(machine_dir);
+		int i = 1;
 
-		for (int i = 1; i < num_resources; i++) {
-			CreateResource(i);
+		for (int j = 1; j < num_resources; j++) {
+			CreateResource(i++);
 		}
 
-		for (int i = 2; i < num_resources; i++) {
-			CreateAlternativeResource(num_resources - 1 + i, i);
+		for (int j = 2; j < num_resources; j++) {
+			CreateAlternativeResource(i++, j);
 		}
 
-		CreateTransportResource(transport, num_resources);
+		for (int j = 2; j < num_resources; j++) {
+			CreateAlternativeResource(i++, j);
+		}
+
+		CreateTransportResource(i, num_resources);
 		resources_created = true;
 	}
 
 	try {
-		for (int i = 1; i < num_resources * 2 - 1; i++) {
+		for (int i = 1; i <= num_resources + (num_resources - 2) * 2; i++) {
 			machine.AddResource(resource_file_prefix + std::to_string(i) + ".txt", false);
 		}
 	}
@@ -360,20 +370,23 @@ static void LoadRecipe(pcs::Recipe& recipe, int n) {
 	recipe.set_recipe(recipe_dir + "recipe" + std::to_string(n - 1) + "R.json");
 }
 
-static void CreateCostsFile() {	
-	std::ofstream stream;
-	stream.exceptions(std::ofstream::badbit);
+static void CreateCostsFile() {
+	bool present = std::filesystem::is_regular_file(machine_dir + "/" + costs_file);
+	if (!present) {
+		std::ofstream stream;
+		stream.exceptions(std::ofstream::badbit);
 
-	try {
-		stream.open(costs_file, std::ios::out | std::ios::trunc);
-		
-		for (int i = num_resources * 2 - 2; i >= 1; i--) {
-			int cost = ceil((float)i / (num_resources * 2 - 2) * 10);
-			stream << std::to_string(cost) + "\n";
+		try {
+			stream.open(costs_file, std::ios::out | std::ios::trunc);
+
+			for (int i = num_resources + (num_resources - 2) * 2; i >= 1; i--) {
+				int cost = ceil((float)i / (num_resources * 2 - 2) * 10);
+				stream << std::to_string(cost) + "\n";
+			}
 		}
-	}
-	catch (const std::ofstream::failure& e) {
-		throw;
+		catch (const std::ofstream::failure& e) {
+			throw;
+		}
 	}
 }
 
@@ -690,9 +703,9 @@ static void CreateLocalBestControllerMinCost3(benchmark::State& state) {
 //BENCHMARK(CreateBestControllerMinRes1)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
 //BENCHMARK(CreateBestControllerMinTrans1)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
 //BENCHMARK(CreateBestControllerMinCost1)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
-BENCHMARK(CreateBestControllerMinCostEstimate1)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
+//BENCHMARK(CreateBestControllerMinCostEstimate1)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
 //BENCHMARK(CreateLocalBestControllerMinRes1)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
-//BENCHMARK(CreateLocalBestControllerMinCost1)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
+BENCHMARK(CreateLocalBestControllerMinCost1)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
 
 //BENCHMARK(CreateController2)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
 //BENCHMARK(CreateBestControllerMinRes2)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
