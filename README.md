@@ -56,3 +56,9 @@ Or for SVG format:
 ```
 dot -Tsvg lts1.gv -o lts1.svg
 ```
+
+## Benchmarks
+To run benchmarks, navigate to bin/ directory, for a given benchmark executable's file (e.g. `bm.exe`) run the following:
+`bm.exe --benchmark_format=json`
+
+This is required because Google Benchmark's console output/VS runner doesn't report memory usage statistics, it is only given properly in the JSON format.
