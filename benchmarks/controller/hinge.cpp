@@ -5,6 +5,7 @@
 
 #include "pcs/topology/topology.h"
 #include "lts/parsers/parsers.h"
+#include "../memory_manager.h"
 
 static void HingeCompleteTopology(benchmark::State& state) {
 	// The time to generate the complete topology alone
@@ -24,6 +25,10 @@ static void HingeCompleteTopology(benchmark::State& state) {
 		benchmark::DoNotOptimize(machine.topology());
 		benchmark::ClobberMemory();
 	}
+//#ifdef MEMORY_PROFILER
+//	std::cout << mm.get()->max_bytes_used << std::endl;
+//	std::cout << mm.get()->num_allocs << std::endl;
+//#endif
 }
 
 BENCHMARK(HingeCompleteTopology)->Unit(benchmark::kMillisecond);
@@ -124,4 +129,11 @@ static void HingeIncrementaTopologylWithController(benchmark::State& state) {
 
 BENCHMARK(HingeIncrementaTopologylWithController)->Unit(benchmark::kMillisecond);
 
-
+//BENCHMARK_MAIN();
+int main(int argc, char** argv)
+{
+	::benchmark::RegisterMemoryManager(mm.get());
+	::benchmark::Initialize(&argc, argv);
+	::benchmark::RunSpecifiedBenchmarks();
+	::benchmark::RegisterMemoryManager(nullptr);
+}

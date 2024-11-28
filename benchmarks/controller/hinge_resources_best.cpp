@@ -5,6 +5,7 @@
 
 #include "pcs/topology/topology.h"
 #include "lts/parsers/parsers.h"
+#include "../memory_manager.h"
 
 static void HingeController2R(benchmark::State& state) {
 	pcs::Environment machine;
@@ -135,3 +136,12 @@ static void HingeController(benchmark::State& state) {
 }
 
 BENCHMARK(HingeController)->DenseRange(6, 12, 1)->Unit(benchmark::kMillisecond);
+
+//BENCHMARK_MAIN();
+int main(int argc, char** argv)
+{
+	::benchmark::RegisterMemoryManager(mm.get());
+	::benchmark::Initialize(&argc, argv);
+	::benchmark::RunSpecifiedBenchmarks();
+	::benchmark::RegisterMemoryManager(nullptr);
+}

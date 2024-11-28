@@ -4,6 +4,7 @@
 #include <array>
 
 #include "lts/parsers/parsers.h"
+#include "../../memory_manager.h"
 
 static void BM_TopologyRange(benchmark::State& state) {
     std::vector<nightly::LTS<std::string, pcs::ParameterizedOp>> ltss;
@@ -22,3 +23,12 @@ static void BM_TopologyRange(benchmark::State& state) {
 // BENCHMARK(BM_TopologyRange)->Arg(6)->Iterations(1000)->Unit(benchmark::kMillisecond);
 
 BENCHMARK(BM_TopologyRange)->DenseRange(2, 10, 1)->Unit(benchmark::kMillisecond);
+
+//BENCHMARK_MAIN();
+int main(int argc, char** argv)
+{
+    ::benchmark::RegisterMemoryManager(mm.get());
+    ::benchmark::Initialize(&argc, argv);
+    ::benchmark::RunSpecifiedBenchmarks();
+    ::benchmark::RegisterMemoryManager(nullptr);
+}

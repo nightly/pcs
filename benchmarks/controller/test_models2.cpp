@@ -14,6 +14,7 @@
 
 #include "pcs/topology/topology.h"
 #include "lts/parsers/parsers.h"
+#include "../memory_manager.h"
 
 const static std::string machine_name_small = "small_test_model2";
 const static std::string machine_name_medium = "medium_test_model2";
@@ -662,3 +663,12 @@ BENCHMARK(CreateBestControllerMinCostEstimate1)->DenseRange(2, num_resources, 2)
 //BENCHMARK(CreateBestControllerMinCostEstimate3)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
 //BENCHMARK(CreateLocalBestControllerMinRes3)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
 //BENCHMARK(CreateLocalBestControllerMinCost3)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
+
+//BENCHMARK_MAIN();
+int main(int argc, char** argv)
+{
+	::benchmark::RegisterMemoryManager(mm.get());
+	::benchmark::Initialize(&argc, argv);
+	::benchmark::RunSpecifiedBenchmarks();
+	::benchmark::RegisterMemoryManager(nullptr);
+}

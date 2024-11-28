@@ -10,6 +10,7 @@
 
 #include "pcs/topology/topology.h"
 #include "lts/parsers/parsers.h"
+#include "../memory_manager.h"
 
 static std::string machine_name = "small_test_model";
 static std::string machine_dir = "../../data/" + machine_name;
@@ -484,3 +485,12 @@ BENCHMARK(IncrementalTopologyWithController2)->DenseRange(2, num_resources, 2)->
 //BENCHMARK(ControllerUsingCompleteTopology3)->DenseRange(2, num_resources, 1)->Unit(benchmark::kMillisecond);
 //BENCHMARK(CompleteTopologyWithController3)->DenseRange(2, num_resources, 1)->Unit(benchmark::kMillisecond);
 BENCHMARK(IncrementalTopologyWithController3)->DenseRange(2, num_resources, 2)->Unit(benchmark::kMillisecond);
+
+//BENCHMARK_MAIN();
+int main(int argc, char** argv)
+{
+	::benchmark::RegisterMemoryManager(mm.get());
+	::benchmark::Initialize(&argc, argv);
+	::benchmark::RunSpecifiedBenchmarks();
+	::benchmark::RegisterMemoryManager(nullptr);
+}

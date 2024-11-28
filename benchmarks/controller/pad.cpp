@@ -4,6 +4,7 @@
 #include <array>
 
 #include "pcs/topology/topology.h"
+#include "../memory_manager.h"
 
 static void BM_PADControllerCompleteTopology(benchmark::State& state) {
 	pcs::Environment machine;
@@ -66,3 +67,11 @@ static void BM_PADControllerIncrementalTopology(benchmark::State& state) {
 
 BENCHMARK(BM_PADControllerIncrementalTopology)->Unit(benchmark::kMillisecond);
 
+//BENCHMARK_MAIN();
+int main(int argc, char** argv)
+{
+	::benchmark::RegisterMemoryManager(mm.get());
+	::benchmark::Initialize(&argc, argv);
+	::benchmark::RunSpecifiedBenchmarks();
+	::benchmark::RegisterMemoryManager(nullptr);
+}
