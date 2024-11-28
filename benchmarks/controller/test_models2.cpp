@@ -339,11 +339,6 @@ static void OutputStats(const pcs::Environment& machine)
 		+ ", Number of Transitions = " + std::to_string(machine.topology()->lts().NumOfTransitions()) << std::endl;
 }
 
-static void OutputStats(size_t cost, const std::unordered_set<size_t>& resources, const pcs::Environment& machine)
-{
-	OutputStats(cost, std::list(resources.begin(), resources.end()), machine);
-}
-
 static void OutputStats(size_t cost, const std::list<size_t>& resources, const pcs::Environment& machine)
 {
 	std::ofstream stats("stats.txt", std::ios::out | std::ios::app);
@@ -357,6 +352,11 @@ static void OutputStats(size_t cost, const std::list<size_t>& resources, const p
 	stats << "} ";
 
 	OutputStats(machine);
+}
+
+static void OutputStats(size_t cost, const std::unordered_set<size_t>& resources, const pcs::Environment& machine)
+{
+	OutputStats(cost, std::list(resources.begin(), resources.end()), machine);
 }
 
 static void CreateController(benchmark::State& state, int n, int transport) {
